@@ -12,7 +12,8 @@
 		p:url=" jdbc:postgresql://localhost:5432/ad-site" p:username="postgres"
 		p:password="sa" />
 
-<bean id="userDao" class="pl.styall.library.core.model.defaultimpl.UserDao"></bean>
+<!-- <bean id="userDao" class="pl.styall.library.core.model.defaultimpl.UserDao"></bean> -->
+<bean id="criteriaConfigurer" class="pl.styall.library.core.model.dao.CriteriaConfigurer"></bean>
 	<!-- <bean id="sessionFactory" -->
 	<!-- class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"> -->
 	<!-- <property name="dataSource" ref="dataSource" /> -->
@@ -49,7 +50,7 @@
 
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">org.hibernate.spatial.dialect.postgis.PostgisDialect
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect
 				</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<!-- <prop key="cache.provider_class">org.hibernate.cache.NoCacheProvider</prop> -->
@@ -63,7 +64,7 @@
 			<list>
 				<value>pl.styall.library.core.model.defaultimpl</value>
 				<value>pl.styall.library.core.model</value>
-				<value>pl.stalkon.ad.security.authentication</value>
+				<value>pl.stalkon.ad.core.model</value>
 			</list>
 		</property>
 

@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -32,6 +33,12 @@ public class Ad implements CommonEntity {
 	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private User poster;
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private AdData adData;
+	
+	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private Brand brand;
 	
 	private Type type;
 	public String getLink() {
@@ -67,6 +74,22 @@ public class Ad implements CommonEntity {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	public AdData getAdData() {
+		return adData;
+	}
+
+	public void setAdData(AdData adData) {
+		this.adData = adData;
+	}
+
+	public Brand getBrand() {
+		return brand;
+	}
+
+	public void setBrand(Brand brand) {
+		this.brand = brand;
 	}
 
 }

@@ -3,17 +3,20 @@ package pl.stalkon.ad.core.model;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import pl.styall.library.core.model.CommonEntity;
 
+@Entity
+@Table(name="adData")
 public class AdData implements CommonEntity {
 
 	private static final long serialVersionUID = -6411065199654674571L;
@@ -26,12 +29,9 @@ public class AdData implements CommonEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 
-	private String desc;
+	private String description;
 
 	private String title;
-
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private Brand brand;
 
 	@Override
 	public Long getId() {
@@ -46,14 +46,6 @@ public class AdData implements CommonEntity {
 		this.creationDate = creationDate;
 	}
 
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
 	public String getTitle() {
 		return title;
 	}
@@ -66,12 +58,12 @@ public class AdData implements CommonEntity {
 		this.id = id;
 	}
 
-	public Brand getBrand() {
-		return brand;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setBrand(Brand brand) {
-		this.brand = brand;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

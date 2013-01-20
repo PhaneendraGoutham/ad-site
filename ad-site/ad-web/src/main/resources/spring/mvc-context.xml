@@ -38,9 +38,9 @@
 		<property name="objectMapper" ref="jacksonObjectMapper" />
 	</bean>
 	<mvc:annotation-driven>
-<!-- 		<mvc:argument-resolvers> -->
-<!-- 			<bean class="pl.styall.scylla.argumentResolvers.QueryArgumentResolver"></bean> -->
-<!-- 		</mvc:argument-resolvers> -->
+		<mvc:argument-resolvers>
+			<bean class="pl.styall.library.core.ext.QueryArgumentResolver"></bean>
+		</mvc:argument-resolvers>
 		<mvc:message-converters register-defaults="true">
 			<bean class="pl.styall.scylla.json.config.CustomMappingJackson2">
 				<property name="objectMapper" ref="jacksonObjectMapper" />

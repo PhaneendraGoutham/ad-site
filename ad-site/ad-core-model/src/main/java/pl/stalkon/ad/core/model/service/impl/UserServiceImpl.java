@@ -6,12 +6,12 @@ import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pl.stalkon.ad.core.model.dao.UserDao;
 import pl.stalkon.ad.core.model.service.UserService;
 import pl.styall.library.core.model.Credentials;
 import pl.styall.library.core.model.UserRole;
 import pl.styall.library.core.model.defaultimpl.Address;
 import pl.styall.library.core.model.defaultimpl.User;
-import pl.styall.library.core.model.defaultimpl.UserDao;
 import pl.styall.library.core.model.defaultimpl.UserData;
 import pl.styall.library.core.model.defaultimpl.UserRegForm;
 

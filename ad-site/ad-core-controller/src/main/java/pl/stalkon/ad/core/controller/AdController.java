@@ -4,6 +4,7 @@ package pl.stalkon.ad.core.controller;
 
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.service.AdService;
-import pl.stalkon.ad.security.authentication.LoggedUser;
+import pl.styall.library.core.ext.QueryObject;
+import pl.styall.library.core.ext.QueryObjectWrapper;
 import pl.styall.library.core.ext.controller.BaseController;
 import pl.styall.library.core.ext.validation.ValidationException;
+import pl.styall.library.core.security.authentication.LoggedUser;
 
 @Controller
 public class AdController extends BaseController {
@@ -38,6 +41,14 @@ public class AdController extends BaseController {
 		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
 		adService.register(ad, loggedUser.getId());
 		return ad.getId();
+	}
+	
+	@RequestMapping(value = "**/ad/", method = RequestMethod.GET, headers = "Accept=application/json")
+	@ResponseBody
+	public List<Ad> get(@QueryObject QueryObjectWrapper queryObjectWrapper) throws ValidationException {
+		System.out.println(queryObjectWrapper.queryObject);
+		List<Ad> ads = adService.get(queryObjectWrapper.queryObject);
+		return ads;
 	}
 
 //	@RequestMapping(value="/password", method = RequestMethod.PUT, headers = "Accept=application/json")

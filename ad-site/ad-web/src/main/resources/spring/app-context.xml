@@ -1,39 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
                         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/context
                         http://www.springframework.org/schema/context/spring-context-3.0.xsd
                         http://www.springframework.org/schema/aop
                         http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
                         ">
-                        
+
 	<context:component-scan base-package="pl.stalkon.ad.core.controller" />
 	<context:component-scan base-package="pl.stalkon.ad.core.model" />
-		<context:component-scan base-package="pl.styall.library.core.security.ajax" />
-		<context:component-scan base-package="pl.styall.library.core.security.authentication" />
-<!-- 	<context:component-scan base-package="pl.stalkon.ad.security.ajax_login" /> -->
-<!-- 	<context:component-scan base-package="pl.styall.scylla.core.model.service" /> -->
-<!-- 	<context:component-scan base-package="pl.styall.scylla.core.model.dao" /> -->
-<!-- 	<context:component-scan base-package="pl.styall.scylla.dao" /> -->
+	<context:component-scan base-package="pl.styall.library.core.security.ajax" />
+	<context:component-scan
+		base-package="pl.styall.library.core.security.authentication" />
+<!-- 		<bean id="userDao" class="pl.stalkon.ad.core.model.dao.UserDao"></bean> -->
+	<!-- <context:component-scan base-package="pl.stalkon.ad.security.ajax_login" 
+		/> -->
+	<!-- <context:component-scan base-package="pl.styall.scylla.core.model.service" 
+		/> -->
+	<!-- <context:component-scan base-package="pl.styall.scylla.core.model.dao" 
+		/> -->
+	<!-- <context:component-scan base-package="pl.styall.scylla.dao" /> -->
 	<context:annotation-config />
-	
-	<import resource="hibernate-context.xml"/>
 
-	<import resource="security-context.xml"/>
+	<import resource="hibernate-context.xml" />
 
-	<import resource="mvc-context.xml"/>
-	<import resource="json-context.xml"/>
-<!-- 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:config-location="classpath:spring/ehcache.xml" p:shared="true"/> -->
-<!-- 	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean" > -->
-<!-- 		<property name="cacheManager" ref="cacheManager"/> -->
-<!-- 	</bean> -->
-	<bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
-	    <constructor-arg value="256"/>
+	<import resource="security-context.xml" />
+
+	<import resource="mvc-context.xml" />
+	<import resource="json-context.xml" />
+	<!-- <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" 
+		p:config-location="classpath:spring/ehcache.xml" p:shared="true"/> -->
+	<!-- <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean" 
+		> -->
+	<!-- <property name="cacheManager" ref="cacheManager"/> -->
+	<!-- </bean> -->
+	<bean id="passwordEncoder"
+		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<constructor-arg value="256" />
 	</bean>
-	<aop:aspectj-autoproxy >
+	<aop:aspectj-autoproxy>
 	</aop:aspectj-autoproxy>
-	</beans>
+</beans>

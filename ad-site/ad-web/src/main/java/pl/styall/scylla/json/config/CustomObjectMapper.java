@@ -5,8 +5,7 @@ import javax.annotation.PostConstruct;
 import org.joda.time.LocalTime;
 import org.springframework.stereotype.Component;
 
-import pl.styall.librarycore.ext.json.serializer.CustomTimeSerializer;
-import pl.styall.librarycore.ext.json.serializer.PointSerializer;
+import pl.styall.library.core.ext.json.serializer.CustomTimeSerializer;
 
 
 
