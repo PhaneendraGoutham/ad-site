@@ -38,7 +38,7 @@ public class AdController extends BaseController {
 	@RequestMapping(value = "ad/", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public String add(@Valid @RequestBody Ad ad, Principal principal) throws ValidationException {
+	public Long add(@Valid @RequestBody Ad ad, Principal principal) throws ValidationException {
 		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
 		adService.register(ad, loggedUser.getId());
 		return ad.getId();
@@ -47,7 +47,7 @@ public class AdController extends BaseController {
 	@RequestMapping(value = "brand/{brandId}/ad/", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public String add(@Valid @RequestBody Ad ad,@PathVariable String brandId, Principal principal) throws ValidationException {
+	public Long add(@Valid @RequestBody Ad ad,@PathVariable Long brandId, Principal principal) throws ValidationException {
 		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
 		adService.register(ad, loggedUser.getId(), brandId);
 		return ad.getId();
@@ -62,7 +62,7 @@ public class AdController extends BaseController {
 	
 	@RequestMapping(value = "ad/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
-	public Ad get(@PathVariable("id") String id) throws ValidationException {
+	public Ad get(@PathVariable("id") Long id) throws ValidationException {
 		Ad ad = adService.get(id);
 		return ad;
 	}

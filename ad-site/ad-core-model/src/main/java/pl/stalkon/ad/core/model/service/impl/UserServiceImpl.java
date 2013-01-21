@@ -63,7 +63,7 @@ public class UserServiceImpl extends pl.styall.library.core.model.defaultimpl.Us
 	
 	@Override
 	@Transactional
-	public boolean changePassword(String id, String oldPassword, String newPassword){
+	public boolean changePassword(Long id, String oldPassword, String newPassword){
 		User user = userDao.get(id);
 		String encodedPassword = passwordEncoder.encodePassword(oldPassword, user.getCredentials().getSalt());
 		if(encodedPassword.equals(user.getCredentials().getPassword())){

@@ -30,7 +30,7 @@ public class AdServiceImpl implements AdService {
 	
 	@Transactional
 	@Override
-	public Ad register(Ad ad, String id) {
+	public Ad register(Ad ad, Long id) {
 		User poster = userDao.get(id);
 		ad.setPoster(poster);
 		adDao.add(ad);
@@ -44,13 +44,13 @@ public class AdServiceImpl implements AdService {
 	}
 	@Transactional
 	@Override
-	public Ad get(String id) {
+	public Ad get(Long id) {
 		return adDao.get(id);
 	}
 
 	@Transactional
 	@Override
-	public Ad register(Ad ad, String posterId, String brandId) {
+	public Ad register(Ad ad, Long posterId, Long brandId) {
 		Brand brand = brandDao.get(brandId);
 		brand.addAdd(ad);
 		ad.setBrand(brand);

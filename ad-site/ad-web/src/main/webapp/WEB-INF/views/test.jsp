@@ -14,42 +14,55 @@
 </body>
 <script>
 	$(function() {
-		userRegForm = new Object();
-		userRegForm['password'] = "password";
-		userRegForm["confirmPassword"] = "password";
-		userRegForm["username"] = "stallon";
-		user = new Object();
-		userData = new Object();
-		userData["birthDate"] = "1990-05-21";
-		userData["name"] = "szymon";
-		userData["surname"] = "konicki";
-		userData["phone"] = "3344555";
-		userData["sex"] = "FEMALE";
-		userRegForm["mail"] = "konik32s2@gmail.com";
-		userRegForm["userData"] = userData;
-		address = new Object();
-		address["city"] = "Warszawa";
-		address["street"] = "Aleje";
-		address["homeNr"] = "8";
+		
+		//USer
+// 		userRegForm = new Object();
+// 		userRegForm['password'] = "password";
+// 		userRegForm["confirmPassword"] = "password";
+// 		userRegForm["username"] = "stallon";
+// 		user = new Object();
+// 		userData = new Object();
+// 		userData["birthDate"] = "1990-05-21";
+// 		userData["name"] = "szymon";
+// 		userData["surname"] = "konicki";
+// 		userData["phone"] = "3344555";
+// 		userData["sex"] = "FEMALE";
+// 		userRegForm["mail"] = "konik32s2@gmail.com";
+// 		userRegForm["userData"] = userData;
+// 		address = new Object();
+// 		address["city"] = "Warszawa";
+// 		address["street"] = "Aleje";
+// 		address["homeNr"] = "8";
 
-		address["name"] = "domowy";
-		address["type"] = "HOME";
-		address['zip'] = "33-300";
-		company = new Object();
-		company["id"] = 552;
-		company["name"] = "warszawska";
-		company["nip"] = "7343312760";
-		company["phone"] = "32234223423";
-		company["address"] = address;
+// 		address["name"] = "domowy";
+// 		address["type"] = "HOME";
+// 		address['zip'] = "33-300";
+// 		company = new Object();
+// 		company["id"] = 552;
+// 		company["name"] = "warszawska";
+// 		company["nip"] = "7343312760";
+// 		company["phone"] = "32234223423";
+// 		company["address"] = address;
 
-		userRegForm["address"] = address;
-		passwordForm = new Object();
-		passwordForm["oldPassword"] = "password";
-		passwordForm["newPassword"] ="franeczek";
-		passwordForm["confirmPassword"] = "franeczek";
-		var message = JSON.stringify(userRegForm);
+// 		userRegForm["address"] = address;
+// 		passwordForm = new Object();
+// 		passwordForm["oldPassword"] = "password";
+// 		passwordForm["newPassword"] ="franeczek";
+// 		passwordForm["confirmPassword"] = "franeczek";
+// 		var message = JSON.stringify(userRegForm);
+
+
+//BRAND
+
+		var brand = new Object();
+		brand["description"] = "Cocacola byla z coca";
+		brand["name"] = "CocaCola";
+		brand["logo"] = "http:///www.cocacola.com.pl/_img/data/coca-cola-new-logo.png";
+		var message = JSON.stringify(brand);
+		var url = "brand/";
+		
 		$.ajax({
-			url : "http://localhost:8080/ad-web/user/",
+			url : "http://localhost:8080/ad-web/"+url,
 			type : "POST",
 			dataType : "json",
 			contentType : "application/json",

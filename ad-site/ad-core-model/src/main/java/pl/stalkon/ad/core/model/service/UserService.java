@@ -10,6 +10,6 @@ import pl.styall.library.core.model.defaultimpl.UserRegForm;
 public interface UserService extends pl.styall.library.core.model.defaultimpl.UserService {
 	public User register(UserRegForm userRegForm);
 	public boolean chechMailExists(String mail);
-	public boolean changePassword(String id, String oldPassword, String newPassword);
+	public boolean changePassword(Long id, String oldPassword, String newPassword);
 //	public void addAddress(UUID userId, Address address);
 }

@@ -35,7 +35,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public String add(@Valid @RequestBody UserRegForm userRegForm) throws ValidationException {
+	public Long add(@Valid @RequestBody UserRegForm userRegForm) throws ValidationException {
 		if (userService.chechMailExists(userRegForm.getMail())) {
 			throw new ValidationException("mail", "NotUniqueMail");
 		}

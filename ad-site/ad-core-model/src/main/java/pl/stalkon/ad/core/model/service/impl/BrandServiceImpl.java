@@ -23,14 +23,14 @@ public class BrandServiceImpl implements BrandService {
 
 	@Transactional
 	@Override
-	public Brand register(Brand brand, String id) {
+	public Brand register(Brand brand, Long id) {
 		brandDao.add(brand);
 		return brand;
 	}
 
 	@Transactional
 	@Override
-	public Brand get(String id) {
+	public Brand get(Long id) {
 		return brandDao.get(id);
 	}
 	@Transactional

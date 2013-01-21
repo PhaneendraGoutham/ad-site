@@ -34,7 +34,7 @@ public class BrandController extends BaseController {
 	@RequestMapping(value = "brand/", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public String add(@Valid @RequestBody Brand brand, Principal principal) throws ValidationException {
+	public Long add(@Valid @RequestBody Brand brand, Principal principal) throws ValidationException {
 //		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
 		brandService.register(brand, null);
 		return brand.getId();
