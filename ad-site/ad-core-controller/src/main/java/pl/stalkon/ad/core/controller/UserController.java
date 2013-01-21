@@ -1,5 +1,7 @@
 package pl.stalkon.ad.core.controller;
 
+import java.util.UUID;
+
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -33,7 +35,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public Long add(@Valid @RequestBody UserRegForm userRegForm) throws ValidationException {
+	public String add(@Valid @RequestBody UserRegForm userRegForm) throws ValidationException {
 		if (userService.chechMailExists(userRegForm.getMail())) {
 			throw new ValidationException("mail", "NotUniqueMail");
 		}
@@ -53,8 +55,8 @@ public class UserController extends BaseController {
 //	@RequestMapping(value = "{userId}/address", method = RequestMethod.POST, headers = "Accept=application/json")
 //	@ResponseBody
 //	@ResponseStatus(HttpStatus.CREATED)
-//	public Long add(@Valid @RequestBody Address address,
-//			@PathVariable("userId") Long userId) throws ValidationException {
+//	public UUID add(@Valid @RequestBody Address address,
+//			@PathVariable("userId") UUID userId) throws ValidationException {
 //		userService.addAddress(userId, address);
 //		return address.getId();
 //	}

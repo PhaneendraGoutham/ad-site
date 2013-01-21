@@ -1,6 +1,8 @@
 package pl.stalkon.ad.core.controller;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.service.BrandService;
+import pl.styall.library.core.ext.QueryObject;
+import pl.styall.library.core.ext.QueryObjectWrapper;
 import pl.styall.library.core.ext.controller.BaseController;
 import pl.styall.library.core.ext.validation.ValidationException;
 import pl.styall.library.core.security.authentication.LoggedUser;
@@ -30,10 +34,17 @@ public class BrandController extends BaseController {
 	@RequestMapping(value = "brand/", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public Long add(@Valid @RequestBody Brand brand, Principal principal) throws ValidationException {
-		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
-		brandService.register(brand, loggedUser.getId());
+	public String add(@Valid @RequestBody Brand brand, Principal principal) throws ValidationException {
+//		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
+		brandService.register(brand, null);
 		return brand.getId();
+	}
+	
+	@RequestMapping(value = "**/brand/", method = RequestMethod.GET, headers = "Accept=application/json")
+	@ResponseBody
+	public List<Brand> get(@QueryObject QueryObjectWrapper queryObjectWrapper) throws ValidationException {
+		List<Brand> brands = brandService.get(queryObjectWrapper.queryObject);
+		return brands;
 	}
 
 }

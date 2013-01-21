@@ -37,7 +37,7 @@ public class AdDao extends AbstractDao<Ad> {
 					(Map<String, Object>) queryObject.get("user"));
 		}
 		if (queryObject.containsKey("brand")) {
-			userDao.addRestrictions(adCriteria, "brand",
+			brandDao.addRestrictions(adCriteria, "brand",
 					(Map<String, Object>) queryObject.get("brand"));
 		}
 		criteriaConfigurer.configureCriteria(adCriteria, queryObject);

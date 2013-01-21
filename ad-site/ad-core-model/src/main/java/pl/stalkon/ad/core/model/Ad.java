@@ -18,14 +18,11 @@ import pl.styall.library.core.model.defaultimpl.User;
 
 @Entity
 @Table(name="ad")
-public class Ad implements CommonEntity {
+public class Ad extends CommonEntity {
 
 	private static final long serialVersionUID = 1335218634734582331L;
 	
 	public enum Type {MOVIE, PICTURE, GAME}
-	
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
 	
 	@NotNull
 	@URL
@@ -58,15 +55,6 @@ public class Ad implements CommonEntity {
 		this.poster = poster;
 	}
 
-
-	private void setId(Long id) {
-		this.id = id;
-	}
-
-
-	public Long getId() {
-		return id;
-	}
 
 	public Type getType() {
 		return type;

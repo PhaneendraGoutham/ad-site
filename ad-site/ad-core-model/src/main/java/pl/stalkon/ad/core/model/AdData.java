@@ -16,15 +16,10 @@ import javax.persistence.TemporalType;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
-@Table(name="adData")
-public class AdData implements CommonEntity {
+@Table(name = "adData")
+public class AdData extends CommonEntity {
 
 	private static final long serialVersionUID = -6411065199654674571L;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
@@ -32,11 +27,6 @@ public class AdData implements CommonEntity {
 	private String description;
 
 	private String title;
-
-	@Override
-	public Long getId() {
-		return id;
-	}
 
 	public Date getCreationDate() {
 		return creationDate;
@@ -52,10 +42,6 @@ public class AdData implements CommonEntity {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getDescription() {

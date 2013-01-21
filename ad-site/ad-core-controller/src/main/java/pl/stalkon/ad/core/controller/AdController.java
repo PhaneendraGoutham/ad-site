@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,18 +38,33 @@ public class AdController extends BaseController {
 	@RequestMapping(value = "ad/", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public Long add(@Valid @RequestBody Ad ad, Principal principal) throws ValidationException {
+	public String add(@Valid @RequestBody Ad ad, Principal principal) throws ValidationException {
 		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
 		adService.register(ad, loggedUser.getId());
 		return ad.getId();
 	}
 	
+	@RequestMapping(value = "brand/{brandId}/ad/", method = RequestMethod.POST, headers = "Accept=application/json")
+	@ResponseBody
+	@ResponseStatus(HttpStatus.CREATED)
+	public String add(@Valid @RequestBody Ad ad,@PathVariable String brandId, Principal principal) throws ValidationException {
+		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
+		adService.register(ad, loggedUser.getId(), brandId);
+		return ad.getId();
+	}
+	
 	@RequestMapping(value = "**/ad/", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
-	public List<Ad> get(@QueryObject QueryObjectWrapper queryObjectWrapper) throws ValidationException {
-		System.out.println(queryObjectWrapper.queryObject);
+	public List<Ad> get(@QueryObject(objects={"user","brand"}) QueryObjectWrapper queryObjectWrapper) throws ValidationException {
 		List<Ad> ads = adService.get(queryObjectWrapper.queryObject);
 		return ads;
+	}
+	
+	@RequestMapping(value = "ad/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+	@ResponseBody
+	public Ad get(@PathVariable("id") String id) throws ValidationException {
+		Ad ad = adService.get(id);
+		return ad;
 	}
 
 //	@RequestMapping(value="/password", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -63,8 +79,8 @@ public class AdController extends BaseController {
 //	@RequestMapping(value = "{userId}/address", method = RequestMethod.POST, headers = "Accept=application/json")
 //	@ResponseBody
 //	@ResponseStatus(HttpStatus.CREATED)
-//	public Long add(@Valid @RequestBody Address address,
-//			@PathVariable("userId") Long userId) throws ValidationException {
+//	public UUID add(@Valid @RequestBody Address address,
+//			@PathVariable("userId") UUID userId) throws ValidationException {
 //		userService.addAddress(userId, address);
 //		return address.getId();
 //	}

@@ -2,13 +2,16 @@ package pl.stalkon.ad.core.model.service.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.stalkon.ad.core.model.Ad;
+import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.dao.AdDao;
+import pl.stalkon.ad.core.model.dao.BrandDao;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.styall.library.core.model.defaultimpl.User;
 import pl.styall.library.core.model.defaultimpl.UserDao;
@@ -22,9 +25,12 @@ public class AdServiceImpl implements AdService {
 	@Autowired
 	private AdDao adDao;
 	
+	@Autowired
+	private BrandDao brandDao;
+	
 	@Transactional
 	@Override
-	public Ad register(Ad ad, Long id) {
+	public Ad register(Ad ad, String id) {
 		User poster = userDao.get(id);
 		ad.setPoster(poster);
 		adDao.add(ad);
@@ -38,8 +44,17 @@ public class AdServiceImpl implements AdService {
 	}
 	@Transactional
 	@Override
-	public Ad get(Long id) {
+	public Ad get(String id) {
 		return adDao.get(id);
+	}
+
+	@Transactional
+	@Override
+	public Ad register(Ad ad, String posterId, String brandId) {
+		Brand brand = brandDao.get(brandId);
+		brand.addAdd(ad);
+		ad.setBrand(brand);
+		return register(ad, posterId);
 	}
 	
 	
