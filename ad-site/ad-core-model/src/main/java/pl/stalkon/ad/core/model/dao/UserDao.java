@@ -15,7 +15,7 @@ public class UserDao extends pl.styall.library.core.model.defaultimpl.UserDao {
 			userAlias = alias+".";
 		}
 		if(params.containsKey("id")){
-			criteria.add(Restrictions.eq(userAlias+"id", params.get("id")));
+			criteria.add(Restrictions.eq(userAlias+"id", new Long((String)params.get("id"))));
 		}
 	}
 

@@ -8,6 +8,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import net.dmcloud.cloudkey.CloudKey;
+import net.dmcloud.util.DCObject;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -32,6 +36,7 @@ import pl.styall.library.core.security.authentication.LoggedUser;
 public class AdController extends BaseController {
 	private static final Logger logger = Logger.getLogger(AdController.class);
 
+	
 	@Autowired
 	private AdService adService;
 	
@@ -66,6 +71,19 @@ public class AdController extends BaseController {
 		Ad ad = adService.get(id);
 		return ad;
 	}
+	
+	@RequestMapping(value = "ad/{adId}/rank", method = RequestMethod.POST, headers = "Accept=application/json")
+	@ResponseBody
+	@ResponseStatus(HttpStatus.CREATED)
+	public void vote(@PathVariable("adId") Long adId, @RequestParam("value") Short value, Principal principal) throws ValidationException {
+		LoggedUser loggedUser = (LoggedUser) ((Authentication) principal).getPrincipal();
+		if(value > 10 || value < 1){
+			throw new ValidationException("value", "rank");
+		}
+		 adService.vote(adId, loggedUser.getId(), value);
+	}
+	
+	
 
 //	@RequestMapping(value="/password", method = RequestMethod.PUT, headers = "Accept=application/json")
 //	@ResponseStatus(HttpStatus.OK)

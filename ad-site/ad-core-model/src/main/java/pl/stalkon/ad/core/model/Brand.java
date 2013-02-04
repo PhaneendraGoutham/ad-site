@@ -54,8 +54,7 @@ public class Brand extends CommonEntity {
 	private List<Brand> children;
 
 	@NotNull
-	@Column(length=256, nullable=false)
-	@Size(max=260, min=3)
+	@Size(max=255, min=3)
 	private String name;
 	
 	private String logo;

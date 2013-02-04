@@ -11,6 +11,7 @@
 
 </head>
 <body>
+asdfasdfasdfdasf
 </body>
 <script>
 	$(function() {
@@ -50,9 +51,10 @@
 // 		passwordForm["newPassword"] ="franeczek";
 // 		passwordForm["confirmPassword"] = "franeczek";
 // 		var message = JSON.stringify(userRegForm);
+// 		var url = "user/";
 
 
-//BRAND
+// BRAND
 
 		var brand = new Object();
 		brand["description"] = "Cocacola byla z coca";

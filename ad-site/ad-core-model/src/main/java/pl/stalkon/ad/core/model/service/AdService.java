@@ -11,4 +11,5 @@ public interface AdService  {
 	public Ad register(Ad ad, Long posterId);
 	public List<Ad> get(Map<String, Object> queryObject);
 	public Ad get(Long id);
+	public void vote(Long adId, Long userId, Short value);
 }

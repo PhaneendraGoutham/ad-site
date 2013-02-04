@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Brand;
+import pl.stalkon.ad.core.model.Rank;
 import pl.stalkon.ad.core.model.dao.AdDao;
 import pl.stalkon.ad.core.model.dao.BrandDao;
 import pl.stalkon.ad.core.model.service.AdService;
@@ -55,6 +56,18 @@ public class AdServiceImpl implements AdService {
 		brand.addAdd(ad);
 		ad.setBrand(brand);
 		return register(ad, posterId);
+	}
+	
+	@Transactional
+	@Override
+	public void vote(Long adId, Long userId, Short value) {
+		User user = userDao.get(userId);
+		Ad ad = adDao.get(adId);
+		Rank rank = new Rank();
+		rank.setRank(value);
+		rank.setUser(user);
+		ad.addRank(rank);
+		adDao.update(ad);
 	}
 	
 	

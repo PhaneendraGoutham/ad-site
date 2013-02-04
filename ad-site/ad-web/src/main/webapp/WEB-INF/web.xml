@@ -31,7 +31,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>optionsHeaderFilter</filter-name>
-		<url-pattern>/user/login</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<servlet>
 		<servlet-name>Dispatcher</servlet-name>

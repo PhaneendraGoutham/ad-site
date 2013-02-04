@@ -41,7 +41,7 @@ public class BrandDao extends AbstractDao<Brand> {
 		}
 		
 		if(params.containsKey("id")){
-			criteria.add(Restrictions.eq(userAlias+"id", new Long((Integer)params.get("id"))));
+			criteria.add(Restrictions.eq(userAlias+"id", new Long((String)params.get("id"))));
 		}
 		if(params.containsKey("search")){
 			// TODO: hibernate search when performance issues

@@ -8,9 +8,9 @@
        					http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close" p:driverClassName="org.postgresql.Driver"
-		p:url=" jdbc:postgresql://localhost:5432/ad-site" p:username="postgres"
-		p:password="sa" />
+		destroy-method="close" p:driverClassName="com.mysql.jdbc.Driver"
+		p:url="jdbc:mysql://localhost:3306/ad-site" p:username="root"
+		p:password="" />
 
 <!-- <bean id="userDao" class="pl.styall.library.core.model.defaultimpl.UserDao"></bean> -->
 <bean id="criteriaConfigurer" class="pl.styall.library.core.model.dao.CriteriaConfigurer"></bean>
@@ -50,7 +50,7 @@
 
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
 				</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<!-- <prop key="cache.provider_class">org.hibernate.cache.NoCacheProvider</prop> -->
