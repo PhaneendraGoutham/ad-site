@@ -13,6 +13,8 @@
 	<context:component-scan base-package="pl.stalkon.ad.core.controller" />
 	<context:component-scan base-package="pl.stalkon.ad.core.model" />
 	<context:component-scan base-package="pl.styall.library.core.security.ajax" />
+	<context:component-scan base-package="pl.stalkon.dailymotion.api.module.service.impl" />
+	<context:component-scan base-package="pl.stalkon.social.model" />
 	<context:component-scan
 		base-package="pl.styall.library.core.security.authentication" />
 <!-- 		<bean id="userDao" class="pl.stalkon.ad.core.model.dao.UserDao"></bean> -->

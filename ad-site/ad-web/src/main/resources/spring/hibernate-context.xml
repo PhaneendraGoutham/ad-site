@@ -65,6 +65,7 @@
 				<value>pl.styall.library.core.model.defaultimpl</value>
 				<value>pl.styall.library.core.model</value>
 				<value>pl.stalkon.ad.core.model</value>
+				<value>pl.stalkon.social.model</value>
 			</list>
 		</property>
 

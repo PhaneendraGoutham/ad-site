@@ -11,10 +11,16 @@
 
 </head>
 <body>
-asdfasdfasdfdasf
+<div id="upload_container">
+    <form enctype="multipart/form-data">
+<input name="file" type="file" />
+<input type="button" value="Upload" />
+</form>
+<progress></progress>
+</div>
 </body>
 <script>
-	$(function() {
+// 	$(function() {
 		
 		//USer
 // 		userRegForm = new Object();
@@ -56,24 +62,93 @@ asdfasdfasdfdasf
 
 // BRAND
 
-		var brand = new Object();
-		brand["description"] = "Cocacola byla z coca";
-		brand["name"] = "CocaCola";
-		brand["logo"] = "http:///www.cocacola.com.pl/_img/data/coca-cola-new-logo.png";
-		var message = JSON.stringify(brand);
-		var url = "brand/";
+// 		var brand = new Object();
+// 		brand["description"] = "Cocacola byla z coca";
+// 		brand["name"] = "CocaCola";
+// 		brand["logo"] = "http:///www.cocacola.com.pl/_img/data/coca-cola-new-logo.png";
+// 		var message = JSON.stringify(brand);
+// 		var url = "brand/";
 		
-		$.ajax({
-			url : "http://localhost:8080/ad-web/"+url,
-			type : "POST",
+// 		$.ajax({
+// 			url : "http://localhost:8080/ad-web/"+url,
+// 			type : "POST",
+// 			dataType : "json",
+// 			contentType : "application/json",
+// 			data : message,
+// 			success : function(json) {
+// 				alert(json);
+// 			}
+// 		});
+// 	});
+// var id = 1;
+// 		$("#upload_html_form").submit(function(e){
+// 			if(id == 2)
+// 				return;
+// 			id = 2;
+// 			e.preventDefault();
+// 	 		$.ajax({
+// 			url : "http://77.254.210.34:2100/ad-web/ad/upload",
+// 			type : "POST",
+// 			dataType : "json",
+// 			contentType : "application/json",
+// 			success : function(json) {
+// 				$("#upload_html_form").attr("action", json);
+// 				$("#upload_submit").click();
+// 			}
+// 		});
+// 		});
+$(':button').click(function(){
+    $.ajax({
+			url : "http://77.254.210.34:2100/ad-web/video/ad",
+			type : "GET",
 			dataType : "json",
 			contentType : "application/json",
-			data : message,
-			success : function(json) {
-				alert(json);
-			}
+			success : onUploadUrlReceived
 		});
+});
+function onUploadUrlReceived(json){
+    var formData = new FormData($('form')[0]);
+	 $.ajax({
+	        url: json.url,  //server script to process data
+	        type: 'POST',
+	        xhr: function() {  // custom xhr
+	            myXhr = $.ajaxSettings.xhr();
+	            if(myXhr.upload){ // check if upload property exists
+	                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
+	            }
+	            return myXhr;
+	        },
+	        //Ajax events
+	        success: completeHandler,
+	        // Form data
+	        data: formData,
+	        //Options to tell JQuery not to process data or worry about content-type
+	        cache: false,
+	        contentType: false,
+	        processData: false
+	    });
+}
+function completeHandler(data){
+	var requestData = new Object();
+	requestData["url"] = data.url;
+	requestData["title"] = "Marysia se idzie";
+	requestData["description"] = "piknie se idzie";
+    $.ajax({
+		url : "http://77.254.210.34:2100/ad-web/brand/1/video/ad",
+		type : "POST",
+		data : JSON.stringify(requestData),
+		dataType : "json",
+		contentType : "application/json",
+		success : function(json){
+			alert(json);
+		}
 	});
+}
+function progressHandlingFunction(e){
+    if(e.lengthComputable){
+        $('progress').attr({value:e.loaded,max:e.total});
+    }
+}
 
 </script>
 </html>

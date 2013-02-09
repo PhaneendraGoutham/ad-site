@@ -38,8 +38,7 @@ public class Ad extends CommonEntity {
 	}
 
 	@NotNull
-	@URL
-	private String link;
+	private String dailymotionId;
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private User poster;
@@ -67,12 +66,12 @@ public class Ad extends CommonEntity {
 		this.rank = rank;
 	}
 
-	public String getLink() {
-		return link;
+	public String getDailymotionId() {
+		return dailymotionId;
 	}
 
-	public void setLink(String link) {
-		this.link = link;
+	public void setDailymotionId(String dailymotionId) {
+		this.dailymotionId = dailymotionId;
 	}
 
 	public User getPoster() {

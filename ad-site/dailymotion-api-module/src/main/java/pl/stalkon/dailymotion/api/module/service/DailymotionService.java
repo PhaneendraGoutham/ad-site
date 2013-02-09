@@ -1,8 +1,10 @@
 package pl.stalkon.dailymotion.api.module.service;
 
-import org.springframework.stereotype.Service;
+import java.util.Map;
 
-@Service
-public class DailymotionService {
-	
+
+public interface DailymotionService {
+	public UploadStatus getStatus(String callback);
+	public UploadStatus getStatus();
+	public String createMedia(String url, Map<String, Object> meta);
 }

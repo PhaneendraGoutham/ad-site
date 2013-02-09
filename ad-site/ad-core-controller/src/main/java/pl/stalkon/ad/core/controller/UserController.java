@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import net.dmcloud.cloudkey.CloudKey;
-import net.dmcloud.util.DCObject;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +29,7 @@ import pl.styall.library.core.model.defaultimpl.UserService;
 
 public class UserController extends BaseController {
 	private static final Logger logger = Logger.getLogger(UserController.class);
-	private static final String apiKey = "d09f4a20348b3b5a229fdada9cb183e0e0a0e38e";
-	private static final String userId = "510fac5794a6f6702601b20b";
+
 	@Autowired
 	private UserService userService;
 	
@@ -67,16 +64,6 @@ public class UserController extends BaseController {
 	
 	@RequestMapping("/test")
 	public String test() {
-		CloudKey cloudKey = new CloudKey(userId, apiKey);
-		try {
-			DCObject result = cloudKey.fileUpload(true, "?", "");
-			logger.debug(result);
-			logger.debug(result.pull("url"));
-			logger.debug(result.pull("status"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return "test";
 	}
 
