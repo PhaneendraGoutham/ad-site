@@ -28,7 +28,7 @@
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>pl.stalkon</groupId>
+    	<groupId>pl.styall.library</groupId>
     	<artifactId>social-module</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>

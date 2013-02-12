@@ -25,7 +25,6 @@
 		<module>ad-web</module>
 		<module>dailymotion-api-module</module>
 		<module>ad-core-security</module>
-		<module>social-module</module>
 	</modules>
 	<properties>
 		<java-version>1.6</java-version>

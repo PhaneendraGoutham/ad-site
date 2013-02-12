@@ -37,7 +37,7 @@ public class SecurityConfig {
 	public JdbcTokenRepositoryImpl tokenRepository() {
 		JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
 		repository.setDataSource(dataSource);
-		repository.setCreateTableOnStartup(true);
+		repository.setCreateTableOnStartup(false);
 		return repository;
 	}
 
