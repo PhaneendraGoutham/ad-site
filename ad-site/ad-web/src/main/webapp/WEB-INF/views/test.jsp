@@ -18,11 +18,15 @@
 </form>
 <progress></progress>
 </div>
+<form id="fb_signin" action="http://89.78.121.121:2100/ad-web/signin/facebook" method="POST"><input
+                  type="hidden" name="scope" value="publish_stream,offline_access,email,user_birthday"><a
+                  href="javascript:document.forms.fb_signin.submit()" title="Log In With Facebook">login</a></form>
+
 </body>
 <script>
-// 	$(function() {
+	$(function() {
 		
-		//USer
+// // 		USer
 // 		userRegForm = new Object();
 // 		userRegForm['password'] = "password";
 // 		userRegForm["confirmPassword"] = "password";
@@ -68,18 +72,25 @@
 // 		brand["logo"] = "http:///www.cocacola.com.pl/_img/data/coca-cola-new-logo.png";
 // 		var message = JSON.stringify(brand);
 // 		var url = "brand/";
-		
-// 		$.ajax({
-// 			url : "http://localhost:8080/ad-web/"+url,
-// 			type : "POST",
-// 			dataType : "json",
-// 			contentType : "application/json",
-// 			data : message,
-// 			success : function(json) {
-// 				alert(json);
-// 			}
-// 		});
-// 	});
+
+		var comment = new Object();
+		comment["message"] = "menda";
+		var c = new Object();
+		c["id"]  =1;
+		comment["parent"] = c;
+		var url = "ad/1/comment";
+		var message = JSON.stringify(comment);
+		$.ajax({
+			url : "http://89.78.121.121:2100/ad-web/"+url,
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+			data : message,
+			success : function(json) {
+				alert(json);
+			}
+		});
+	});
 // var id = 1;
 // 		$("#upload_html_form").submit(function(e){
 // 			if(id == 2)
@@ -97,58 +108,64 @@
 // 			}
 // 		});
 // 		});
-$(':button').click(function(){
-    $.ajax({
-			url : "http://77.254.210.34:2100/ad-web/video/ad",
-			type : "GET",
-			dataType : "json",
-			contentType : "application/json",
-			success : onUploadUrlReceived
-		});
-});
-function onUploadUrlReceived(json){
-    var formData = new FormData($('form')[0]);
-	 $.ajax({
-	        url: json.url,  //server script to process data
-	        type: 'POST',
-	        xhr: function() {  // custom xhr
-	            myXhr = $.ajaxSettings.xhr();
-	            if(myXhr.upload){ // check if upload property exists
-	                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
-	            }
-	            return myXhr;
-	        },
-	        //Ajax events
-	        success: completeHandler,
-	        // Form data
-	        data: formData,
-	        //Options to tell JQuery not to process data or worry about content-type
-	        cache: false,
-	        contentType: false,
-	        processData: false
-	    });
-}
-function completeHandler(data){
-	var requestData = new Object();
-	requestData["url"] = data.url;
-	requestData["title"] = "Marysia se idzie";
-	requestData["description"] = "piknie se idzie";
-    $.ajax({
-		url : "http://77.254.210.34:2100/ad-web/brand/1/video/ad",
-		type : "POST",
-		data : JSON.stringify(requestData),
-		dataType : "json",
-		contentType : "application/json",
-		success : function(json){
-			alert(json);
-		}
-	});
-}
-function progressHandlingFunction(e){
-    if(e.lengthComputable){
-        $('progress').attr({value:e.loaded,max:e.total});
-    }
-}
-
+// $(':button').click(function(){
+//     $.ajax({
+// 			url : "http://89.78.121.121:2100/ad-web/video/ad",
+// 			type : "GET",
+// 			dataType : "json",
+// 			contentType : "application/json",
+// 			success : onUploadUrlReceived
+// 		});
+// });
+// function onUploadUrlReceived(json){
+//     var formData = new FormData($('form')[0]);
+// 	 $.ajax({
+// 	        url: json.url,  //server script to process data
+// 	        type: 'POST',
+// 	        xhr: function() {  // custom xhr
+// 	            myXhr = $.ajaxSettings.xhr();
+// 	            if(myXhr.upload){ // check if upload property exists
+// 	                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
+// 	            }
+// 	            return myXhr;
+// 	        },
+// 	        //Ajax events
+// 	        success: completeHandler,
+// 	        // Form data
+// 	        data: formData,
+// 	        //Options to tell JQuery not to process data or worry about content-type
+// 	        cache: false,
+// 	        contentType: false,
+// 	        processData: false
+// 	    });
+// }
+// function completeHandler(data){
+// 	var requestData = new Object();
+// 	requestData["url"] = data.url;
+// 	requestData["title"] = "Marysia se idzie";
+// 	requestData["description"] = "piknie se idzie";
+//     $.ajax({
+// 		url : "http://89.78.121.121:2100/ad-web/brand/1/video/ad",
+// 		type : "POST",
+// 		data : JSON.stringify(requestData),
+// 		dataType : "json",
+// 		contentType : "application/json",
+// 		success : function(json){
+// 			alert(json);
+// 		}
+// 	});
+// }
+// function progressHandlingFunction(e){
+//     if(e.lengthComputable){
+//         $('progress').attr({value:e.loaded,max:e.total});
+//     }
+// }
+// $.ajax({
+// 	url : "http://89.78.121.121:2100/ad-web/user/login",
+// 		type : "GET",
+// 		success : function(json){
+// 			alert(json);
+// 		}
+// });
 </script>
 </html>

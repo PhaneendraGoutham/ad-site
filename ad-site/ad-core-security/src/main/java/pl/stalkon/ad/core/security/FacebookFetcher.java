@@ -1,4 +1,4 @@
-package pl.stalkon.social.facebook;
+package pl.stalkon.ad.core.security;
 
 import java.security.SecureRandom;
 import java.text.ParseException;
@@ -12,13 +12,14 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookProfile;
 
+import pl.stalkon.ad.core.model.User;
+import pl.stalkon.ad.core.model.User.DisplayNameType;
+import pl.stalkon.ad.core.model.dto.UserRegForm;
+import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.social.ext.SocialUserDataFetcher;
 import pl.styall.library.core.model.AbstractUserData.Sex;
 import pl.styall.library.core.model.Credentials;
-import pl.styall.library.core.model.defaultimpl.User;
 import pl.styall.library.core.model.defaultimpl.UserData;
-import pl.styall.library.core.model.defaultimpl.UserRegForm;
-import pl.styall.library.core.model.defaultimpl.UserService;
 
 public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 
@@ -36,9 +37,12 @@ public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 		UserRegForm userRegForm = new UserRegForm();
 		userRegForm.setMail(profile.getEmail());
 		String password = RandomStringUtils.random(12,0,0,true,true,null, new SecureRandom());
+		String username = RandomStringUtils.random(10,0,25,true,true,"abcdefghijklmnopqrstuvwxyz1234567890".toCharArray(), new SecureRandom());
 		userRegForm.setPassword(password);
 		userRegForm.setConfirmPassword(password);
-		userRegForm.setUsername(profile.getUsername().replace(".", ""));
+		
+		System.out.println(username);
+		userRegForm.setUsername(username);
 		UserData data = new UserData();
 		String birthday = profile.getBirthday();
 		SimpleDateFormat format = new SimpleDateFormat("MM/DD/YYYY");
@@ -58,6 +62,7 @@ public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 				data.setSex(Sex.FEMALE);
 			}
 		}
+		userRegForm.setDisplayNameType(DisplayNameType.SOCIAL_DISPLAY_NAME);
 		userRegForm.setUserData(data);
 		User user = userService.register(userRegForm);
 		return user;

@@ -1,15 +1,9 @@
 package pl.stalkon.ad.core.model.service;
 
-import java.util.UUID;
+import pl.stalkon.ad.core.model.User;
+import pl.stalkon.ad.core.model.dto.UserRegForm;
+import pl.styall.library.core.model.service.AbstractUserService;
 
-import pl.styall.library.core.model.defaultimpl.User;
-import pl.styall.library.core.model.defaultimpl.UserRegForm;
-
-
-
-public interface UserService extends pl.styall.library.core.model.defaultimpl.UserService {
-	public User register(UserRegForm userRegForm);
-	public boolean chechMailExists(String mail);
-	public boolean changePassword(Long id, String oldPassword, String newPassword);
-//	public void addAddress(UUID userId, Address address);
+public interface UserService extends AbstractUserService<User> {
+	public User register(UserRegForm userRegoForm);
 }

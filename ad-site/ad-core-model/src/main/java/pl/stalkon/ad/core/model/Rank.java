@@ -9,7 +9,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import pl.styall.library.core.model.CommonEntity;
-import pl.styall.library.core.model.defaultimpl.User;
 
 @Entity
 @Table(name = "ranks", uniqueConstraints={@UniqueConstraint(columnNames={"userId", "adId"})})

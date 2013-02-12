@@ -3,6 +3,7 @@ package pl.stalkon.ad.core.model;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,6 +24,7 @@ public class AdData extends CommonEntity {
 	private static final long serialVersionUID = -6411065199654674571L;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Date creationDate;
 
 	private String description;

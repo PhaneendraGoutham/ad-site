@@ -24,6 +24,7 @@
 		<module>ad-core-controller</module>
 		<module>ad-web</module>
 		<module>dailymotion-api-module</module>
+		<module>ad-core-security</module>
 		<module>social-module</module>
 	</modules>
 	<properties>

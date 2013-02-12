@@ -6,8 +6,12 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import pl.stalkon.ad.core.model.User;
+
+
+
 @Repository
-public class UserDao extends pl.styall.library.core.model.defaultimpl.UserDao {
+public class UserDao extends pl.styall.library.core.model.dao.UserDao<User>{
 	
 	public void addRestrictions(Criteria criteria,String alias, Map<String, Object> params){
 		String userAlias = "";

@@ -14,7 +14,12 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import pl.stalkon.social.model.SocialUser;
+import pl.styall.library.core.model.UserRole;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
+import pl.styall.library.core.model.defaultimpl.Address;
+import pl.styall.library.core.model.defaultimpl.Company;
+import pl.styall.library.core.model.defaultimpl.UserData;
 
 @Configuration
 @EnableTransactionManagement
@@ -41,8 +46,9 @@ public class HibernateConfig {
 	@Bean
 	public LocalSessionFactoryBean sessionFactory(){
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setPackagesToScan("pl.styall.library.core.model.defaultimpl", "pl.styall.library.core.model","pl.stalkon.ad.core.model", "pl.stalkon.social.model" );
+		sessionFactory.setPackagesToScan("pl.stalkon.ad.core.model");
 		sessionFactory.setDataSource(dataSource());
+		sessionFactory.setAnnotatedClasses(new Class[]{UserData.class, Company.class, Address.class, UserRole.class, SocialUser.class});
 		Properties prop = new Properties();
 		prop.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		prop.setProperty("hibernate.show_sql", "true");

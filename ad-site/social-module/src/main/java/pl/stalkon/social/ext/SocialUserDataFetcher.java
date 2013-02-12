@@ -1,7 +1,8 @@
 package pl.stalkon.social.ext;
 
-import pl.styall.library.core.model.defaultimpl.User;
+import pl.styall.library.core.model.AbstractUser;
+
 
 public interface SocialUserDataFetcher<A> {
-	User fetchData(A api);
+	AbstractUser fetchData(A api);
 }

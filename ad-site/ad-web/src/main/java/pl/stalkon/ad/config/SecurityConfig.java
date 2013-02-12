@@ -20,7 +20,6 @@ import pl.styall.library.core.security.authorization.RestAuthenticationEntryPoin
 
 @Configuration
 @ComponentScan(basePackages = {
-		"pl.styall.library.core.security.authentication",
 		"pl.styall.library.core.security.ajax" })
 @ImportResource("classpath:pl/stalkon/ad/config/security-context.xml")
 public class SecurityConfig {
@@ -38,7 +37,7 @@ public class SecurityConfig {
 	public JdbcTokenRepositoryImpl tokenRepository() {
 		JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
 		repository.setDataSource(dataSource);
-		repository.setCreateTableOnStartup(false);
+		repository.setCreateTableOnStartup(true);
 		return repository;
 	}
 

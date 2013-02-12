@@ -1,7 +1,9 @@
 package pl.stalkon.ad.core.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -24,7 +26,6 @@ import org.hibernate.annotations.Loader;
 import org.hibernate.validator.constraints.URL;
 
 import pl.styall.library.core.model.CommonEntity;
-import pl.styall.library.core.model.defaultimpl.User;
 
 @Entity
 @Table(name = "ad")
@@ -57,6 +58,9 @@ public class Ad extends CommonEntity {
 	@Formula("(SELECT SUM(r.rank) from ranks as r where r.adId = id)")
 //	@Transient
 	private Long rank;
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY,mappedBy="ad")
+	private Set<AdComment> comments = new HashSet<AdComment>();
 
 	public Long getRank() {
 		return rank;
@@ -119,6 +123,14 @@ public class Ad extends CommonEntity {
 			ranks = new ArrayList<Rank>();
 		}
 		ranks.add(rank);
+	}
+
+	public Set<AdComment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Set<AdComment> comments) {
+		this.comments = comments;
 	}
 
 

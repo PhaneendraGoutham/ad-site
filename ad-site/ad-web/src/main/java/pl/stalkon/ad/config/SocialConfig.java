@@ -35,14 +35,15 @@ import org.springframework.social.security.SocialAuthenticationServiceLocator;
 import org.springframework.social.security.SocialAuthenticationServiceRegistry;
 import org.springframework.social.security.provider.OAuth2AuthenticationService;
 
+import pl.stalkon.ad.core.security.FacebookFetcher;
+import pl.stalkon.ad.core.security.SocialLoggedUser;
+import pl.stalkon.ad.core.security.SocialUserServiceImpl;
 import pl.stalkon.social.ext.SocialUserDataFetcher;
 import pl.stalkon.social.ext.SocialUserDataFetcherFactory;
-import pl.stalkon.social.facebook.FacebookFetcher;
-import pl.stalkon.social.login.SimpleSignInAdapter;
+import pl.stalkon.social.facebook.CustomFacebookConnectionFactory;
 import pl.stalkon.social.model.SocialUserService;
-import pl.stalkon.social.model.SocialUserServiceImpl;
+import pl.stalkon.social.model.AbstractSocialUserServiceImpl;
 import pl.styall.library.core.model.defaultimpl.User;
-import pl.styall.library.core.security.authentication.LoggedUser;
 
 @Configuration
 public class SocialConfig {
@@ -53,10 +54,6 @@ public class SocialConfig {
 	@Inject
 	private TextEncryptor textEncryptor;
 
-	@Bean
-	public SimpleSignInAdapter simpleSignInAdapter() {
-		return new SimpleSignInAdapter();
-	}
 
 	@Bean
 	public FacebookFetcher facebookFetcher() {
@@ -80,12 +77,12 @@ public class SocialConfig {
 		SocialAuthenticationServiceRegistry registry = new SocialAuthenticationServiceRegistry();
 
 		// add facebook
-		OAuth2ConnectionFactory<Facebook> facebookConnectionFactory = new FacebookConnectionFactory(
+		OAuth2ConnectionFactory<Facebook> facebookConnectionFactory = new CustomFacebookConnectionFactory(
 				env.getProperty("facebook.appId"),
 				env.getProperty("facebook.appSecret"));
 		OAuth2AuthenticationService<Facebook> facebookAuthenticationService = new OAuth2AuthenticationService<Facebook>(
 				facebookConnectionFactory);
-		facebookAuthenticationService.setScope("");
+		facebookAuthenticationService.setScope("publish_stream,offline_access,email,user_birthday");
 		registry.addAuthenticationService(facebookAuthenticationService);
 
 		return registry;
@@ -131,9 +128,9 @@ public class SocialConfig {
 			throw new IllegalStateException(
 					"Unable to get a ConnectionRepository: no user signed in");
 		}
-		LoggedUser user = (LoggedUser) auth;
+		SocialLoggedUser user = (SocialLoggedUser) auth;
 		return usersConnectionRepository().createConnectionRepository(
-				user.getMail());
+				user.getUsername());
 	}
 
 	/**

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,6 +20,7 @@ import org.springframework.social.connect.jpa.RemoteUser;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.MultiValueMap;
 
+import pl.styall.library.core.model.AbstractUser;
 import pl.styall.library.core.model.defaultimpl.User;
 
 @SuppressWarnings("unchecked")
@@ -29,48 +29,36 @@ public class SocialUserDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	public User getUser(String userId) {
-		return (User) currentSession()
-		.createCriteria(User.class)
-		.add(Restrictions.eq("credentials.mail", userId))
-		.uniqueResult();
-	}
 
-	public Set<String> findUsersConnectedTo(
-			String providerId,
+	public Set<String> findUsersConnectedTo(String providerId,
 			Set<String> providerUserIds) {
-		String hql = "select distinct su.user.credentials.mail from SocialUser su where su.providerId = :providerId and su.providerUserId in (:providerUserIds)";
-		return new HashSet<String>(currentSession()
-				.createQuery(hql).setString("providerId", providerId)
+		String hql = "select distinct userId from SocialUser su where su.providerId = :providerId and su.providerUserId in (:providerUserIds)";
+		return new HashSet<String>(currentSession().createQuery(hql)
+				.setString("providerId", providerId)
 				.setParameterList("providerUserId", providerUserIds).list());
 	}
 
 	public List<RemoteUser> getAll(String userId) {
-		return currentSession()
-				.createCriteria(SocialUser.class).createAlias("user", "user")
-				.add(Restrictions.eq("user.credentials.mail", userId))
+		return currentSession().createCriteria(SocialUser.class)
+				.add(Restrictions.eq("userId", userId))
 				.addOrder(Order.desc("providerId"))
 				.addOrder(Order.desc("rank")).list();
 	}
 
 	public List<RemoteUser> getAll(String userId, String providerId) {
-		return currentSession()
-				.createCriteria(SocialUser.class).createAlias("user", "user")
-				.add(Restrictions.eq("user.credentials.mail", userId))
+		return currentSession().createCriteria(SocialUser.class)
+				.add(Restrictions.eq("userId", userId))
 				.add(Restrictions.eq("providerId", providerId))
 				.addOrder(Order.desc("rank")).list();
 	}
 
-	public List<RemoteUser> getAll(
-			String userId,
+	public List<RemoteUser> getAll(String userId,
 			MultiValueMap<String, String> providerUsers) {
 		if (providerUsers.isEmpty())
 			return Collections.<RemoteUser> emptyList();
 
-		Criteria c = currentSession()
-				.createCriteria(SocialUser.class).createAlias("user", "user")
-				.add(Restrictions.eq("user.credentials.mail", userId));
+		Criteria c = currentSession().createCriteria(SocialUser.class).add(
+				Restrictions.eq("userId", userId));
 
 		Disjunction orExp = Restrictions.disjunction();
 		for (Iterator<Entry<String, List<String>>> it = providerUsers
@@ -86,89 +74,64 @@ public class SocialUserDao {
 		return c.list();
 	}
 
-	public RemoteUser get(
-			String userId,
-			String providerId,
+	public RemoteUser get(String userId, String providerId,
 			String providerUserId) {
-		return (RemoteUser) currentSession()
-				.createCriteria(SocialUser.class).createAlias("user", "user")
-				.add(Restrictions.eq("user.credentials.mail", userId))
+		return (RemoteUser) currentSession().createCriteria(SocialUser.class)
+				.add(Restrictions.eq("userId", userId))
 				.add(Restrictions.eq("providerId", providerId))
 				.add(Restrictions.eq("providerUserId", providerUserId))
 				.uniqueResult();
 	}
 
-	public List<RemoteUser> get(String providerId, String providerUserId)  throws IncorrectResultSizeDataAccessException{
-		return currentSession()
-				.createCriteria(SocialUser.class).createAlias("user", "user")
+	public List<RemoteUser> get(String providerId, String providerUserId)
+			throws IncorrectResultSizeDataAccessException {
+		return currentSession().createCriteria(SocialUser.class)
 				.add(Restrictions.eq("providerId", providerId))
-				.add(Restrictions.eq("providerUserId", providerUserId))
-				.list();
+				.add(Restrictions.eq("providerUserId", providerUserId)).list();
 	}
 
 	public void remove(String userId, String providerId) {
-		SocialUser user = (SocialUser) currentSession()
-			.createCriteria(SocialUser.class)
-			.createAlias("user", "user")
-			.add(Restrictions.eq("user.credentials.mail", userId))
-			.add(Restrictions.eq("providerId", providerId))
-			.uniqueResult();
-		if(user != null)
-			currentSession()
-			.delete(user);
-
+		currentSession()
+				.createQuery(
+						"DELETE FROM SocialUser where providerId = :providerId and userId = :userId")
+				.setString("providerId", providerId)
+				.setString("userId", userId).executeUpdate();
 	}
 
 	public void remove(String userId, String providerId, String providerUserId) {
-		SocialUser user = (SocialUser) currentSession()
-			.createCriteria(SocialUser.class)
-			.createAlias("user", "user")
-			.add(Restrictions.eq("user.credentials.mail", userId))
-			.add(Restrictions.eq("providerId", providerId))
-			.add(Restrictions.eq("providerUserId", providerUserId))
-			.uniqueResult();
-
-		if(user != null)
-			currentSession()
-			.delete(user);
+		currentSession()
+				.createQuery(
+						"DELETE FROM SocialUser where providerId = :providerId and userId = :userId and providerUserId = :providerUserId")
+				.setString("providerId", providerId)
+				.setString("userId", userId)
+				.setString("providerUserId", providerUserId).executeUpdate();
 	}
 
-
 	public List<RemoteUser> getPrimary(String userId, String providerId) {
-		return currentSession()
-				.createCriteria(SocialUser.class).createAlias("user", "user")
-				.add(Restrictions.eq("user.credentials.mail", userId))
+		return currentSession().createCriteria(SocialUser.class)
+				.add(Restrictions.eq("userId", userId))
 				.add(Restrictions.eq("providerId", providerId))
 				.add(Restrictions.eq("rank", 1)).list();
 	}
 
 	public int getRank(String userId, String providerId) {
-		String hql = "select max(rank) as rank from SocialUser su where su.user.credentials.mail = :userId and su.providerId = :providerId";
-		List<Integer> result = currentSession()
-				.createQuery(hql).setString("userId", userId)
+		String hql = "select max(rank) as rank from SocialUser su where userId = :userId and su.providerId = :providerId";
+		List<Integer> result = currentSession().createQuery(hql)
+				.setString("userId", userId)
 				.setString("providerId", providerId).list();
 		if (result.isEmpty() || result.get(0) == null)
 			return 1;
 		return result.get(0) + 1;
 	}
 
-	public RemoteUser createRemoteUser(
-			String userId,
-			String providerId,
-			String providerUserId,
-			int rank,
-			String displayName,
-			String profileUrl,
-			String imageUrl,
-			String accessToken,
-			String secret,
-			String refreshToken,
-			Long expireTime) {
+	public RemoteUser createRemoteUser(String userId, String providerId,
+			String providerUserId, int rank, String displayName,
+			String profileUrl, String imageUrl, String accessToken,
+			String secret, String refreshToken, Long expireTime) {
 		RemoteUser ru = get(userId, providerId, providerUserId);
-		if(ru != null)
+		if (ru != null)
 			return ru;
-		User user = this.getUser(userId);
-		SocialUser su = new SocialUser(user, providerId, providerUserId, rank,
+		SocialUser su = new SocialUser(userId, providerId, providerUserId, rank,
 				displayName, profileUrl, imageUrl, accessToken, secret,
 				refreshToken, expireTime);
 		return save(su);
@@ -178,7 +141,7 @@ public class SocialUserDao {
 		currentSession().saveOrUpdate((SocialUser) user);
 		return user;
 	}
-	
+
 	protected Session currentSession() {
 		return sessionFactory.getCurrentSession();
 	}

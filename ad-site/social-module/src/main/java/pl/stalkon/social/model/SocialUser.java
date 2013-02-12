@@ -11,19 +11,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Index;
 import org.springframework.social.connect.jpa.RemoteUser;
 
+import pl.styall.library.core.model.AbstractUser;
 import pl.styall.library.core.model.defaultimpl.User;
-
 
 
 @Entity
 @Table(name = "SocialUser")
 @org.hibernate.annotations.Table(appliesTo = "SocialUser", indexes = {
 		@org.hibernate.annotations.Index(name = "idxSocialProviderUser", columnNames = {
-				"FK_UserId", "providerId", "irank", "providerUserId" }),
+				"userId", "providerId", "irank", "providerUserId" }),
 		@org.hibernate.annotations.Index(name = "idxSocialProvider", columnNames = {
 				"providerId", "providerUserId" }) })
 public class SocialUser implements RemoteUser {
@@ -31,12 +32,14 @@ public class SocialUser implements RemoteUser {
 	private String providerUserId, providerId, secret, displayName, profileUrl,
 			imageUrl, accessToken, refreshToken;
 	private int rank;
-	private User user;
 
+	@NotNull
+	private String userId;
+	
 	public SocialUser() {
 	}
 
-	public SocialUser(User user, String providerId, String providerUserId,
+	public SocialUser(String userId, String providerId, String providerUserId,
 			int rank, String displayName, String profileUrl, String imageUrl,
 			String accessToken, String secret, String refreshToken,
 			Long expireTime) {
@@ -51,7 +54,7 @@ public class SocialUser implements RemoteUser {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 		this.rank = rank;
-		this.user = user;
+		this.userId = userId;
 	}
 
 	@Id
@@ -64,17 +67,6 @@ public class SocialUser implements RemoteUser {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "FK_UserId", nullable = false, updatable = false)
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 
 	@Column(length = 25, nullable = false)
 	public String getProviderUserId() {
@@ -183,12 +175,12 @@ public class SocialUser implements RemoteUser {
 		this.expireTime = expireTime;
 	}
 
-	@Transient
 	public String getUserId() {
-		return user.getCredentials().getMail();
+		return userId;
 	}
 
-	public void setUserId(String id) {
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public int hashCode() {

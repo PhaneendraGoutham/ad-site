@@ -14,10 +14,10 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.security.SocialAuthenticationFilter;
 import org.springframework.social.security.SocialAuthenticationProvider;
 import org.springframework.social.security.SocialAuthenticationServiceLocator;
-import org.springframework.social.security.SocialUserDetailsService;
 
+import pl.stalkon.ad.core.security.MixUserDetailsService;
+import pl.stalkon.ad.core.security.SocialUserDetailsServiceImpl;
 import pl.stalkon.social.authentication.AuthenticationUserIdExtractor;
-import pl.stalkon.social.authentication.SocialUserDetailsServiceImpl;
 
 @Configuration
 public class SocialSecurityConfig {
@@ -31,7 +31,8 @@ public class SocialSecurityConfig {
 	@Bean 
 	public SocialAuthenticationFilter socialAuthenticationFilter(AuthenticationManager authenticationManager, RememberMeServices rememberMeServices, SocialAuthenticationServiceLocator authenticationServiceLocator) {
 		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(authenticationManager, userIdSource(), usersConnectionRepository, authenticationServiceLocator);
-		socialAuthenticationFilter.setSignupUrl("/ad-web/signup"); // TODO: Fix filter to handle in-app paths
+//		socialAuthenticationFilter.setSignupUrl("/ad-web/signupasdfasfd"); // TODO: Fix filter to handle in-app paths
+//		System.out.println("asdfaf");
 		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
 		socialAuthenticationFilter.setFilterProcessesUrl("/signin");
 		return socialAuthenticationFilter;
@@ -42,11 +43,14 @@ public class SocialSecurityConfig {
 		return new SocialAuthenticationProvider(usersConnectionRepository, socialUsersDetailsService());
 	}
 
-	@Bean
-	public SocialUserDetailsService socialUsersDetailsService() {
+	@Bean(name="userDetailsService")
+	public MixUserDetailsService socialUsersDetailsService() {
 		return new SocialUserDetailsServiceImpl();
 	}
+	
+	
 
+	
 	@Bean
 	public UserIdSource userIdSource() {
 		return new AuthenticationUserIdExtractor();

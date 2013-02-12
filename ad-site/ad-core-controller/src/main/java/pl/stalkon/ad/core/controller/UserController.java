@@ -1,9 +1,6 @@
 package pl.stalkon.ad.core.controller;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
-
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import pl.stalkon.ad.core.model.User;
+import pl.stalkon.ad.core.model.dto.UserRegForm;
+import pl.stalkon.ad.core.model.service.UserService;
 import pl.styall.library.core.ext.controller.BaseController;
 import pl.styall.library.core.ext.validation.ValidationException;
-import pl.styall.library.core.model.defaultimpl.User;
-import pl.styall.library.core.model.defaultimpl.UserRegForm;
-import pl.styall.library.core.model.defaultimpl.UserService;
 
 
 

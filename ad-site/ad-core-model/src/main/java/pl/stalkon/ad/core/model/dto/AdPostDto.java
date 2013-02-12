@@ -1,4 +1,4 @@
-package pl.stalkon.ad.core.controller.dto;
+package pl.stalkon.ad.core.model.dto;
 
 
 public class AdPostDto {
