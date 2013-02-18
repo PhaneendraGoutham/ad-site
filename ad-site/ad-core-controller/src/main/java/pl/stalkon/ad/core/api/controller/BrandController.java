@@ -1,4 +1,4 @@
-package pl.stalkon.ad.core.controller;
+package pl.stalkon.ad.core.api.controller;
 
 import java.security.Principal;
 import java.util.List;

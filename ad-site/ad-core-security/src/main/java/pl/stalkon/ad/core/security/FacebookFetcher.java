@@ -37,7 +37,7 @@ public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 		UserRegForm userRegForm = new UserRegForm();
 		userRegForm.setMail(profile.getEmail());
 		String password = RandomStringUtils.random(12,0,0,true,true,null, new SecureRandom());
-		String username = RandomStringUtils.random(10,0,25,true,true,"abcdefghijklmnopqrstuvwxyz1234567890".toCharArray(), new SecureRandom());
+		String username = RandomStringUtils.random(10,0,35,true,true,"abcdefghijklmnopqrstuvwxyz1234567890".toCharArray(), new SecureRandom());
 		userRegForm.setPassword(password);
 		userRegForm.setConfirmPassword(password);
 		
@@ -45,7 +45,7 @@ public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 		userRegForm.setUsername(username);
 		UserData data = new UserData();
 		String birthday = profile.getBirthday();
-		SimpleDateFormat format = new SimpleDateFormat("MM/DD/YYYY");
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		try {
 			data.setBirthDate(format.parse(birthday));
 		} catch (ParseException e) {

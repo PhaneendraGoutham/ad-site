@@ -31,10 +31,8 @@ public class SocialSecurityConfig {
 	@Bean 
 	public SocialAuthenticationFilter socialAuthenticationFilter(AuthenticationManager authenticationManager, RememberMeServices rememberMeServices, SocialAuthenticationServiceLocator authenticationServiceLocator) {
 		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(authenticationManager, userIdSource(), usersConnectionRepository, authenticationServiceLocator);
-//		socialAuthenticationFilter.setSignupUrl("/ad-web/signupasdfasfd"); // TODO: Fix filter to handle in-app paths
-//		System.out.println("asdfaf");
 		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
-		socialAuthenticationFilter.setFilterProcessesUrl("/signin");
+		socialAuthenticationFilter.setFilterProcessesUrl("/secure/social/login");
 		return socialAuthenticationFilter;
 	}
 
@@ -48,7 +46,7 @@ public class SocialSecurityConfig {
 		return new SocialUserDetailsServiceImpl();
 	}
 	
-	
+
 
 	
 	@Bean

@@ -21,6 +21,7 @@
 			services-ref="persistentTokenBasedRememberMeServices" />
 		<security:access-denied-handler ref="jacksonAccessDeniedHandler" />
 		<security:custom-filter ref="socialAuthenticationFilter" before="PRE_AUTH_FILTER" />
+		<security:form-login login-page="/secure/user/login" login-processing-url="/secure/process_loging" password-parameter="password" username-parameter="username"/>
 	</security:http>
 
 

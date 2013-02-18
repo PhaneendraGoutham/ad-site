@@ -6,31 +6,22 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import org.apache.commons.collections.map.HashedMap;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
-import org.springframework.social.connect.ConnectionFactory;
-import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.NotConnectedException;
 import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.connect.jpa.JpaUsersConnectionRepository;
-import org.springframework.social.connect.support.ConnectionFactoryRegistry;
 import org.springframework.social.connect.support.OAuth2ConnectionFactory;
-import org.springframework.social.connect.web.ProviderSignInController;
+import org.springframework.social.connect.web.ConnectController;
 import org.springframework.social.facebook.api.Facebook;
-import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.security.SocialAuthenticationServiceLocator;
 import org.springframework.social.security.SocialAuthenticationServiceRegistry;
 import org.springframework.social.security.provider.OAuth2AuthenticationService;
@@ -38,12 +29,14 @@ import org.springframework.social.security.provider.OAuth2AuthenticationService;
 import pl.stalkon.ad.core.security.FacebookFetcher;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.core.security.SocialUserServiceImpl;
+import pl.stalkon.ad.social.facebook.FacebookServiceImpl;
+import pl.stalkon.social.authentication.ConnectionRepositoryWithNotifications;
+import pl.stalkon.social.authentication.PostToWallService;
+import pl.stalkon.social.authentication.UsersConnectionRepositoryWithNotifications;
 import pl.stalkon.social.ext.SocialUserDataFetcher;
-import pl.stalkon.social.ext.SocialUserDataFetcherFactory;
+import pl.stalkon.social.ext.SocialServiceHelper;
 import pl.stalkon.social.facebook.CustomFacebookConnectionFactory;
 import pl.stalkon.social.model.SocialUserService;
-import pl.stalkon.social.model.AbstractSocialUserServiceImpl;
-import pl.styall.library.core.model.defaultimpl.User;
 
 @Configuration
 public class SocialConfig {
@@ -54,17 +47,16 @@ public class SocialConfig {
 	@Inject
 	private TextEncryptor textEncryptor;
 
-
 	@Bean
 	public FacebookFetcher facebookFetcher() {
 		return new FacebookFetcher();
 	}
 
 	@Bean
-	public SocialUserDataFetcherFactory socialUserDataFetcherFactory() {
+	public SocialServiceHelper socialUserDataFetcherFactory() {
 		Map<String, SocialUserDataFetcher<?>> map = new HashMap<String, SocialUserDataFetcher<?>>();
 		map.put("facebook", facebookFetcher());
-		return new SocialUserDataFetcherFactory(map);
+		return new SocialServiceHelper(map);
 	}
 
 	@Bean(name = "socialUserService")
@@ -73,6 +65,7 @@ public class SocialConfig {
 	}
 
 	@Bean
+	@Scope(value="singleton", proxyMode=ScopedProxyMode.INTERFACES) 
 	public SocialAuthenticationServiceLocator socialAuthenticationServiceLocator() {
 		SocialAuthenticationServiceRegistry registry = new SocialAuthenticationServiceRegistry();
 
@@ -82,10 +75,17 @@ public class SocialConfig {
 				env.getProperty("facebook.appSecret"));
 		OAuth2AuthenticationService<Facebook> facebookAuthenticationService = new OAuth2AuthenticationService<Facebook>(
 				facebookConnectionFactory);
-		facebookAuthenticationService.setScope("publish_stream,offline_access,email,user_birthday");
+		facebookAuthenticationService
+				.setScope("publish_stream,offline_access,email,user_birthday");
 		registry.addAuthenticationService(facebookAuthenticationService);
 
 		return registry;
+	}
+
+	@Bean
+	@Scope(value="singleton", proxyMode=ScopedProxyMode.INTERFACES) 
+	public FacebookServiceImpl facebookService() {
+		return new FacebookServiceImpl();
 	}
 
 	/**
@@ -107,8 +107,9 @@ public class SocialConfig {
 	 * users.
 	 */
 	@Bean
+	@Scope(value="singleton", proxyMode=ScopedProxyMode.INTERFACES)	
 	public UsersConnectionRepository usersConnectionRepository() {
-		JpaUsersConnectionRepository repository = new JpaUsersConnectionRepository(
+		UsersConnectionRepositoryWithNotifications repository = new UsersConnectionRepositoryWithNotifications(
 				socialUserService(), socialAuthenticationServiceLocator(),
 				Encryptors.noOpText());
 		repository.setConnectionSignUp(socialUserService());
@@ -128,7 +129,7 @@ public class SocialConfig {
 			throw new IllegalStateException(
 					"Unable to get a ConnectionRepository: no user signed in");
 		}
-		SocialLoggedUser user = (SocialLoggedUser) auth;
+		SocialLoggedUser user = (SocialLoggedUser) auth.getPrincipal();
 		return usersConnectionRepository().createConnectionRepository(
 				user.getUsername());
 	}
@@ -162,5 +163,15 @@ public class SocialConfig {
 	public TextEncryptor textEncryptor() {
 		return Encryptors.noOpText();
 	}
+
+	// @Bean
+	// public ConnectController connectController() {
+	// ConnectController connectController = new
+	// ConnectController(socialAuthenticationServiceLocator(),
+	// connectionRepository());
+	// connectController.addInterceptor(new PostToWallConnectionInterceptor());
+	// return connectController;
+	// }
+
 
 }

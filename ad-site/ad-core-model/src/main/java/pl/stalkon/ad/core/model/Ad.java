@@ -1,12 +1,14 @@
 package pl.stalkon.ad.core.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,6 +20,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -29,7 +33,8 @@ import pl.styall.library.core.model.CommonEntity;
 
 @Entity
 @Table(name = "ad")
-//@NamedNativeQuery(name = "rankCount", query = "SELECT COUNT(rank) from rank where adId = ?")
+// @NamedNativeQuery(name = "rankCount", query =
+// "SELECT COUNT(rank) from rank where adId = ?")
 public class Ad extends CommonEntity {
 
 	private static final long serialVersionUID = 1335218634734582331L;
@@ -40,6 +45,13 @@ public class Ad extends CommonEntity {
 
 	@NotNull
 	private String dailymotionId;
+	@NotNull
+	private String dailymotionUrl;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private Date creationDate;
+
+	private String title;
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private User poster;
@@ -52,14 +64,14 @@ public class Ad extends CommonEntity {
 
 	private Type type;
 
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="ad")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ad")
 	private List<Rank> ranks;
-	
+
 	@Formula("(SELECT SUM(r.rank) from ranks as r where r.adId = id)")
-//	@Transient
+	// @Transient
 	private Long rank;
-	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY,mappedBy="ad")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ad")
 	private Set<AdComment> comments = new HashSet<AdComment>();
 
 	public Long getRank() {
@@ -109,6 +121,7 @@ public class Ad extends CommonEntity {
 	public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
+
 	public List<Rank> getRanks() {
 		return ranks;
 	}
@@ -116,10 +129,10 @@ public class Ad extends CommonEntity {
 	public void setRanks(List<Rank> ranks) {
 		this.ranks = ranks;
 	}
-	
+
 	public void addRank(Rank rank) {
 		rank.setAd(this);
-		if(ranks == null){
+		if (ranks == null) {
 			ranks = new ArrayList<Rank>();
 		}
 		ranks.add(rank);
@@ -133,5 +146,28 @@ public class Ad extends CommonEntity {
 		this.comments = comments;
 	}
 
+	public String getDailymotionUrl() {
+		return dailymotionUrl;
+	}
+
+	public void setDailymotionUrl(String dailymotionUrl) {
+		this.dailymotionUrl = dailymotionUrl;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 }

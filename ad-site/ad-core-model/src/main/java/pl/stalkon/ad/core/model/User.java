@@ -6,11 +6,16 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Loader;
 
 import pl.stalkon.social.model.SocialUser;
 import pl.styall.library.core.model.AbstractUser;
@@ -38,7 +43,8 @@ public class User extends AbstractUser<UserData, Address> {
 	@Transient
 	private String displayName;
 
-	@OneToMany(mappedBy = "userId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinColumn(name="userId", referencedColumnName="username")
 	private List<SocialUser> socialUsers;
 
 	public List<SocialUser> getSocialUsers() {

@@ -55,15 +55,18 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 			imageUrl = user.getUserData().getImageUrl();
 			type = LoggedType.API;
 		}
+		System.out.println(type);
 		return new SocialLoggedUser(user.getId(), user.getCredentials()
-				.getUsername(), user.getCredentials().getMail(), user
+				.getUsername(), user
 				.getCredentials().getPassword(), user.getCredentials()
-				.getSalt(), imageUrl, LoggedType.SOCIAL, getAuthorities(roles));
+				.getSalt(), imageUrl, type, getAuthorities(roles));
 	}
 
 	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
+		System.out.println(username);
 		return loadUserByUserId(username);
 	}
 

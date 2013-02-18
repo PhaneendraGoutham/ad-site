@@ -20,19 +20,19 @@ public class SocialLoggedUser extends LoggedUser implements SocialUserDetails {
 	
 	private final LoggedType type;
 
-	public SocialLoggedUser(Long id, String username, String mail,
+	public SocialLoggedUser(Long id, String username,
 			String password, String salt, String imageUrl, LoggedType type,
 			Collection<? extends GrantedAuthority> authorities) {
-		super(id, username, mail, password, salt, imageUrl, authorities);
+		super(id, username, password, salt, imageUrl, authorities);
 		this.type = type;
 	}
 	
-	public SocialLoggedUser(Long id, String username, String mail,
+	public SocialLoggedUser(Long id, String username,
 			String password, String salt, String imageUrl,LoggedType type, boolean enabled,
 			boolean accountNonExpired, boolean credentialsNonExpired,
 			boolean accountNonLocked,
 			Collection<? extends GrantedAuthority> authorities) {
-		super(id, username, mail, password, salt, imageUrl, enabled, accountNonExpired,
+		super(id, username, password, salt, imageUrl, enabled, accountNonExpired,
 				credentialsNonExpired, accountNonLocked, authorities);
 		this.type = type;
 	}

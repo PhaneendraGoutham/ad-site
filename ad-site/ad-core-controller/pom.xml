@@ -35,5 +35,16 @@
 			<artifactId>ad-core-security</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>pl.stalkon</groupId>
+			<artifactId>ad-social</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>pl.stalkon</groupId>
+			<artifactId>ad-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 	</dependencies>
 </project>

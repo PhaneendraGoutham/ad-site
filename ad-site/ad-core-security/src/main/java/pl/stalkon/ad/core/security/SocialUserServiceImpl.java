@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.social.ext.SocialUserDataFetcher;
-import pl.stalkon.social.ext.SocialUserDataFetcherFactory;
+import pl.stalkon.social.ext.SocialServiceHelper;
 import pl.stalkon.social.model.AbstractSocialUserServiceImpl;
 
 public class SocialUserServiceImpl extends AbstractSocialUserServiceImpl {
@@ -17,7 +17,7 @@ public class SocialUserServiceImpl extends AbstractSocialUserServiceImpl {
 	private UserService userService;
 	
 	@Autowired
-	private SocialUserDataFetcherFactory socialUserDataFetcherFactory;
+	private SocialServiceHelper socialUserDataFetcherFactory;
 	
 	@Override
 	public String execute(Connection<?> connection) {
@@ -45,7 +45,7 @@ public class SocialUserServiceImpl extends AbstractSocialUserServiceImpl {
 		if (user == null) {
 			return null;
 		}
-
+		System.out.println("dodany uzytkownika");
 		user = userService.add(user);
 		return user.getCredentials().getUsername();
 	}
