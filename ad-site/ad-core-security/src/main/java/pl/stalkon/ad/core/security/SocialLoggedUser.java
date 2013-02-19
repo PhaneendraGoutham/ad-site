@@ -3,8 +3,8 @@ package pl.stalkon.ad.core.security;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.social.security.SocialUserDetails;
 
+import pl.stalkon.social.singleconnection.interfaces.SocialUserDetails;
 import pl.styall.library.core.security.authentication.LoggedUser;
 
 public class SocialLoggedUser extends LoggedUser implements SocialUserDetails {
@@ -39,8 +39,8 @@ public class SocialLoggedUser extends LoggedUser implements SocialUserDetails {
 
 
 	@Override
-	public String getUserId() {
-		return getUsername();
+	public Long getUserId() {
+		return getId();
 	}
 
 	public String getDisplayName() {

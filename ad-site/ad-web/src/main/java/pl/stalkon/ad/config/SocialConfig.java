@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,28 +14,27 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
-import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.NotConnectedException;
-import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.connect.jpa.JpaUsersConnectionRepository;
 import org.springframework.social.connect.support.OAuth2ConnectionFactory;
-import org.springframework.social.connect.web.ConnectController;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.security.SocialAuthenticationServiceLocator;
 import org.springframework.social.security.SocialAuthenticationServiceRegistry;
 import org.springframework.social.security.provider.OAuth2AuthenticationService;
 
+import pl.stalkon.ad.core.security.ConnectionSignupImpl;
 import pl.stalkon.ad.core.security.FacebookFetcher;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.core.security.SocialUserServiceImpl;
 import pl.stalkon.ad.social.facebook.FacebookServiceImpl;
-import pl.stalkon.social.authentication.ConnectionRepositoryWithNotifications;
-import pl.stalkon.social.authentication.PostToWallService;
-import pl.stalkon.social.authentication.UsersConnectionRepositoryWithNotifications;
-import pl.stalkon.social.ext.SocialUserDataFetcher;
 import pl.stalkon.social.ext.SocialServiceHelper;
+import pl.stalkon.social.ext.SocialUserDataFetcher;
 import pl.stalkon.social.facebook.CustomFacebookConnectionFactory;
-import pl.stalkon.social.model.SocialUserService;
+import pl.stalkon.social.singleconnection.impl.UsersConnectionRepositoryImpl;
+import pl.stalkon.social.singleconnection.interfaces.AddConnectionHandler;
+import pl.stalkon.social.singleconnection.interfaces.ConnectionRepository;
+import pl.stalkon.social.singleconnection.interfaces.ConnectionSignup;
+import pl.stalkon.social.singleconnection.interfaces.SocialUserService;
+import pl.stalkon.social.singleconnection.interfaces.UsersConnectionRepository;
 
 @Configuration
 public class SocialConfig {
@@ -65,7 +63,12 @@ public class SocialConfig {
 	}
 
 	@Bean
-	@Scope(value="singleton", proxyMode=ScopedProxyMode.INTERFACES) 
+	public ConnectionSignup connectionSignup() {
+		return new ConnectionSignupImpl();
+	}
+
+	@Bean
+	@Scope(value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
 	public SocialAuthenticationServiceLocator socialAuthenticationServiceLocator() {
 		SocialAuthenticationServiceRegistry registry = new SocialAuthenticationServiceRegistry();
 
@@ -83,7 +86,7 @@ public class SocialConfig {
 	}
 
 	@Bean
-	@Scope(value="singleton", proxyMode=ScopedProxyMode.INTERFACES) 
+	@Scope(value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
 	public FacebookServiceImpl facebookService() {
 		return new FacebookServiceImpl();
 	}
@@ -107,15 +110,16 @@ public class SocialConfig {
 	 * users.
 	 */
 	@Bean
-	@Scope(value="singleton", proxyMode=ScopedProxyMode.INTERFACES)	
+	@Scope(value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
 	public UsersConnectionRepository usersConnectionRepository() {
-		UsersConnectionRepositoryWithNotifications repository = new UsersConnectionRepositoryWithNotifications(
-				socialUserService(), socialAuthenticationServiceLocator(),
-				Encryptors.noOpText());
-		repository.setConnectionSignUp(socialUserService());
+		UsersConnectionRepositoryImpl repository = new UsersConnectionRepositoryImpl();
+//		repository.setConnectionSignUp(connectionSignup());
+//		repository.setSocialUserService(socialUserService());
+//		repository.setAddConnectionHandler((AddConnectionHandler) facebookService());
 		return repository;
 	}
 
+	
 	/**
 	 * Request-scoped data access object providing access to the current user's
 	 * connections.
@@ -131,7 +135,7 @@ public class SocialConfig {
 		}
 		SocialLoggedUser user = (SocialLoggedUser) auth.getPrincipal();
 		return usersConnectionRepository().createConnectionRepository(
-				user.getUsername());
+				user.getId());
 	}
 
 	/**
@@ -172,6 +176,5 @@ public class SocialConfig {
 	// connectController.addInterceptor(new PostToWallConnectionInterceptor());
 	// return connectController;
 	// }
-
 
 }

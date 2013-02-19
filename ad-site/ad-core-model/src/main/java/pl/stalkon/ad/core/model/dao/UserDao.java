@@ -1,5 +1,6 @@
 package pl.stalkon.ad.core.model.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Criteria;
@@ -22,5 +23,6 @@ public class UserDao extends pl.styall.library.core.model.dao.UserDao<User>{
 			criteria.add(Restrictions.eq(userAlias+"id", new Long((String)params.get("id"))));
 		}
 	}
+	
 
 }

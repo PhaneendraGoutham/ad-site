@@ -1,53 +1,67 @@
 package pl.stalkon.ad.core.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import pl.stalkon.ad.core.model.SocialUser;
 import pl.stalkon.ad.core.model.User;
-import pl.stalkon.ad.core.model.service.UserService;
+import pl.stalkon.ad.core.model.dao.UserDao;
 import pl.stalkon.social.ext.SocialUserDataFetcher;
 import pl.stalkon.social.ext.SocialServiceHelper;
-import pl.stalkon.social.model.AbstractSocialUserServiceImpl;
+import pl.stalkon.social.singleconnection.interfaces.ConnectionSignup;
+import pl.stalkon.social.singleconnection.interfaces.RemoteUser;
+import pl.stalkon.social.singleconnection.interfaces.SocialUserService;
 
-public class SocialUserServiceImpl extends AbstractSocialUserServiceImpl {
+@Transactional
+public class SocialUserServiceImpl implements SocialUserService {
 
 	@Autowired
-	private UserService userService;
-	
+	private UserDao userDao;
+
 	@Autowired
-	private SocialServiceHelper socialUserDataFetcherFactory;
-	
+	private SocialUserDao socialUserDao;
+
 	@Override
-	public String execute(Connection<?> connection) {
-		// First check to see if there already is a user for this email address.
-		// If there is, return that user id
-		// If there isn't, create a new user, activate him and send a welcome
-		// email.
-		
-		UserProfile profile = connection.fetchUserProfile();
-		// If we can't get the users email, e.g. twitter
-		if (profile.getEmail() == null || profile.getFirstName() == null
-				|| profile.getLastName() == null)
-			return null;
+	public RemoteUser get(String providerId, String providerUserId) {
+		return socialUserDao.get(providerId, providerUserId);
+	}
 
-		User user = null;
-		user = userService.getUserByMailOrUsername(profile.getEmail());
-		if (user != null)
-			return user.getCredentials().getMail();
-		SocialUserDataFetcher fetcher = socialUserDataFetcherFactory
-				.getFetcher(connection.createData().getProviderId());
-		if (fetcher == null) {
-			return null;
-		}
-		user = (User) fetcher.fetchData(connection.getApi());
-		if (user == null) {
-			return null;
-		}
-		System.out.println("dodany uzytkownika");
-		user = userService.add(user);
-		return user.getCredentials().getUsername();
+	@Override
+	public RemoteUser get(Long userId) {
+		return socialUserDao.get(userId);
+	}
+
+	@Override
+	public RemoteUser get(Long userId, String providerId, String providerUserId) {
+		return socialUserDao.get(userId, providerId, providerUserId);
+	}
+
+	@Override
+	public RemoteUser save(RemoteUser remoteUser) {
+		return socialUserDao.save(remoteUser);
+	}
+
+	@Override
+	public boolean isUserIdConnectedTo(String providerId, Long userId) {
+		return socialUserDao.isUserIdConnectedTo(providerId, userId);
+	}
+
+	@Override
+	public RemoteUser createRemoteUser(Long userId, String providerId,
+			String providerUserId, String displayName, String profileUrl,
+			String accessToken, String secret, String refreshToken,
+			Long expireTime) {
+		User user = userDao.get(userId);
+		SocialUser su = new SocialUser(user, providerId, providerUserId,
+				displayName, profileUrl, accessToken, secret, refreshToken,
+				expireTime);
+		user.setSocialUser(su);
+		System.out.println(user.getId());
+		userDao.save(user);
+		return su;
 	}
 
 }

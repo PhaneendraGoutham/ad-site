@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -14,7 +13,7 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import pl.stalkon.social.model.SocialUser;
+import pl.stalkon.ad.core.model.SocialUser;
 import pl.styall.library.core.model.UserRole;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
 import pl.styall.library.core.model.defaultimpl.Address;

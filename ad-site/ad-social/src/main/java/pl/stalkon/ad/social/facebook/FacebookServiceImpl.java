@@ -1,11 +1,8 @@
 package pl.stalkon.ad.social.facebook;
 
-import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
@@ -13,18 +10,11 @@ import org.springframework.social.OperationNotPermittedException;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookLink;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import org.springframework.web.servlet.support.RequestContext;
-import org.springframework.web.util.UrlPathHelper;
 
 import pl.stalkon.ad.core.AppConstants;
-import pl.stalkon.social.authentication.PostToWallService;
+import pl.stalkon.social.singleconnection.interfaces.AddConnectionHandler;
 
-public class FacebookServiceImpl implements PostToWallService,
+public class FacebookServiceImpl implements AddConnectionHandler,
 		SiteFacebookIntegrator {
 
 	@Autowired
@@ -37,7 +27,7 @@ public class FacebookServiceImpl implements PostToWallService,
 	private Environment env;
 
 	@Override
-	public void postAfterAddedConnection(Connection<?> connection) {
+	public void afterAddConnection(Connection<?> connection) {
 		Facebook facebook = (Facebook) connection.getApi();
 		try {
 			facebook.feedOperations().postLink(

@@ -8,20 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.social.security.SocialUserDetails;
-import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pl.stalkon.ad.core.model.SocialUser;
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.dao.UserDao;
 import pl.stalkon.ad.core.security.SocialLoggedUser.LoggedType;
-import pl.stalkon.social.model.SocialUser;
-import pl.stalkon.social.model.SocialUserDao;
-import pl.styall.library.core.model.AbstractUser;
+import pl.stalkon.social.singleconnection.interfaces.SocialUserDetails;
 import pl.styall.library.core.model.UserRole;
+
 
 @Service("userDetailsService")
 public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
@@ -34,9 +31,20 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 
 	@Override
 	@Transactional
-	public SocialUserDetails loadUserByUserId(String userId)
-			throws UsernameNotFoundException, DataAccessException {
-		User user = userDao.loadUserByLogin(userId);
+	public SocialUserDetails loadUserByUserId(Long userId) {
+		User user = userDao.get(userId);
+		return createSocialUserDetails(user);
+	}
+
+	@Override
+	@Transactional
+	public UserDetails loadUserByUsername(String username)
+			throws UsernameNotFoundException {
+		User user = userDao.loadUserByLogin(username);
+		return createSocialUserDetails(user);
+	}
+	
+	private SocialUserDetails createSocialUserDetails(User user){
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
 		}
@@ -45,29 +53,16 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 		for (UserRole ur : userRoles) {
 			roles.add(ur.getRole());
 		}
-		List<SocialUser> socialUsers = user.getSocialUsers();
-		String imageUrl;
 		LoggedType type;
-		if (socialUsers != null && socialUsers.size() > 0) {
-			imageUrl = socialUsers.get(0).getImageUrl();
+		if (user.getSocialUser() != null) {
 			type = LoggedType.SOCIAL;
 		} else {
-			imageUrl = user.getUserData().getImageUrl();
 			type = LoggedType.API;
 		}
-		System.out.println(type);
 		return new SocialLoggedUser(user.getId(), user.getCredentials()
 				.getUsername(), user
 				.getCredentials().getPassword(), user.getCredentials()
-				.getSalt(), imageUrl, type, getAuthorities(roles));
-	}
-
-	@Override
-	@Transactional
-	public UserDetails loadUserByUsername(String username)
-			throws UsernameNotFoundException {
-		System.out.println(username);
-		return loadUserByUserId(username);
+				.getSalt(), user.getUserData().getImageUrl(), type, getAuthorities(roles));
 	}
 
 	protected Collection<SimpleGrantedAuthority> getAuthorities(
@@ -78,4 +73,6 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 		}
 		return authList; // TODO Auto-generated method stub
 	}
+
+
 }
