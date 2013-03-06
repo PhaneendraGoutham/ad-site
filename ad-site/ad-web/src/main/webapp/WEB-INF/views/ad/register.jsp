@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -7,7 +6,7 @@
 <html>
 <head>
 <title>My Page</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script src="http://code.jquery.com/jquery-1.7.1.js"></script>
 <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
 <script src="/ad-web/resources/jquery.ui.widget.js"></script>

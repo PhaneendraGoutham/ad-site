@@ -6,28 +6,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.Loader;
-import org.hibernate.validator.constraints.URL;
 
 import pl.styall.library.core.model.CommonEntity;
 
@@ -35,6 +27,7 @@ import pl.styall.library.core.model.CommonEntity;
 @Table(name = "ad")
 // @NamedNativeQuery(name = "rankCount", query =
 // "SELECT COUNT(rank) from rank where adId = ?")
+@FilterDef(name = "showApproved", defaultCondition = "approved = true")
 public class Ad extends CommonEntity {
 
 	private static final long serialVersionUID = 1335218634734582331L;
@@ -42,6 +35,16 @@ public class Ad extends CommonEntity {
 	public enum Type {
 		MOVIE, PICTURE, GAME
 	}
+
+	public enum Place {
+		MAIN, WAITING
+	};
+
+	@Column(nullable = false)
+	private Place place = Place.WAITING;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateOnMain;
 
 	@NotNull
 	private String dailymotionId;
@@ -53,10 +56,14 @@ public class Ad extends CommonEntity {
 
 	private String title;
 
+	private Boolean ageProtected = false;
+
+	private Boolean approved = true;
+
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private User poster;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private AdData adData;
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -67,18 +74,17 @@ public class Ad extends CommonEntity {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ad")
 	private List<Rank> ranks;
 
-	@Formula("(SELECT SUM(r.rank) from ranks as r where r.adId = id)")
-	// @Transient
-	private Long rank;
+	@Formula("(SELECT SUM(r.rank)/COUNT(*) from ranks as r where r.adId = id)")
+	private Double rank;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ad")
 	private Set<AdComment> comments = new HashSet<AdComment>();
 
-	public Long getRank() {
+	public Double getRank() {
 		return rank;
 	}
 
-	public void setRank(Long rank) {
+	public void setRank(Double rank) {
 		this.rank = rank;
 	}
 
@@ -166,8 +172,40 @@ public class Ad extends CommonEntity {
 		return title;
 	}
 
+	public Boolean getApproved() {
+		return approved;
+	}
+
+	public void setApproved(Boolean approved) {
+			this.approved = approved;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Boolean getAgeProtected() {
+		return ageProtected;
+	}
+
+	public void setAgeProtected(Boolean ageProtected) {
+			this.ageProtected = ageProtected;
+	}
+
+	public Place getPlace() {
+		return place;
+	}
+
+	public void setPlace(Place place) {
+			this.place = place;
+	}
+
+	public Date getDateOnMain() {
+		return dateOnMain;
+	}
+
+	public void setDateOnMain(Date dateOnMain) {
+		this.dateOnMain = dateOnMain;
 	}
 
 }

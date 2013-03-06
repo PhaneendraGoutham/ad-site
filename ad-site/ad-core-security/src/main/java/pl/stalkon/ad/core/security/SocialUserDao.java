@@ -28,7 +28,7 @@ public class SocialUserDao {
 	public RemoteUser get(Long userId) {
 		return (SocialUser) currentSession().createQuery(
 				"from SocialUser where userId = :userId").setLong(
-				"userId", userId);
+				"userId", userId).uniqueResult();
 	}
 
 	public RemoteUser get(Long userId, String providerId, String providerUserId) {

@@ -1,5 +1,6 @@
 package pl.stalkon.ad.core.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,7 @@ import pl.stalkon.ad.core.AppConstants;
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Type;
 import pl.stalkon.ad.core.model.AdData;
+import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
@@ -97,6 +99,13 @@ public class AdController {
 		UploadStatus status;
 		status = dailyService.getStatus();
 		return status;
+	}
+	
+	@RequestMapping(value="ad/main", method=RequestMethod.GET)
+	public String mainSite(Model model){
+		AdBrowserWrapper adBrowserWrapper = adService.getMain(0, 20);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		return "ad/browser";
 	}
 
 }

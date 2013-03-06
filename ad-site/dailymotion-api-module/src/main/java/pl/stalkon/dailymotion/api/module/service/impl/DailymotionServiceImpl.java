@@ -22,7 +22,7 @@ public class DailymotionServiceImpl implements DailymotionService {
 	private static final String userId = "510fac5794a6f6702601b20b";
 	private static final String URL = "http://api.dmcloud.net/player/embed/" + userId + "/";
 	private static Logger log = Logger.getLogger(DailymotionServiceImpl.class);
-
+	private static final int EXPIRES = 615168000;
 	@Override
 	public UploadStatus getStatus(String callback) throws DailymotionException {
 		CloudKey cloudKey = new CloudKey(userId, apiKey);
@@ -66,7 +66,9 @@ public class DailymotionServiceImpl implements DailymotionService {
 	public String getEmbeddedUrl(String id) throws DailymotionException {
 		String url = URL + id;
 		try {
-			String signedUrl = Helpers.sign_url(url, apiKey, CloudKey.SECLEVEL_NONE, "", "", "", null, null, 0);
+			int expires = (int)(new Date().getTime()/1000) + EXPIRES;
+//			int expires = 0;
+			String signedUrl = Helpers.sign_url(url, apiKey, CloudKey.SECLEVEL_NONE, "", "", "", null,null, expires);
 			return signedUrl;
 		} catch (DCException e) {
 			throw new DailymotionException(e.getMessage());

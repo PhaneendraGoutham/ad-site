@@ -1,5 +1,6 @@
 package pl.stalkon.ad.core.model.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import pl.stalkon.ad.core.model.dao.AdCommentDao;
 import pl.stalkon.ad.core.model.dao.AdDao;
 import pl.stalkon.ad.core.model.dao.BrandDao;
 import pl.stalkon.ad.core.model.dao.UserDao;
+import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.service.AdService;
 
 @Service("adService")
@@ -45,7 +47,7 @@ public class AdServiceImpl implements AdService {
 
 	@Transactional
 	@Override
-	public List<Ad> get(Map<String, Object> queryObject) {
+	public AdBrowserWrapper get(Map<String, Object> queryObject) {
 		return adDao.get(queryObject);
 	}
 	@Transactional
@@ -88,6 +90,28 @@ public class AdServiceImpl implements AdService {
 		comment.setAd(ad);
 		adCommentDao.save(comment);
 		return comment;
+	}
+	@Transactional
+	@Override
+	public AdBrowserWrapper getMain(int pageFrom, int pageCount) {
+		Map<String, Object> queryObject = new HashMap<String, Object>();
+		queryObject.put("poster", new Object());
+		queryObject.put("place", Ad.Place.MAIN);
+		queryObject.put("pageFrom", pageFrom);
+		queryObject.put("pageCount", pageCount);
+		queryObject.put("orderBy", "dateOnMain");
+		queryObject.put("approved", true);
+		return adDao.get(queryObject);
+	}
+	@Transactional
+	@Override
+	public AdBrowserWrapper getWaiting(int pageFrom, int pageCount) {
+		Map<String, Object> queryObject = new HashMap<String, Object>();
+		queryObject.put("pageFrom", pageFrom);
+		queryObject.put("pageCount", pageCount);
+		queryObject.put("orderBy", "creationDate");
+		queryObject.put("approved", true);
+		return adDao.get(queryObject);
 	}
 	
 	
