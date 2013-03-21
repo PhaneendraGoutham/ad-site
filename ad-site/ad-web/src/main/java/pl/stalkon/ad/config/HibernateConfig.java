@@ -51,7 +51,7 @@ public class HibernateConfig {
 		Properties prop = new Properties();
 		prop.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		prop.setProperty("hibernate.show_sql", "true");
-		prop.setProperty("hibernate.hbm2ddl.auto", "update");
+		prop.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 		prop.setProperty("connection.characterEncoding", "UTF-8");
 		sessionFactory.setHibernateProperties(prop);
 		return sessionFactory;
