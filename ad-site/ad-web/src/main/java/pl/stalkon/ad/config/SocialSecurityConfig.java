@@ -33,7 +33,7 @@ public class SocialSecurityConfig {
 	public SocialAuthenticationFilter socialAuthenticationFilter(AuthenticationManager authenticationManager, RememberMeServices rememberMeServices, SocialAuthenticationServiceLocator authenticationServiceLocator) {
 		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(authenticationManager, userIdSource(), usersConnectionRepository, authenticationServiceLocator);
 		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
-		socialAuthenticationFilter.setFilterProcessesUrl("/secure/social/login");
+		socialAuthenticationFilter.setFilterProcessesUrl("/social/login");
 		return socialAuthenticationFilter;
 	}
 

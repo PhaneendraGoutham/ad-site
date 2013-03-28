@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+	<definition name="base.layout" template="/WEB-INF/views/layouts/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/header.jsp" />
+
+		<!-- <put-attribute name="footer" value="/WEB-INF/views/footer.jsp" /> -->
+	</definition>
+
+	<definition name="base.leftminibrowser" extends="base.layout">
+		<put-attribute name="right-panel-content" value="/WEB-INF/views/ad/mini-browser.jsp" />
+	</definition>
+
+	<definition name="browser" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content"
+			value="/WEB-INF/views/ad/simple-browser.jsp" />
+	</definition>
+
+
+
+	<definition name="ad/register" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/ad/register.jsp" />
+	</definition>
+
+	<definition name="user/login" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/login.jsp" />
+	</definition>
+
+	<definition name="user/register" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/register.jsp" />
+	</definition>
+
+</tiles-definitions>

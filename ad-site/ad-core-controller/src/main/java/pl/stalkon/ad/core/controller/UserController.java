@@ -42,8 +42,9 @@ public class UserController extends BaseController {
 	// return user.getId();
 	// }
 
-	@RequestMapping(value = "/secure/user/login", method = RequestMethod.GET)
-	public String loginSite() {
+	@RequestMapping(value = "/user/login", method = RequestMethod.GET)
+	public String loginSite(Model model) {
+		model.addAttribute("path", "user/login");
 		return "user/login";
 	}
 
@@ -64,7 +65,7 @@ public class UserController extends BaseController {
 			 return "user/register";
 		 }
 		 userService.register(userRegForm);
-		 return "/user/login";
+		 return "user/login";
 	}
 
 	// @RequestMapping(value="/password", method = RequestMethod.PUT, headers =

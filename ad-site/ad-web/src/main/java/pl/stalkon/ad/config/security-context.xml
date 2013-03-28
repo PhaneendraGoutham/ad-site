@@ -11,55 +11,72 @@
 	<security:authentication-manager alias="authenticationManager">
 		<security:authentication-provider
 			ref="authenticationProvider" />
-			<security:authentication-provider ref="socialAuthenticationProvider" />
+		<security:authentication-provider
+			ref="socialAuthenticationProvider" />
 	</security:authentication-manager>
-	
-	<security:http entry-point-ref="restAuthenticationEntryPoint" >
-	<security:intercept-url pattern="/user/test" access="ROLE_USER"/>
-		<security:anonymous />
+<security:http pattern="/resources/**" security="none"/>
+
+	<security:http use-expressions="true" access-denied-page="/user/login">
+		<security:anonymous enabled="true" />
 		<security:remember-me key="asdf"
 			services-ref="persistentTokenBasedRememberMeServices" />
-		<security:access-denied-handler ref="jacksonAccessDeniedHandler" />
-		<security:custom-filter ref="socialAuthenticationFilter" before="PRE_AUTH_FILTER" />
-		<security:form-login login-page="/secure/user/login" login-processing-url="/secure/process_loging" password-parameter="password" username-parameter="username"/>
+		<security:custom-filter ref="socialAuthenticationFilter"
+			before="PRE_AUTH_FILTER" />
+		<security:form-login login-page="/user/login"
+			login-processing-url="/process_loging" password-parameter="password"
+			username-parameter="username" />
 	</security:http>
+	<!-- 	<security:global-method-security -->
+<!-- 		secured-annotations="enabled" /> -->
+
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions" value="/WEB-INF/views/tiles.xml"/>
+		</bean>
+
+<bean id="viewResolver"
+    class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+    <property name="viewClass">
+        <value>
+            org.springframework.web.servlet.view.tiles2.TilesView
+        </value>
+    </property>
+</bean>
 
 
 
 
 
 
+	<!-- <bean id="tokenRepository" -->
+	<!-- class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl"> -->
+	<!-- <property name="dataSource" ref="dataSource" /> -->
+	<!-- <property name="createTableOnStartup" value="false" /> -->
+	<!-- </bean> -->
 
+	<!-- <bean id="persistentTokenBasedRememberMeServices" -->
+	<!-- class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices"> -->
+	<!-- <property name="key" value="asdf" /> -->
+	<!-- <property name="userDetailsService" ref="userDetailsService" /> -->
+	<!-- <property name="tokenRepository" ref="tokenRepository" /> -->
+	<!-- <property name="alwaysRemember" value="true" /> -->
+	<!-- </bean> -->
 
-<!-- 	<bean id="tokenRepository" -->
-<!-- 		class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl"> -->
-<!-- 		<property name="dataSource" ref="dataSource" /> -->
-<!-- 		<property name="createTableOnStartup" value="false" /> -->
-<!-- 	</bean> -->
+	<!-- <bean id="passwordEncoder" -->
+	<!-- class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"> -->
+	<!-- <constructor-arg value="256" /> -->
 
-<!-- 	<bean id="persistentTokenBasedRememberMeServices" -->
-<!-- 		class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices"> -->
-<!-- 		<property name="key" value="asdf" /> -->
-<!-- 		<property name="userDetailsService" ref="userDetailsService" /> -->
-<!-- 		<property name="tokenRepository" ref="tokenRepository" /> -->
-<!-- 		<property name="alwaysRemember" value="true" /> -->
-<!-- 	</bean> -->
-
-<!-- 	<bean id="passwordEncoder" -->
-<!-- 		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"> -->
-<!-- 		<constructor-arg value="256" /> -->
-
-<!-- 	</bean> -->
-<!-- 	<bean id="authenticationProvider" -->
-<!-- 		class="pl.styall.library.core.security.authentication.AuthenticationProvider"> -->
-<!-- 	</bean> -->
+	<!-- </bean> -->
+	<!-- <bean id="authenticationProvider" -->
+	<!-- class="pl.styall.library.core.security.authentication.AuthenticationProvider"> -->
+	<!-- </bean> -->
 
 
 
-<!-- 	<bean id="jacksonAccessDeniedHandler" -->
-<!-- 		class="pl.styall.library.core.security.authorization.JacksonAccessDeniedHandler"></bean> -->
-<!-- 	<bean id="restAuthenticationEntryPoint" -->
-<!-- 		class="pl.styall.library.core.security.authorization.RestAuthenticationEntryPoint"></bean> -->
+	<!-- <bean id="jacksonAccessDeniedHandler" -->
+	<!-- class="pl.styall.library.core.security.authorization.JacksonAccessDeniedHandler"></bean> -->
+	<!-- <bean id="restAuthenticationEntryPoint" -->
+	<!-- class="pl.styall.library.core.security.authorization.RestAuthenticationEntryPoint"></bean> -->
 	<!-- <bean id="userCache" -->
 	<!-- class="pl.styall.authentication.rest.EhCacheBasedRestUserCache"> -->
 	<!-- <property name="cache" ref="ehcache" /> -->

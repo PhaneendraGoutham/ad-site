@@ -25,7 +25,6 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.Length;
 
 import pl.styall.library.core.model.CommonEntity;
-import pl.styall.library.core.model.defaultimpl.Company;
 
 @Entity
 @Table(name = "brand", uniqueConstraints={@UniqueConstraint(columnNames="name")})
@@ -35,9 +34,6 @@ public class Brand extends CommonEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = -3646540035738604078L;
-
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private Brand parent;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Company company;
@@ -50,22 +46,13 @@ public class Brand extends CommonEntity {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "brand")
 	private List<Ad> ads = new ArrayList<Ad>();
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "parent")
-	private List<Brand> children;
-
 	@NotNull
 	@Size(max=255, min=3)
 	private String name;
 	
-	private String logo;
+	private String logoUrl;
 	
-	public Brand getParent() {
-		return parent;
-	}
 
-	public void setParent(Brand parent) {
-		this.parent = parent;
-	}
 
 	public Company getCompany() {
 		return company;
@@ -88,18 +75,6 @@ public class Brand extends CommonEntity {
 		ad.setBrand(this);
 	}
 
-	public List<Brand> getChildren() {
-		return children;
-	}
-
-	public void addChild(Brand brand) {
-		this.children.add(brand);
-		brand.setParent(this);
-	}
-
-	public void setChildren(List<Brand> children) {
-		this.children = children;
-	}
 
 	public String getDescription() {
 		return description;
@@ -109,12 +84,12 @@ public class Brand extends CommonEntity {
 		this.description = description;
 	}
 
-	public String getLogo() {
-		return logo;
+	public String getLogoUrl() {
+		return logoUrl;
 	}
 
-	public void setLogo(String logo) {
-		this.logo = logo;
+	public void setLogoUrlo(String logoUrl) {
+		this.logoUrl = logoUrl;
 	}
 
 	public String getName() {

@@ -1,18 +1,20 @@
-<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@ page language="java" pageEncoding="UTF-8"
+	contentType="text/html; charset=UTF-8"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-	<spring:url value="/secure/process_loging" var="loging"></spring:url>
-	<form action="${loging }" method="POST">
-		<input type="text" id="username" name="username"/> 
-		<input type="password" id="password" name="password" />
-		<input type="submit"/>
-	</form> 
-</body>
+<article class="center-article-wrapper">
+	<form class="form">
+
+		<label for="name">Nazwa użytkownika lub email</label> <input
+			type="text" id="name" /> <label for="password">Hasło</label> <input
+			type="password" id="password" /> <a href="register.html"
+			id="forget-password" class="color-imp">Nie pamiętam hasła</a> <a
+			href="${pageContext.request.contextPath}/user/register" id="register-link">Zarejestruj</a>
+		<div id="form-buttons">
+			<input type="submit" class="button-green" value="Zaloguj"/>
+
+			<a href="<c:url value="/social/login/facebook"/>" class="button-blue">Zaloguj z facebook</a>
+		</div>
+	</form>
+</article>
 </html>

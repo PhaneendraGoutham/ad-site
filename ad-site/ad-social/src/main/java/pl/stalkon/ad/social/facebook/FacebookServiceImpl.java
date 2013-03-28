@@ -11,7 +11,6 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookLink;
 
-import pl.stalkon.ad.core.AppConstants;
 import pl.stalkon.social.singleconnection.interfaces.AddConnectionHandler;
 
 public class FacebookServiceImpl implements AddConnectionHandler,
@@ -33,8 +32,7 @@ public class FacebookServiceImpl implements AddConnectionHandler,
 			facebook.feedOperations().postLink(
 					messageSource.getMessage("social.connectMessage", null,
 							LocaleContextHolder.getLocale()),
-					new FacebookLink(AppConstants.HTTP
-							+ AppConstants.APP_DOMAIN, messageSource
+					new FacebookLink(env.getProperty("app.domain"), messageSource
 							.getMessage("social.app.name", null,
 									LocaleContextHolder.getLocale()),
 							messageSource.getMessage("social.appCaption", null,
@@ -56,7 +54,7 @@ public class FacebookServiceImpl implements AddConnectionHandler,
 			facebook.feedOperations().postLink(
 					messageSource.getMessage("social.ad.create.message", null,
 							LocaleContextHolder.getLocale()),
-					new FacebookLink(link, messageSource.getMessage("app.name",
+					new FacebookLink(link, messageSource.getMessage("social.app.name",
 							null, LocaleContextHolder.getLocale()), title,
 							description));
 		} catch (OperationNotPermittedException e) {

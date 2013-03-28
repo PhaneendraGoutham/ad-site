@@ -19,8 +19,6 @@ import pl.styall.library.core.security.authorization.JacksonAccessDeniedHandler;
 import pl.styall.library.core.security.authorization.RestAuthenticationEntryPoint;
 
 @Configuration
-@ComponentScan(basePackages = {
-		"pl.styall.library.core.security.ajax" })
 @ImportResource("classpath:pl/stalkon/ad/config/security-context.xml")
 public class SecurityConfig {
 
@@ -60,14 +58,5 @@ public class SecurityConfig {
 		return new AuthenticationProvider();
 	}
 
-	@Bean
-	public JacksonAccessDeniedHandler jacksonAccessDeniedHandler() {
-		return new JacksonAccessDeniedHandler();
-	}
-
-	@Bean
-	public RestAuthenticationEntryPoint restAuthenticationEntryPoint() {
-		return new RestAuthenticationEntryPoint();
-	}
 
 }

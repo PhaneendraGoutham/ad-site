@@ -10,8 +10,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,6 +23,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.Formula;
 
+import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
@@ -46,16 +49,12 @@ public class Ad extends CommonEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateOnMain;
 
-	@NotNull
-	private String dailymotionId;
-	@NotNull
-	private String dailymotionUrl;
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Date creationDate;
 
 	private String title;
-
+	private String description;
 	private Boolean ageProtected = false;
 
 	private Boolean approved = true;
@@ -64,12 +63,10 @@ public class Ad extends CommonEntity {
 	private User poster;
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private AdData adData;
-
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "brandId")
 	private Brand brand;
 
-	private Type type;
+	private Type contentType = Type.MOVIE;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ad")
 	private List<Rank> ranks;
@@ -80,20 +77,32 @@ public class Ad extends CommonEntity {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ad")
 	private Set<AdComment> comments = new HashSet<AdComment>();
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "dailymiotionDataId")
+	private DailymotionData dailymotionData;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Tag> tags = new ArrayList<Tag>();
+
+	
+	public void update(AdPostDto adPostDto, List<Tag> tags, Brand brand){
+		this.setTitle(adPostDto.getTitle());
+		this.setDescription(adPostDto.getDescription());
+		this.setContentType(adPostDto.getType());
+		if(tags != null)
+		this.setTags(tags);
+		this.setBrand(brand);
+	}
+	
+
 	public Double getRank() {
+		if(rank == null)
+			return new Double(0);
 		return rank;
 	}
 
 	public void setRank(Double rank) {
 		this.rank = rank;
-	}
-
-	public String getDailymotionId() {
-		return dailymotionId;
-	}
-
-	public void setDailymotionId(String dailymotionId) {
-		this.dailymotionId = dailymotionId;
 	}
 
 	public User getPoster() {
@@ -104,20 +113,8 @@ public class Ad extends CommonEntity {
 		this.poster = poster;
 	}
 
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	public AdData getAdData() {
-		return adData;
-	}
-
-	public void setAdData(AdData adData) {
-		this.adData = adData;
+	public void setContentType(Type contentType) {
+		this.contentType = contentType;
 	}
 
 	public Brand getBrand() {
@@ -152,14 +149,6 @@ public class Ad extends CommonEntity {
 		this.comments = comments;
 	}
 
-	public String getDailymotionUrl() {
-		return dailymotionUrl;
-	}
-
-	public void setDailymotionUrl(String dailymotionUrl) {
-		this.dailymotionUrl = dailymotionUrl;
-	}
-
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -177,7 +166,19 @@ public class Ad extends CommonEntity {
 	}
 
 	public void setApproved(Boolean approved) {
-			this.approved = approved;
+		this.approved = approved;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Type getContentType() {
+		return contentType;
 	}
 
 	public void setTitle(String title) {
@@ -189,7 +190,7 @@ public class Ad extends CommonEntity {
 	}
 
 	public void setAgeProtected(Boolean ageProtected) {
-			this.ageProtected = ageProtected;
+		this.ageProtected = ageProtected;
 	}
 
 	public Place getPlace() {
@@ -197,7 +198,7 @@ public class Ad extends CommonEntity {
 	}
 
 	public void setPlace(Place place) {
-			this.place = place;
+		this.place = place;
 	}
 
 	public Date getDateOnMain() {
@@ -206,6 +207,26 @@ public class Ad extends CommonEntity {
 
 	public void setDateOnMain(Date dateOnMain) {
 		this.dateOnMain = dateOnMain;
+	}
+
+	public DailymotionData getDailymotionData() {
+		return dailymotionData;
+	}
+
+	public void setDailymotionData(DailymotionData dailymotionData) {
+		this.dailymotionData = dailymotionData;
+	}
+
+	public List<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+
+	public void addTag(Tag tag) {
+		tags.add(tag);
 	}
 
 }

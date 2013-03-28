@@ -1,5 +1,7 @@
 package pl.stalkon.ad.core.model.dto;
 
+import java.util.List;
+
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Type;
 
@@ -9,9 +11,19 @@ public class AdPostDto {
 	private String url;
 	private Type type;
 	private Long brandId;
+	private List<Long> tagsIds;
 	
 	
 	
+
+	public List<Long> getTagsIds() {
+		return tagsIds;
+	}
+
+	public void setTagsIds(List<Long> tagsIds) {
+		this.tagsIds = tagsIds;
+	}
+
 	public Type getType() {
 		return type;
 	}

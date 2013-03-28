@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.dao.BrandDao;
+import pl.stalkon.ad.core.model.dao.DaoQueryObject;
+import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.service.BrandService;
 import pl.styall.library.core.model.defaultimpl.UserDao;
 
@@ -35,8 +38,8 @@ public class BrandServiceImpl implements BrandService {
 	}
 	@Transactional
 	@Override
-	public List<Brand> get(Map<String, Object> queryObject) {
-		return brandDao.get(queryObject);
+	public List<Brand> get(List<DaoQueryObject> queryObjectList, Order order, Integer first, Integer last ){
+		return brandDao.get(queryObjectList, order, first, last);
 	}
 
 }

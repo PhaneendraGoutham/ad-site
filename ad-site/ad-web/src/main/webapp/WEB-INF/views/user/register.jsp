@@ -1,28 +1,30 @@
-<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
-    <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ page language="java" pageEncoding="UTF-8"
+	contentType="text/html; charset=UTF-8"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-<spring:url value="/user/register" var="register"></spring:url>
-<form:form action="${register }" commandName="userRegForm" method="POST">
-Imie
-	<form:input path="userData.name"/>
-Nazw	<form:input path="userData.surname"/>
-Plec	<form:radiobutton path="userData.sex" value="MALE"/>
-	<form:radiobutton path="userData.sex" value="FEMALE"/>
-Uzytkownik	<form:input path="username"/>
-Mail	<form:input path="mail"/>
-Haslo	<form:password path="password"/>
-Powtorz <form:password path="confirmPassword"/>
-Data <form:input path="userData.birthDate"/>
-<form:button> submit</form:button>
- </form:form>
+<article class="center-article-wrapper">
+	<form class="form">
 
-</body>
-</html>
+		<label for="name">Nazwa użytkownika</label> <input type="text"
+			id="name" /> <label for="password">Hasło</label> <input
+			type="password" id="password" /> <label for="confirm-password">Powtórz
+			hasło</label> <input type="password" id="confirm-password" /> <label
+			for="email">Adres email</label> <input type="email" id="email" /> <label
+			for="birthdate">Data urodzenia</label> <input type="date"
+			id="birthdate" />
+
+		<div class="bigger-space">
+			<input type="radio" id="sex" /> <label
+				for="sex" class="inline-separator">Kobieta</label> <input
+				type="radio" id="sex" />
+			<label for="sex">Meżczyzna</label>
+		</div>
+		<input type="checkbox" id="terms" /> <label for="terms">Akceptuje
+			regulamin</label>
+		<div id="form-buttons">
+			<div class="button-red">Zarejestruj</div>
+			<a href="<c:url value="/social/login/facebook"/>" class="button-blue">Zaloguj z facebook</a>
+		</div>
+	</form>
+</article>
