@@ -7,11 +7,21 @@ import java.util.UUID;
 import org.hibernate.criterion.Order;
 
 import pl.stalkon.ad.core.model.Brand;
-import pl.stalkon.ad.core.model.dao.DaoQueryObject;
+import pl.stalkon.ad.core.model.WistiaProject;
+import pl.stalkon.ad.core.model.dto.BrandPostDto;
+import pl.stalkon.ad.core.model.dto.BrandSearchDto;
 import pl.styall.library.core.ext.QueryObject;
+import pl.styall.library.core.model.dao.DaoQueryObject;
 
 public interface BrandService  {
-	public Brand register(Brand brand, Long id);
+//	public Brand register(BrandPostDto brandPostDto, WistiaProject wistiaProject);
+	public Brand register(BrandPostDto brandPostDto, WistiaProject wistiaProject, Long companyId);
+	public Brand update(BrandPostDto brandPostDto, Long brandId);
 	public Brand get(Long id);
+	public List<BrandSearchDto> getByTerm(String term);
+	
 	public List<Brand> get(List<DaoQueryObject> queryObjectList, Order order, Integer first, Integer last );
+	public List<Brand> get();
+	
+	public void setBrandLogo(String logo,String smallLogo, Long brandId);
 }

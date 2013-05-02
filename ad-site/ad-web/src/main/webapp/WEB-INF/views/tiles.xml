@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE tiles-definitions PUBLIC
-       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 
 <tiles-definitions>
@@ -8,6 +8,12 @@
 		<put-attribute name="header" value="/WEB-INF/views/header.jsp" />
 
 		<!-- <put-attribute name="footer" value="/WEB-INF/views/footer.jsp" /> -->
+	</definition>
+	<definition name="base.bare" template="/WEB-INF/views/layouts/bare.jsp">
+	</definition>
+
+	<definition name="comments" extends="base.bare">
+		<put-attribute name="content" value="/WEB-INF/views/ad/comments.jsp" />
 	</definition>
 
 	<definition name="base.leftminibrowser" extends="base.layout">
@@ -17,14 +23,56 @@
 	<definition name="browser" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/ad/simple-browser.jsp" />
+		<put-attribute name="ad" value="/WEB-INF/views/ad/ad.jsp"
+			cascade="true" />
+		<put-attribute name="pagination" value="/WEB-INF/views/ad/pagination.jsp"
+			cascade="true"></put-attribute>
 	</definition>
 
+	<definition name="ad/browser" extends="browser">
+		<put-attribute name="simple-browser"
+			value="/WEB-INF/views/ad/simple-browser.jsp" cascade="true" />
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/ad/search.jsp" />
+	</definition>
 
+	<definition name="brand/brand-info" extends="ad/browser">
+		<put-attribute name="center-panel-content"
+			value="/WEB-INF/views/brand/brand-info.jsp" />
+	</definition>
+	<definition name="ad" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/ad/ad.jsp" />
+		<put-attribute name="comments" value="/WEB-INF/views/ad/comments.jsp"
+			cascade="true" />
+	</definition>
 
 	<definition name="ad/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/ad/register.jsp" />
 	</definition>
+	<definition name="ad/company-register" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content"
+			value="/WEB-INF/views/ad/company-register.jsp" />
+	</definition>
+	<definition name="info-page" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/info-page.jsp" />
+	</definition>
 
+	<definition name="company/base-view" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content"
+			value="/WEB-INF/views/company/base-view.jsp" />
+	</definition>
+	<definition name="brand/register" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/brand/register.jsp" />
+	</definition>
+	<definition name="company/register" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content"
+			value="/WEB-INF/views/company/register.jsp" />
+	</definition>
+	<definition name="user/password" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/password.jsp" />
+	</definition>
+	<definition name="user/profile" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/profile.jsp" />
+	</definition>
 	<definition name="user/login" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/login.jsp" />
 	</definition>
@@ -32,5 +80,6 @@
 	<definition name="user/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/register.jsp" />
 	</definition>
+
 
 </tiles-definitions>

@@ -1,7 +1,9 @@
 package pl.stalkon.ad.core.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -12,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -41,13 +44,14 @@ public class AdComment extends CommonEntity {
 	private Date date;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="parent")
-	private Set<AdComment> children = new HashSet<AdComment>();
+	@OrderBy(value="date")
+	private List<AdComment> children = new ArrayList<AdComment>();
 
 	@ManyToOne(targetEntity = AdComment.class, optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "parenId", insertable = true, updatable = false)
 	private AdComment parent = null;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional=true)
 	private Ad ad;
 
 	public Ad getAd() {
@@ -82,11 +86,11 @@ public class AdComment extends CommonEntity {
 		this.date = date;
 	}
 
-	public Set<AdComment> getChildren() {
+	public List<AdComment> getChildren() {
 		return children;
 	}
 
-	public void setChildren(Set<AdComment> children) {
+	public void setChildren(List<AdComment> children) {
 		this.children = children;
 	}
 

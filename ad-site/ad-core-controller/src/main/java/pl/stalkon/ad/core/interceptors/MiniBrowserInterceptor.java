@@ -16,25 +16,27 @@ import pl.stalkon.ad.core.model.service.AdService;
 public class MiniBrowserInterceptor implements HandlerInterceptor {
 
 	private AdService adService;
-	
-	public void setAdService(AdService adService){
-		this.adService	= adService;
+
+	public void setAdService(AdService adService) {
+		this.adService = adService;
 	}
-	
+
 	@Override
 	public void afterCompletion(HttpServletRequest arg0,
 			HttpServletResponse arg1, Object arg2, Exception arg3)
 			throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response,
-			Object arg2, ModelAndView model) throws Exception {
-		List<Ad> ads = adService.getTop(0, 10, null);
-		model.addObject("leftTopAds", ads);
-		
+	public void postHandle(HttpServletRequest request,
+			HttpServletResponse response, Object arg2, ModelAndView model)
+			throws Exception {
+		if (model != null) {
+			List<Ad> ads = adService.getTop(0, 10, null);
+			model.addObject("leftTopAds", ads);
+		}
 	}
 
 	@Override

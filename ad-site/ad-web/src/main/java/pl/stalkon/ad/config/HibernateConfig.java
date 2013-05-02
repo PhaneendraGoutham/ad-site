@@ -21,7 +21,7 @@ import pl.styall.library.core.model.defaultimpl.Company;
 import pl.styall.library.core.model.defaultimpl.UserData;
 
 @Configuration
-@EnableTransactionManagement
+@EnableTransactionManagement(order=2)
 public class HibernateConfig {
 
 	@Inject
@@ -31,7 +31,7 @@ public class HibernateConfig {
 	public DataSource dataSource() {
 		BasicDataSource source = new BasicDataSource();
 		source.setDriverClassName("com.mysql.jdbc.Driver");
-		source.setUrl(env.getProperty("database.url"));
+		source.setUrl(env.getProperty("database.url")+"?characterEncoding=UTF-8");
 		source.setUsername(env.getProperty("database.username"));
 		source.setPassword(env.getProperty("database.password"));
 		return source;
@@ -53,6 +53,7 @@ public class HibernateConfig {
 		prop.setProperty("hibernate.show_sql", "true");
 		prop.setProperty("hibernate.hbm2ddl.auto", "update");
 		prop.setProperty("connection.characterEncoding", "UTF-8");
+		prop.setProperty("hibernate.connection.useUnicode", "yes");
 		sessionFactory.setHibernateProperties(prop);
 		return sessionFactory;
 	}

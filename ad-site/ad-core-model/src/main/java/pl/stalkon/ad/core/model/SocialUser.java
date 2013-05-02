@@ -59,7 +59,6 @@ public class SocialUser implements RemoteUser {
 	@Column
 	private String profileUrl;
 	
-	@Column(length = 120)
 	private String accessToken;
 	
 	

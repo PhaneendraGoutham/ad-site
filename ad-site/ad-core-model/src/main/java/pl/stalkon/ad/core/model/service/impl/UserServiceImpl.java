@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.User.DisplayNameType;
+import pl.stalkon.ad.core.model.dto.UserProfileDto;
 import pl.stalkon.ad.core.model.dto.UserRegForm;
 import pl.stalkon.ad.core.model.service.UserService;
 import pl.styall.library.core.model.Credentials;
@@ -14,7 +15,8 @@ import pl.styall.library.core.model.defaultimpl.UserData;
 import pl.styall.library.core.model.service.impl.AbstractUserServiceImpl;
 
 @Service("userService")
-public class UserServiceImpl extends AbstractUserServiceImpl<User> implements UserService {
+public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
+		UserService {
 
 	@Override
 	@Transactional
@@ -22,7 +24,6 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements Us
 		User user = new User();
 		Credentials credentials = new Credentials();
 		String password = userRegForm.getPassword();
-		Address address = userRegForm.getAddress();
 
 		credentials.setSalt();
 		credentials.setToken();
@@ -30,9 +31,13 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements Us
 				credentials.getSalt()));
 		credentials.setMail(userRegForm.getMail());
 		credentials.setUsername(userRegForm.getUsername());
-		UserData userData = userRegForm.getUserData();
+		credentials.setActive(false);
+		UserData userData = new UserData();
+		userData.setBirthDate(userRegForm.getBirthdate());
+		userData.setSex(userRegForm.getSex());
+		userData.setName(userRegForm.getName());
+		userData.setSurname(userRegForm.getSurname());
 		user.setUserData(userData);
-		userData.addAddress(address);
 		UserRole userRole = userDao.loadUserRoleByName("ROLE_USER");
 		if (userRole == null) {
 			userRole = new UserRole();
@@ -40,14 +45,28 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements Us
 		}
 		user.addUserRole(userRole);
 		user.setCredentials(credentials);
-		
-		if(userRegForm.getDisplayNameType() != null){
-			user.setDisplayNameType(userRegForm.getDisplayNameType());
-		}else{
-			user.setDisplayNameType(DisplayNameType.USERNAME);
-		}
+		user.setDisplayNameType(DisplayNameType.USERNAME);
 		userDao.save(user);
 		return user;
 	}
-	
+
+	@Override
+	@Transactional
+	public void updateProfile(UserProfileDto userProfileDto, Long id) {
+		User user = userDao.get(id);
+		user.getUserData().setName(userProfileDto.getName());
+		user.getUserData().setSurname(userProfileDto.getSurname());
+		userDao.update(user);
+	}
+
+	@Override
+	@Transactional
+	public void setUserThumbnail(String url, Long id) {
+		User user = userDao.get(id);
+		user.getUserData().setImageUrl(url);
+		userDao.update(user);
+	}
+
+
+
 }

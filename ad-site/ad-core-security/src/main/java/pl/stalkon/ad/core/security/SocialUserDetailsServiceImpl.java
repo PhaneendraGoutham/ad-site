@@ -60,7 +60,7 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 			type = LoggedType.API;
 		}
 		return new SocialLoggedUser(user.getId(), user.getCredentials()
-				.getUsername(), user
+				.getUsername(), user.getDisplayName(), user.getUserData().getBirthDate(), user
 				.getCredentials().getPassword(), user.getCredentials()
 				.getSalt(), user.getUserData().getImageUrl(), type, getAuthorities(roles));
 	}

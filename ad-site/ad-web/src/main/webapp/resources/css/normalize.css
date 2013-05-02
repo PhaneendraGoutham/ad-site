@@ -4,15 +4,15 @@ html, body {
 	min-width: 100%;
 }
 
-html, body, div, h1, h2, h3, h4, h5, h6, p, img, dl, dt, dd, ol, ul, li, table, tr, td, form, object, embed, article, aside, canvas, command, details, fieldset, figcaption, figure, footer, group, header, hgroup, legend, mark, menu, meter, nav, output, progress, section, summary, time, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
+html, body, div, h1, h2, h3, h4, h5, h6, p, img, dl, dt, dd, ol, ul, li, table, tr, td, form, object, embed, article, aside, canvas, command, details, fieldset, figcaption, figure, footer, group, header, hgroup, legend, mark, menu, meter, nav, output, progress, section, summary, time, audio, video,button {
+	margin: 0px;
+	padding: 0px;
+	border: none;
 }
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
 	display: block;
 }
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section,input[type="text"],input[type="date"],input[type="email"],input[type="password"],textarea {
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section,input[type="text"],input[type="date"],input[type="email"],input[type="password"],textarea, button,ul,li {
 	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 	-moz-box-sizing: border-box; /* Firefox, other Gecko */
 	box-sizing: border-box;

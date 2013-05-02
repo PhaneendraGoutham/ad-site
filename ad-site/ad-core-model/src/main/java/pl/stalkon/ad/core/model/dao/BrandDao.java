@@ -15,12 +15,17 @@ import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Brand;
 import pl.styall.library.core.model.dao.AbstractDao;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
+import pl.styall.library.core.model.dao.DaoQueryObject;
 
 @Repository
 public class BrandDao extends AbstractDao<Brand> {
 
 	@Autowired
 	private CriteriaConfigurer criteriaConfigurer;
+	
+	public List<Brand> get(){
+		return (List<Brand>) currentSession().createQuery("from Brand").list();
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Brand> get(List<DaoQueryObject> queryObjectList, Order order, Integer first, Integer last ) {
@@ -33,10 +38,10 @@ public class BrandDao extends AbstractDao<Brand> {
 		return brands;
 	}
 	
-	public void addRestrictions(Criteria criteria, String alias,
-			List<DaoQueryObject> queryObjectList) {
-		for (DaoQueryObject qo : queryObjectList) {
-			qo.addCriteria(criteria, alias, Brand.class);
-		}
-	}
+//	public void addRestrictions(Criteria criteria, String alias,
+//			List<DaoQueryObject> queryObjectList) {
+//		for (DaoQueryObject qo : queryObjectList) {
+//			qo.addCriteria(criteria, alias, Brand.class);
+//		}
+//	}
 }

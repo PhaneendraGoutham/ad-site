@@ -4,26 +4,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.tiles.definition.DefinitionsFactory;
-import org.apache.tiles.definition.UnresolvingLocaleDefinitionsFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
-import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.view.UrlBasedViewResolver;
-import org.springframework.web.servlet.view.tiles2.TilesConfigurer;
-import org.springframework.web.servlet.view.tiles2.TilesView;
 
 import pl.stalkon.ad.core.interceptors.MiniBrowserInterceptor;
 import pl.stalkon.ad.core.model.service.AdService;
@@ -48,6 +43,13 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	public LocaleResolver localeResolver() {
 		return new CookieLocaleResolver();
 	}
+	
+	@Bean
+	public MultipartResolver multipartResolver(){
+		CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
+		commonsMultipartResolver.setMaxUploadSize(2000000);
+		return commonsMultipartResolver;
+	}
 
 	// @Bean
 	// public ViewResolver viewResolver() {
@@ -70,10 +72,14 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	public void addInterceptors(InterceptorRegistry registry) {
 		MiniBrowserInterceptor	miniBrowserInterceptor = new MiniBrowserInterceptor();
 		miniBrowserInterceptor.setAdService(adService);
-		registry.addInterceptor(miniBrowserInterceptor).addPathPatterns("/ad/**", "/user/**");
-	
+		registry.addInterceptor(miniBrowserInterceptor).addPathPatterns("/**", "/**");
 	}
 
+	@Override
+	public void configureMessageConverters(
+			List<HttpMessageConverter<?>> converters) {
+		converters.add(new MappingJackson2HttpMessageConverter());
+	}
 	@Override
 	public void addArgumentResolvers(
 			List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -85,5 +91,8 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations(
 				"/resources/**");
+		registry.addResourceHandler("/favicon.ico").addResourceLocations("/favicon.ico");
 	}
+	
+
 }

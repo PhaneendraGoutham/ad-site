@@ -43,27 +43,25 @@ public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 		
 		System.out.println(username);
 		userRegForm.setUsername(username);
-		UserData data = new UserData();
 		String birthday = profile.getBirthday();
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		try {
-			data.setBirthDate(format.parse(birthday));
+			userRegForm.setBirthdate(format.parse(birthday));
 		} catch (ParseException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
-		data.setName(profile.getFirstName());
-		data.setSurname(profile.getLastName());
+		userRegForm.setName(profile.getFirstName());
+		userRegForm.setSurname(profile.getLastName());
 		if (profile.getGender() != null) {
 			if (profile.getGender().equals("male")) {
-				data.setSex(Sex.MALE);
+				userRegForm.setSex(Sex.MALE);
 			} else {
-				data.setSex(Sex.FEMALE);
+				userRegForm.setSex(Sex.FEMALE);
 			}
 		}
 		userRegForm.setDisplayNameType(DisplayNameType.SOCIAL_DISPLAY_NAME);
-		userRegForm.setUserData(data);
 		User user = userService.register(userRegForm);
 		return user;
 	}

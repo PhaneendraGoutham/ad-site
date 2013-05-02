@@ -11,26 +11,28 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.Formula;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
 @Table(name = "ad")
-// @NamedNativeQuery(name = "rankCount", query =
-// "SELECT COUNT(rank) from rank where adId = ?")
-@FilterDef(name = "showApproved", defaultCondition = "approved = true")
 public class Ad extends CommonEntity {
 
 	private static final long serialVersionUID = 1335218634734582331L;
@@ -53,16 +55,25 @@ public class Ad extends CommonEntity {
 	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Date creationDate;
 
+	private Integer year;
+
+	@Column(nullable = false, length = 60)
 	private String title;
+
+	@Column(nullable = false, length = 500)
 	private String description;
+
+	@Column(nullable = false, columnDefinition = "BOOL default false")
 	private Boolean ageProtected = false;
 
+	@Column(nullable = false, columnDefinition = "BOOL default true")
 	private Boolean approved = true;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "poster_id")
 	private User poster;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional=false)
 	@JoinColumn(name = "brandId")
 	private Brand brand;
 
@@ -71,34 +82,63 @@ public class Ad extends CommonEntity {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ad")
 	private List<Rank> ranks;
 
-	@Formula("(SELECT SUM(r.rank)/COUNT(*) from ranks as r where r.adId = id)")
+	@Formula("(SELECT (SUM(r.rank)/COUNT(*)) from ranks as r where r.adId = id)")
 	private Double rank;
 
+	@Formula("(SELECT COUNT(*) from ranks as r where r.adId = id)")
+	private Long voteCount;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ad")
-	private Set<AdComment> comments = new HashSet<AdComment>();
+	@OrderBy(value = "date")
+	private List<AdComment> comments = new ArrayList<AdComment>();
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "dailymiotionDataId")
-	private DailymotionData dailymotionData;
+	@JoinColumn(name = "wistiaVideo")
+	private WistiaVideo wistiaVideo;;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "youtubeVideo")
+	private YoutubeVideo youtubeVideo;;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "ad_tags", joinColumns = { @JoinColumn(name = "ad_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }, uniqueConstraints = { @UniqueConstraint(name = "ad_tag_unique", columnNames = {
+			"ad_id", "tag_id" }) })
 	private List<Tag> tags = new ArrayList<Tag>();
 
-	
-	public void update(AdPostDto adPostDto, List<Tag> tags, Brand brand){
-		this.setTitle(adPostDto.getTitle());
-		this.setDescription(adPostDto.getDescription());
-		this.setContentType(adPostDto.getType());
-		if(tags != null)
-		this.setTags(tags);
-		this.setBrand(brand);
+	private Long duration;
+
+	@Column(nullable = false)
+	private Boolean official;
+	public Long getDuration() {
+		return duration;
 	}
-	
+
+	public void setDuration(Long duration) {
+		this.duration = duration;
+	}
+
+
+	public String getThumbnail() {
+		if (wistiaVideo != null) {
+			return wistiaVideo.getThumbnail();
+		} else {
+			return youtubeVideo.getVideoThumnail();
+		}
+	}
+
+	public String getVideoUrl() {
+		if (wistiaVideo != null) {
+			return wistiaVideo.getVideoUrl();
+		} else {
+			return youtubeVideo.getVideoUrl();
+		}
+	}
 
 	public Double getRank() {
-		if(rank == null)
+		if (rank != null) {
+			return this.rank / voteCount;
+		} else
 			return new Double(0);
-		return rank;
 	}
 
 	public void setRank(Double rank) {
@@ -141,11 +181,11 @@ public class Ad extends CommonEntity {
 		ranks.add(rank);
 	}
 
-	public Set<AdComment> getComments() {
+	public List<AdComment> getComments() {
 		return comments;
 	}
 
-	public void setComments(Set<AdComment> comments) {
+	public void setComments(List<AdComment> comments) {
 		this.comments = comments;
 	}
 
@@ -159,6 +199,14 @@ public class Ad extends CommonEntity {
 
 	public String getTitle() {
 		return title;
+	}
+
+	public Integer getYear() {
+		return year;
+	}
+
+	public void setYear(Integer year) {
+		this.year = year;
 	}
 
 	public Boolean getApproved() {
@@ -185,6 +233,22 @@ public class Ad extends CommonEntity {
 		this.title = title;
 	}
 
+	public YoutubeVideo getYoutubeVideo() {
+		return youtubeVideo;
+	}
+
+	public void setYoutubeVideo(YoutubeVideo youtubeVideo) {
+		this.youtubeVideo = youtubeVideo;
+	}
+
+	public Boolean getOfficial() {
+		return official;
+	}
+
+	public void setOfficial(Boolean official) {
+		this.official = official;
+	}
+
 	public Boolean getAgeProtected() {
 		return ageProtected;
 	}
@@ -201,6 +265,14 @@ public class Ad extends CommonEntity {
 		this.place = place;
 	}
 
+	public WistiaVideo getWistiaVideo() {
+		return wistiaVideo;
+	}
+
+	public void setWistiaVideo(WistiaVideo wistiaVideo) {
+		this.wistiaVideo = wistiaVideo;
+	}
+
 	public Date getDateOnMain() {
 		return dateOnMain;
 	}
@@ -209,13 +281,13 @@ public class Ad extends CommonEntity {
 		this.dateOnMain = dateOnMain;
 	}
 
-	public DailymotionData getDailymotionData() {
-		return dailymotionData;
-	}
-
-	public void setDailymotionData(DailymotionData dailymotionData) {
-		this.dailymotionData = dailymotionData;
-	}
+	// public DailymotionData getDailymotionData() {
+	// return dailymotionData;
+	// }
+	//
+	// public void setDailymotionData(DailymotionData dailymotionData) {
+	// this.dailymotionData = dailymotionData;
+	// }
 
 	public List<Tag> getTags() {
 		return tags;
@@ -227,6 +299,14 @@ public class Ad extends CommonEntity {
 
 	public void addTag(Tag tag) {
 		tags.add(tag);
+	}
+
+	public Long getVoteCount() {
+		return voteCount;
+	}
+
+	public void setVoteCount(Long voteCount) {
+		this.voteCount = voteCount;
 	}
 
 }

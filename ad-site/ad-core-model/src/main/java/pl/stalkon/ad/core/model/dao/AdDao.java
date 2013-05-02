@@ -1,25 +1,19 @@
 package pl.stalkon.ad.core.model.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.AliasToBeanResultTransformer;
-import org.hibernate.validator.internal.util.ReflectionHelper;
+import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.styall.library.core.model.dao.AbstractDao;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
+import pl.styall.library.core.model.dao.DaoQueryObject;
 
 @Repository
 public class AdDao extends AbstractDao<Ad> {
@@ -31,6 +25,9 @@ public class AdDao extends AbstractDao<Ad> {
 	private BrandDao brandDao;
 
 	@Autowired
+	private TagDao tagDao;
+
+	@Autowired
 	private CriteriaConfigurer criteriaConfigurer;
 
 	@SuppressWarnings("unchecked")
@@ -38,6 +35,7 @@ public class AdDao extends AbstractDao<Ad> {
 			Order order, Integer first, Integer last) {
 		Criteria adCriteria = currentSession().createCriteria(Ad.class);
 		adCriteria.createCriteria("poster");
+		adCriteria.createCriteria("brand");
 		addRestrictions(adCriteria, "", queryObjectList);
 		Long total = (Long) adCriteria.setProjection(Projections.rowCount())
 				.uniqueResult();
@@ -53,8 +51,8 @@ public class AdDao extends AbstractDao<Ad> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Ad> getList(List<DaoQueryObject> queryObjectList,
-			Order order, Integer first, Integer last) {
+	public List<Ad> getList(List<DaoQueryObject> queryObjectList, Order order,
+			Integer first, Integer last) {
 		Criteria adCriteria = currentSession().createCriteria(Ad.class);
 		adCriteria.createCriteria("poster");
 		addRestrictions(adCriteria, "", queryObjectList);
@@ -64,19 +62,31 @@ public class AdDao extends AbstractDao<Ad> {
 		return ads;
 	}
 
-	public void addRestrictions(Criteria criteria, String alias,
+	public boolean addRestrictions(Criteria criteria, String alias,
 			List<DaoQueryObject> queryObjectList) {
+		boolean added = false;
 		for (DaoQueryObject qo : queryObjectList) {
+			boolean temp;
 			if (qo.name.equals("user")) {
-				userDao.addRestrictions(criteria, "poster",
+				temp = userDao.addRestrictions(criteria, "poster",
 						(List<DaoQueryObject>) qo.value);
-			}
-			if (qo.name.equals("brand")) {
-				brandDao.addRestrictions(criteria, "brand",
+			} else if (qo.name.equals("brand")) {
+				temp =brandDao.addRestrictions(criteria, "brand",
 						(List<DaoQueryObject>) qo.value);
+			} else if (qo.name.equals("tags")) {
+				temp = tagDao.addRestrictions(criteria, "tag",
+						(List<DaoQueryObject>) qo.value);
+				if(temp)
+					criteria.createAlias("tags", "tag");
+			} else {
+//				qo.addCriteria(criteria, alias, Ad.class);
+				temp = qo.addCriteria(criteria, alias);
 			}
-			qo.addCriteria(criteria, alias, Ad.class);
+			if(!added){
+				added = temp;
+			}
 		}
+		return added;
 	}
 
 	public boolean isOwner(Long adId, Long userId) {
@@ -92,4 +102,12 @@ public class AdDao extends AbstractDao<Ad> {
 				.setLong("adId", adId).setLong("userId", userId).uniqueResult();
 		return ad;
 	}
+
+	// public List<Ad> temp(List<Long> brandIds){
+	// DetachedCriteria subCriteria = DetachedCriteria.forClass(Brand.class);
+	// subCriteria.add(Restrictions.in("id",
+	// brandIds)).setProjection(Projections.groupProperty("id"));
+	// Criteria adCriteria = currentSession().createCriteria(Ad.class);
+	// adCriteria.add(Restrictions.)
+	// }
 }

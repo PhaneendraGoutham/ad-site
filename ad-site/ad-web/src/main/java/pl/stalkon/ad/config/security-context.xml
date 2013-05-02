@@ -15,19 +15,27 @@
 			ref="socialAuthenticationProvider" />
 	</security:authentication-manager>
 <security:http pattern="/resources/**" security="none"/>
+<security:http pattern="/favicon.ico" security="none"/>
 
-	<security:http use-expressions="true" access-denied-page="/user/login">
+	<security:http use-expressions="true" access-denied-page="/user/login" >
 		<security:anonymous enabled="true" />
 		<security:remember-me key="asdf"
 			services-ref="persistentTokenBasedRememberMeServices" />
 		<security:custom-filter ref="socialAuthenticationFilter"
 			before="PRE_AUTH_FILTER" />
-		<security:form-login login-page="/user/login"
+		<security:form-login login-page="/user/login" 
 			login-processing-url="/process_loging" password-parameter="password"
-			username-parameter="username" />
+			username-parameter="username" authentication-failure-url="/user/login?login_error=1"/>
+			<security:logout invalidate-session="true" logout-url="/user/logout" logout-success-url="/"/>
+			<security:intercept-url pattern="/ad/register" access="hasRole('ROLE_USER')"/>
+			<security:intercept-url pattern="/company/register" access="hasRole('ROLE_USER')"/>
+			<security:intercept-url pattern="/user/company" access="hasRole('ROLE_USER')" />
+			<security:intercept-url pattern="/brand/*/ad/register" access="hasRole('ROLE_COMPANY')" />
 	</security:http>
 	<!-- 	<security:global-method-security -->
 <!-- 		secured-annotations="enabled" /> -->
+
+
 
 	<bean id="tilesConfigurer"
 		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">

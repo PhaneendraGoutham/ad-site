@@ -16,24 +16,59 @@
 <title>Spotnik.pl centrum reklam</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/normalize.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
+
+		<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/jquery/jquery.ui.core.min.css">
+		<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/jquery/jquery-ui-1.10.2.custom.css">
+	<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/jquery/jquery.tagit.css">
+	
+	<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/normalize.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/main.css">
+<script
+	src="${pageContext.request.contextPath}/resources/js/vendor/modernizr-2.6.2.min.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/vendor/jquery-1.9.1.min.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/lib/jquery-rating.js"></script>
+
+<script
+	src="${pageContext.request.contextPath}/resources/js/lib/jquery-ui-1.10.2.custom.min.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/lib/jsonp.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/lib/wistia-upload-widget.js"></script>
+	<script
+	src="${pageContext.request.contextPath}/resources/js/lib/tagme.js"></script>
+	
+
+	<script
+	src="${pageContext.request.contextPath}/resources/js/lib/jquery.validate.js"></script>
+			<script
+	src="${pageContext.request.contextPath}/resources/js/lib/messages_pl.js"></script>
+<script type="text/javascript">
+	var basePath = '<c:url value="/"/>';
+</script>
 <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/vendor/modernizr-2.6.2.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/vendor/jquery-1.9.1.min.js"></script>
 </head>
 <body>
 	<div id="wrapper">
 		<tiles:insertAttribute name="header" />
 		<div id="content-wrapper" class="page">
 			<section id="center-panel">
-				<tiles:insertAttribute name="center-panel-content"/>
+				<tiles:insertAttribute name="center-panel-content" />
 			</section>
-			<aside id="right-panel" class="right">
-				<tiles:insertAttribute name="right-panel-content"/>
+			<aside id="right-panel" class="right ui-corner-all">
+				<tiles:insertAttribute name="right-panel-content" />
 			</aside>
 		</div>
-<%-- 		<tiles:insertAttribute name="footer" /> --%>
+		<%-- 		<tiles:insertAttribute name="footer" /> --%>
 	</div>
 </body>
+
+
+<div id="login-dialog" title="Zaloguj się">Musisz się zalogować</div>
 </html>

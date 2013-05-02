@@ -15,7 +15,7 @@ import pl.stalkon.social.singleconnection.interfaces.ConnectionSignup;
 import pl.stalkon.social.singleconnection.interfaces.RemoteUser;
 import pl.stalkon.social.singleconnection.interfaces.SocialUserService;
 
-@Transactional
+
 public class SocialUserServiceImpl implements SocialUserService {
 
 	@Autowired
@@ -25,31 +25,37 @@ public class SocialUserServiceImpl implements SocialUserService {
 	private SocialUserDao socialUserDao;
 
 	@Override
+	@Transactional
 	public RemoteUser get(String providerId, String providerUserId) {
 		return socialUserDao.get(providerId, providerUserId);
 	}
 
 	@Override
+	@Transactional
 	public RemoteUser get(Long userId) {
 		return socialUserDao.get(userId);
 	}
 
 	@Override
+	@Transactional
 	public RemoteUser get(Long userId, String providerId, String providerUserId) {
 		return socialUserDao.get(userId, providerId, providerUserId);
 	}
 
 	@Override
+	@Transactional
 	public RemoteUser save(RemoteUser remoteUser) {
 		return socialUserDao.save(remoteUser);
 	}
 
 	@Override
+	@Transactional
 	public boolean isUserIdConnectedTo(String providerId, Long userId) {
 		return socialUserDao.isUserIdConnectedTo(providerId, userId);
 	}
 
 	@Override
+	@Transactional
 	public RemoteUser createRemoteUser(Long userId, String providerId,
 			String providerUserId, String displayName, String profileUrl,
 			String accessToken, String secret, String refreshToken,
