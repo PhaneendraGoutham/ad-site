@@ -16,36 +16,47 @@
 
 
 					<li class="<c:if test="${path == 'ad/waiting'}">active</c:if>"><a
-						href="<c:url value="/ad/waiting"/>">Poczekalnia</a></li>
-
+						href="<c:url value="/ad/waiting" />">Poczekalnia</a></li>
 
 					<li class="<c:if test="${path == 'ad/search'}">active</c:if>"><a
 						href="<c:url value="/ad/search"/>">Przeglądaj</a></li>
 
 
-<%-- 					<li class="<c:if test="${path == 'ad/rand'}">active</c:if>"><a --%>
-<%-- 						href="<c:url value="/ad"/>">Losuj</a></li> --%>
+					<li class="<c:if test="${path == 'ad/rand'}">active</c:if>"><a
+						href="<c:url value="/ad/rand"/>">Losuj</a></li>
+						<li class="<c:if test="${path == 'contest/contests-list'}">active</c:if>"><a
+						href="<c:url value="/contest"/>">Konkursy</a></li>
 
 
-<%-- 					<li class="<c:if test="${path == 'contest'}">active</c:if>"><a --%>
-<%-- 						href="<c:url value="/ad/contest"/>">Konkursy</a></li> --%>
+					<%-- 					<li class="<c:if test="${path == 'contest'}">active</c:if>"><a --%>
+					<%-- 						href="<c:url value="/ad/contest"/>">Konkursy</a></li> --%>
 
-
-					<li class="<c:if test="${path == 'ad/register'}">active</c:if>"><a
-						href="<c:url value="/ad/register"/>">Dodaj</a></li>
-
+					<sec:authorize access="!hasRole('ROLE_COMPANY')">
+						<li class="<c:if test="${path == 'ad/register'}">active</c:if>"><a
+							href="<c:url value="/ad/register"/>">Dodaj</a></li>
+					
+					</sec:authorize>
+					<sec:authorize access="hasRole('ROLE_COMPANY')">
+						<li class="<c:if test="${path == 'company/base-view'}">active</c:if>"><a href="${pageContext.request.contextPath}/user/company">Współpraca</a></li>
+					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
-						<li id="logged-user-holder" class="right last-right" onclick="javascript:showUserDropdownMenu()"><sec:authentication
-								property="principal.imageUrl" var="loggedUserPhotoUrl"/><span>
-							<sec:authentication
-									property="principal.displayName" /></span> <img id="logged-user-photo"
-							src="${loggedUserPhotoUrl }" />
+						<li id="logged-user-holder" class="right last-right"
+							onclick="javascript:showUserDropdownMenu()"><sec:authentication
+								property="principal.imageUrl" var="loggedUserPhotoUrl" /><span>
+								<sec:authentication property="principal.displayName" />
+						</span> <img id="logged-user-photo" src="${loggedUserPhotoUrl }" />
 							<ul id="user-dropdown-menu" class="hidden">
-								<li><a href="${pageContext.request.contextPath}/user/profile">Profil</a></li>
-								<li><a href="${pageContext.request.contextPath}/user/password">Zmień hasło</a></li>
-								<li><a href="${pageContext.request.contextPath}/user/<sec:authentication property="principal.id" ></sec:authentication>/ad">Moje reklamy</a></li>
-								<li><a href="${pageContext.request.contextPath}/user/company">Współpraca</a></li>
-								
+								<li><a
+									href="${pageContext.request.contextPath}/user/profile">Profil</a></li>
+								<li><a
+									href="${pageContext.request.contextPath}/user/password">Zmień
+										hasło</a></li>
+								<li><a
+									href="${pageContext.request.contextPath}/user/<sec:authentication property="principal.id" ></sec:authentication>">Moje
+										reklamy</a></li>
+					<sec:authorize access="!hasRole('ROLE_COMPANY')">
+						<li><a href="${pageContext.request.contextPath}/user/company">Współpraca</a></li>
+					</sec:authorize>
 								<li><a href="<c:url value="/user/logout"/>">Wyloguj</a></li>
 							</ul></li>
 					</sec:authorize>

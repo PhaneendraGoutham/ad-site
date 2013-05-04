@@ -508,8 +508,9 @@ a {
 	text-overflow: ellipsis;
 }
 
-.admin-panel {
-	margin: 20px 100px 10px 100px
+.admin-panel, .contest-admin-panel {
+	margin: 20px 0 10px 0;
+	text-align:center;
 }
 
 #pagination {
@@ -684,9 +685,9 @@ ul.column {
 	margin-bottom: 10px;
 }
 
-.company-brand-img{
-	max-width:250px;
-	max-height:90px;
+.company-brand-img {
+	max-width: 250px;
+	max-height: 90px;
 }
 
 .company-brand-img-holder {
@@ -745,4 +746,31 @@ ul.column {
 	position: absolute;
 	right: 15px;
 	top: 10px;
+}
+
+.nic-edit-textarea {
+	width: 585px;
+}
+
+.contest-image {
+	margin-left: 15px;
+	float: right;
+}
+
+.mini-contest-wrapper:hover {
+	opacity:.8;
+}
+
+.mini-contest-wrapper {
+	margin-bottom: 15px;
+	cursor:pointer;
+}
+.contest-description{
+	margin-top:10px;
+}
+.contest-info{
+	margin-top:20px;
+}
+.contest-info > span{
+	margin-bottom: 10px;
 }

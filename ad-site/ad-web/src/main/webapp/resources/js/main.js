@@ -18,7 +18,47 @@ function toggleAdminButton(target) {
 		target.addClass("button-green");
 	}
 }
+function updateRating(ids) {
+	$.ajax({
+		url : basePath + "ad/rating",
+		type : "POST",
+		data : "ids=" + ids.join(","),
+		success : function(json) {
+			$.each(json, function(i) {
+				var id = json[i].id;
+				var rank = json[i].rank.toFixed(1);
+				var voteCount = json[i].voteCount;
+				$("#ad-wrapper-" + id).find(".rating-rank-value").html(rank);
+				$("#ad-wrapper-" + id).find(".rating-vote-count").html(
+						voteCount);
+				$("#mini-ad-wrapper-" + id).find(".rating-rank-value").html(
+						rank);
+				$("#mini-ad-wrapper-" + id).find(".rating-vote-count").html(
+						voteCount);
+			});
+		}
+	});
+}
+function getAllIdsToRankUpdate() {
+	var ids = new Array();
+	$("article[id^='ad-wrapper-']").each(function(i) {
+		var id = $(this).attr("id").replace("ad-wrapper-", "");
+		ids.push(id);
+	});
+	$("article[id^='mini-ad-wrapper-']").each(function(i) {
+		var id = $(this).attr("id").replace("mini-ad-wrapper-", "");
+		if (!$.inArray(id, ids))
+			;
+		ids.push(id);
+	});
+	return ids;
+}
+
 $(function() {
+	var ids = getAllIdsToRankUpdate();
+	if (ids.length > 0)
+		updateRating(ids);
+
 	jQuery.validator.addMethod("pattern", function(value, element, param) {
 		if (this.optional(element)) {
 			return true;
@@ -28,8 +68,7 @@ $(function() {
 		}
 		return param.test(value);
 	}, "Nieprawidłowe znaki");
-	
-	
+
 	$(".admin-panel button").click(function() {
 		var $this = $(this);
 		var target = $this.data("target");
@@ -48,6 +87,33 @@ $(function() {
 		}
 		$.ajax({
 			url : basePath + "ad/" + adId + "/state",
+			data : data,
+			method : "POST",
+			success : function() {
+				toggleAdminButton($this);
+			}
+		});
+	});
+	$(".contest-admin-panel button").click(function() {
+		var $this = $(this);
+		var target = $this.data("target");
+		var id = $this.data("id");
+		var type = $this.data("type");
+		var contestId = $this.data("contest-id");
+		var url = "";
+		if (type == "answer") {
+			url = basePath + "contest/"+contestId+"/answer/" + id + "/state";
+		} else {
+			url = basePath + "contest/"+contestId+"/ad/" + id + "/state";
+		}
+		var data = new Object();
+		if ($this.hasClass("button-blue")) {
+			data[target] = false;
+		} else {
+			data[target] = true;
+		}
+		$.ajax({
+			url : url,
 			data : data,
 			method : "POST",
 			success : function() {

@@ -1,10 +1,17 @@
 package pl.stalkon.ad.core.model.dao;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
+import org.hibernate.ScrollableResults;
+import org.hibernate.annotations.Formula;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,6 +34,10 @@ public class AdDao extends AbstractDao<Ad> {
 	@Autowired
 	private TagDao tagDao;
 
+
+	@Autowired
+	private ContestAdDao contestAdDao;
+	
 	@Autowired
 	private CriteriaConfigurer criteriaConfigurer;
 
@@ -34,7 +45,7 @@ public class AdDao extends AbstractDao<Ad> {
 	public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList,
 			Order order, Integer first, Integer last) {
 		Criteria adCriteria = currentSession().createCriteria(Ad.class);
-		adCriteria.createCriteria("poster");
+		adCriteria.createCriteria("user");
 		adCriteria.createCriteria("brand");
 		addRestrictions(adCriteria, "", queryObjectList);
 		Long total = (Long) adCriteria.setProjection(Projections.rowCount())
@@ -54,7 +65,7 @@ public class AdDao extends AbstractDao<Ad> {
 	public List<Ad> getList(List<DaoQueryObject> queryObjectList, Order order,
 			Integer first, Integer last) {
 		Criteria adCriteria = currentSession().createCriteria(Ad.class);
-		adCriteria.createCriteria("poster");
+		adCriteria.createCriteria("user");
 		addRestrictions(adCriteria, "", queryObjectList);
 		criteriaConfigurer.configureCriteria(adCriteria, order, first, last);
 		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
@@ -68,21 +79,27 @@ public class AdDao extends AbstractDao<Ad> {
 		for (DaoQueryObject qo : queryObjectList) {
 			boolean temp;
 			if (qo.name.equals("user")) {
-				temp = userDao.addRestrictions(criteria, "poster",
+				temp = userDao.addRestrictions(criteria, "user",
 						(List<DaoQueryObject>) qo.value);
-			} else if (qo.name.equals("brand")) {
-				temp =brandDao.addRestrictions(criteria, "brand",
+			}else if (qo.name.equals("contestAd")) {
+				criteria.createCriteria("contestAd","contestAd");
+				temp = contestAdDao.addRestrictions(criteria, "contestAd",
+						(List<DaoQueryObject>) qo.value);
+			}
+			else if (qo.name.equals("brand")) {
+				
+				temp = brandDao.addRestrictions(criteria, "brand",
 						(List<DaoQueryObject>) qo.value);
 			} else if (qo.name.equals("tags")) {
 				temp = tagDao.addRestrictions(criteria, "tag",
 						(List<DaoQueryObject>) qo.value);
-				if(temp)
+				if (temp)
 					criteria.createAlias("tags", "tag");
 			} else {
-//				qo.addCriteria(criteria, alias, Ad.class);
+				// qo.addCriteria(criteria, alias, Ad.class);
 				temp = qo.addCriteria(criteria, alias);
 			}
-			if(!added){
+			if (!added) {
 				added = temp;
 			}
 		}
@@ -98,8 +115,35 @@ public class AdDao extends AbstractDao<Ad> {
 
 	public Ad get(Long adId, Long userId) {
 		Ad ad = (Ad) currentSession()
-				.createQuery("from Ad where id = :adId and poster = :userId")
+				.createQuery("from Ad where id = :adId and user = :userId")
 				.setLong("adId", adId).setLong("userId", userId).uniqueResult();
+		return ad;
+	}
+
+	public List<Map<String, Object>> getRatings(List<Long> ids) {
+		ScrollableResults results = currentSession()
+				.createSQLQuery(
+						"SELECT SUM(r.rank)/COUNT(*), COUNT(*), adId from ranks as r where r.adId in (:ids) Group by r.adId")
+				.setParameterList("ids", ids).scroll();
+
+		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+		while (results.next()) {
+			Map<String, Object> map = new HashMap<String, Object>(3);
+			map.put("rank", results.get()[0]);
+			map.put("voteCount", results.get()[1]);
+			map.put("id", results.get()[2]);
+			resultList.add(map);
+		}
+		return resultList;
+	}
+
+	public Ad getRandom(){
+		Criteria criteria = currentSession().createCriteria(Ad.class);
+		criteria.createCriteria("user");
+		criteria.createCriteria("brand");
+		criteria.add(Restrictions.sqlRestriction("approved=1 order by rand()"));
+		criteria.setMaxResults(1);
+		Ad ad = (Ad) criteria.uniqueResult();
 		return ad;
 	}
 

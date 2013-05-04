@@ -36,19 +36,12 @@ import pl.styall.library.core.model.CommonEntity;
 @Entity
 @Table(name = "brand")
 public class Brand extends CommonEntity {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3646540035738604078L;
-
-
-	
 
 	@Column(length=1024, nullable=false)
 	private String description;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "brand")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "brand")
 	private List<Ad> ads = new ArrayList<Ad>();
 
 	@Column(nullable=false)
@@ -62,8 +55,8 @@ public class Brand extends CommonEntity {
 	private WistiaProject wistiaProject;
 
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinTable(name = "company_brand", inverseJoinColumns = { @JoinColumn(updatable = false, name = "column_id", referencedColumnName = "id") },
+	@ManyToOne(fetch=FetchType.LAZY, optional=true)
+	@JoinTable(name = "company_brand", inverseJoinColumns = { @JoinColumn(updatable = false, name = "company_id", referencedColumnName = "id") },
 	joinColumns = { @JoinColumn(updatable = false, name = "brand_id", referencedColumnName = "id") })
 	private Company company;
 

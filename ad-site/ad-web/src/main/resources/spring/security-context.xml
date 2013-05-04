@@ -110,15 +110,15 @@
 	<!-- <list> -->
 	<!-- <bean -->
 	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
-	<!-- <constructor-arg value="ROLE_ADMIN" /> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
 	<!-- </bean> -->
 	<!-- <bean -->
 	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
-	<!-- <constructor-arg value="ROLE_ADMIN" /> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
 	<!-- </bean> -->
 	<!-- <bean -->
 	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
-	<!-- <constructor-arg value="ROLE_ADMIN" /> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
 	<!-- </bean> -->
 	<!-- </list> -->
 	<!-- </constructor-arg> -->

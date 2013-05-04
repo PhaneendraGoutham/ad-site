@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
+import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.dailymotion.api.module.service.DailymotionException;
@@ -61,11 +62,15 @@ public class CompanyController {
 	public String userCompanySite(Model model, Principal principal, HttpServletRequest request){
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
-		if(!request.isUserInRole("ROLE_COMPANY")){
+		if(!request.isUserInRole(UserRoleDef.ROLE_COMPANY)){
 			return "redirect:/company/register";
 		}
 		Company company = companyService.getCompanyWithBrandsByUser(socialLoggedUser.getId());
+		if(company.getBrands().size() == 1){
+			return "redirect:/brand/"+company.getBrands().get(0).getId().toString();
+		}
 		model.addAttribute("company", company);
+		model.addAttribute("path", "company/base-view");
 		return "company/base-view";
 	}
 }

@@ -2,6 +2,7 @@ package pl.stalkon.ad.core.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import javax.jws.HandlerChain;
 import javax.servlet.http.HttpServletRequest;
@@ -29,14 +30,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Place;
 import pl.stalkon.ad.core.model.AdComment;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
+import pl.stalkon.ad.core.model.Contest;
+import pl.stalkon.ad.core.model.Contest.State;
 import pl.stalkon.ad.core.model.DailymotionData;
 import pl.stalkon.ad.core.model.Tag;
+import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.dao.AdDao;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
@@ -47,6 +52,7 @@ import pl.stalkon.ad.core.model.dto.CheckboxListWrapper;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.BrandService;
 import pl.stalkon.ad.core.model.service.CompanyService;
+import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.core.security.SocialLoggedUser.LoggedType;
 import pl.stalkon.ad.extensions.AjaxNotLoggedInException;
@@ -60,8 +66,6 @@ import pl.stalkon.video.api.service.impl.WistiaApiService;
 
 @Controller
 public class AdController {
-
-	private static final int PER_PAGE = 5;
 
 	@Autowired
 	private AdService adService;
@@ -79,7 +83,13 @@ public class AdController {
 	private CompanyService companyService;
 
 	@Autowired
+	private ContestService contestService;
+
+	@Autowired
 	private Environment env;
+
+	@Autowired
+	private ControllerHelperBean controllerHelperBean;
 
 	@RequestMapping(value = "ad/register")
 	public String getAddPage(Model model) {
@@ -105,29 +115,109 @@ public class AdController {
 		AdPostDto adDto = new AdPostDto();
 		model.addAttribute("adPostDto", adDto);
 		model.addAttribute("path", "ad/register");
+		model.addAttribute("postPath", "/ad");
 		model.addAttribute("brand", brand);
 		adDto.setBrandId(brandId);
 		return "ad/company-register";
 	}
 
+	@RequestMapping(value = "contest/{contestId}/ad/register")
+	public String getAddAdContestPage(Model model, HttpServletRequest request,
+			Principal principal, @PathVariable("contestId") Long contestId) {
+		Contest contest = contestService.getWithBrand(contestId);
+		AdPostDto adDto = new AdPostDto();
+		adDto.setBrandId(contest.getBrand().getId());
+		model.addAttribute("adPostDto", adDto);
+		model.addAttribute("path", "ad/register");
+		model.addAttribute("postPath", "/contest/" + contestId + "/ad");
+		model.addAttribute("brand", contest.getBrand());
+		return "ad/company-register";
+	}
+
+	@RequestMapping(value = "contest/{contestId}/ad", method = RequestMethod.POST)
+	public String add(@PathVariable("contestId") Long contestId,
+			@Valid @ModelAttribute("adPostDto") AdPostDto adPostDto,
+			BindingResult result, Principal principal,
+			RedirectAttributes redirectAttributes) {
+
+		if (result.hasErrors()) {
+			redirectAttributes
+					.addFlashAttribute("info",
+							"Źle wprowadzone dane. Proszę postępować zgodnie z zaleceniami");
+			return "redirect:/info-page";
+		}
+		Contest contest = contestService.get(contestId);
+		if (!contest.getBrand().getId().equals(adPostDto.getBrandId())
+				|| contest.getState() == State.FINISHED) {
+			redirectAttributes
+					.addFlashAttribute("info",
+							"Źle wprowadzone dane. Proszę postępować zgodnie z zaleceniami");
+			return "redirect:/info-page";
+		}
+		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
+				.getPrincipal();
+		Ad ad = null;
+		try {
+			ad = videoApiService.setVideoDetails(adPostDto);
+		} catch (VideoApiException e) {
+			result.addError(new ObjectError("url", e.getMessage()));
+			return "ad/register";
+		}
+		adPostDto.setContestId(contestId);
+		adService.register(adPostDto, ad, socialLoggedUser.getId(), false);
+		videoApiService.setApiData(ad);
+		redirectAttributes.addFlashAttribute("info",
+				"Życzymy powodzenia w konkursie");
+		return "redirect:/info-page";
+	}
+
+	@RequestMapping(value = "contest/{contestId}/ad", method = RequestMethod.GET)
+	public String getContestAds(
+			@PathVariable("contestId") Long contestId,
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal, HttpServletRequest request) {
+		AdBrowserWrapper adBrowserWrapper = adService.getContestAds(contestId,
+				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+						page), ControllerHelperBean.AD_PER_PAGE,
+				controllerHelperBean.getActive(principal));
+		controllerHelperBean.preparePagination(
+				ControllerHelperBean.AD_PER_PAGE, model,
+				adBrowserWrapper.getTotal(), page);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute(
+				"contestAdmin",
+				controllerHelperBean.isContestAdmin(request, principal,
+						contestId)
+						|| request.isUserInRole(UserRoleDef.ROLE_ADMIN));
+		model.addAttribute("contestId", contestId);
+		model.addAttribute("path", "ad/main");
+		return "browser";
+	}
+
 	@RequestMapping(value = "/ad", method = RequestMethod.POST)
 	public String add(@Valid @ModelAttribute("adPostDto") AdPostDto adPostDto,
-			BindingResult result, Principal principal, Model model, HttpServletRequest request) {
+			BindingResult result, Principal principal,
+			RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		if (result.hasErrors()) {
-			return "ad/register";
+			redirectAttributes
+					.addFlashAttribute("info",
+							"Źle wprowadzone dane. Proszę postępować zgodnie z zaleceniami");
+			return "redirect:/info-page";
 		}
 		// DailymotionData dailymotionData = dailyService.createMedia(
 		// adPostDto.getUrl(), adPostDto.getTitle());
 		boolean official = false;
-		if(request.isUserInRole("ROLE_COMPANY")){
-			Company company = companyService.getCompanyWithBrandsByUser(socialLoggedUser.getId());
+		if (request.isUserInRole(UserRoleDef.ROLE_COMPANY)) {
+			Company company = companyService
+					.getCompanyWithBrandsByUser(socialLoggedUser.getId());
 			Brand mockBrand = new Brand();
 			mockBrand.setId(adPostDto.getBrandId());
-			if(company.getBrands().contains(mockBrand)){
+			if (company.getBrands().contains(mockBrand)) {
 				official = true;
-			}else{
+			} else {
 				throw new AccessDeniedException(
 						"Nie masz wystarczających uprawnień aby dodać reklamę do tej marki");
 			}
@@ -145,8 +235,8 @@ public class AdController {
 		// siteFacebookIntegrator.notifyOnAdCreated(env.getProperty("app.domain")
 		// + "/ad/" + ad.getId(), ad.getTitle(), ad.getDescription());
 		// TODO:
-		model.addAttribute("info", "Reklama została dodana");
-		return "info-page";
+		redirectAttributes.addFlashAttribute("info", "Reklama została dodana");
+		return "redirect:/info-page";
 	}
 
 	@RequestMapping(value = { "ad/main", "/" }, method = RequestMethod.GET)
@@ -154,9 +244,13 @@ public class AdController {
 			Model model,
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
 			Principal principal) {
-		AdBrowserWrapper adBrowserWrapper = adService.getMain(getFrom(page),
-				PER_PAGE, getActive(principal));
-		preparePagination(model, adBrowserWrapper.getTotal(), page);
+		AdBrowserWrapper adBrowserWrapper = adService.getMain(
+				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+						page), ControllerHelperBean.AD_PER_PAGE,
+				controllerHelperBean.getActive(principal));
+		controllerHelperBean.preparePagination(
+				ControllerHelperBean.AD_PER_PAGE, model,
+				adBrowserWrapper.getTotal(), page);
 		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
 		model.addAttribute("path", "ad/main");
 		return "browser";
@@ -167,55 +261,34 @@ public class AdController {
 			Model model,
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
 			Principal principal) {
-		AdBrowserWrapper adBrowserWrapper = adService.getWaiting(getFrom(page),
-				PER_PAGE, getActive(principal));
-		preparePagination(model, adBrowserWrapper.getTotal(), page);
+		AdBrowserWrapper adBrowserWrapper = adService.getWaiting(
+				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+						page), ControllerHelperBean.AD_PER_PAGE,
+				controllerHelperBean.getActive(principal));
+		controllerHelperBean.preparePagination(
+				ControllerHelperBean.AD_PER_PAGE, model,
+				adBrowserWrapper.getTotal(), page);
 		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
 		model.addAttribute("path", "ad/waiting");
 
 		return "browser";
 	}
 
-	@RequestMapping(value = { "user/{userId}/ad" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "user/{userId}" }, method = RequestMethod.GET)
 	public String getUserAds(
 			@PathVariable("userId") Long userId,
 			Model model,
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
 			Principal principal) {
 		AdBrowserWrapper adBrowserWrapper = adService.getUserAds(userId,
-				getFrom(page), PER_PAGE, getActive(principal));
-		preparePagination(model, adBrowserWrapper.getTotal(), page);
+				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+						page), ControllerHelperBean.AD_PER_PAGE,
+				controllerHelperBean.getActive(principal));
+		controllerHelperBean.preparePagination(
+				ControllerHelperBean.AD_PER_PAGE, model,
+				adBrowserWrapper.getTotal(), page);
 		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
 		return "browser";
-	}
-
-	@RequestMapping(value = { "brand/{brandId}" }, method = RequestMethod.GET)
-	public String getBrandAds(
-			@PathVariable("brandId") Long brandId,
-			Model model,
-			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal, HttpServletRequest request) {
-		Brand brand = brandService.get(brandId);
-		model.addAttribute("brand", brand);
-		AdBrowserWrapper adBrowserWrapper = adService.getBrandAds(brandId,
-				getFrom(page), PER_PAGE, getActive(principal));
-		preparePagination(model, adBrowserWrapper.getTotal(), page);
-		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-
-		if (request.isUserInRole("ROLE_COMPANY")) {
-			SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-					.getPrincipal();
-			Company company = companyService
-					.getCompanyWithBrandsByUser(socialLoggedUser.getId());
-			if (company != null) {
-				model.addAttribute("companyAdmin", true);
-			} else {
-				model.addAttribute("companyAdmin", false);
-			}
-
-		}
-
-		return "brand/brand-info";
 	}
 
 	// @RequestMapping(value = { "ad/search"}, method = RequestMethod.GET)
@@ -234,8 +307,12 @@ public class AdController {
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
 			Principal principal) {
 		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
-				getFrom(page), PER_PAGE, getActive(principal));
-		preparePagination(model, adBrowserWrapper.getTotal(), page);
+				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+						page), ControllerHelperBean.AD_PER_PAGE,
+				controllerHelperBean.getActive(principal));
+		controllerHelperBean.preparePagination(
+				ControllerHelperBean.AD_PER_PAGE, model,
+				adBrowserWrapper.getTotal(), page);
 		List<Tag> tags = adService.getTags();
 		List<Brand> brands = brandService.get();
 		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
@@ -273,8 +350,17 @@ public class AdController {
 	@RequestMapping(value = "ad/{id}", method = RequestMethod.GET)
 	public String get(@PathVariable("id") Long id, Model model,
 			Principal principal) {
-		Ad ad = adService.get(id, getActive(principal));
+		Ad ad = adService.get(id, controllerHelperBean.getActive(principal));
 		model.addAttribute("ad", ad);
+
+		return "ad";
+	}
+
+	@RequestMapping(value = "ad/rand", method = RequestMethod.GET)
+	public String get(Model model, Principal principal) {
+		Ad ad = adService.rand();
+		model.addAttribute("ad", ad);
+		model.addAttribute("path", "ad/rand");
 		return "ad";
 	}
 
@@ -366,15 +452,11 @@ public class AdController {
 		adService.informComment(commentId, message);
 	}
 
-	private void preparePagination(Model model, Long count, int page) {
-		int pages = (int) Math.ceil(count / ((double) PER_PAGE));
-		model.addAttribute("pageAmount", pages);
-		model.addAttribute("currentPage", page);
-	}
-
-	private int getFrom(int page) {
-		page--;
-		return page * PER_PAGE;
+	@RequestMapping(value = "ad/rating", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Map<String, Object>> getRatings(
+			@RequestParam("ids") List<Long> ids) {
+		return adService.getRatings(ids);
 	}
 
 	@ExceptionHandler(AjaxNotLoggedInException.class)
@@ -382,19 +464,6 @@ public class AdController {
 	@ResponseStatus(value = HttpStatus.FORBIDDEN)
 	public String sendAjaxLoginResponse() {
 		return "login";
-	}
-
-	public boolean getActive(Principal principal) {
-		if (principal != null) {
-			SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-					.getPrincipal();
-			for (GrantedAuthority ga : socialLoggedUser.getAuthorities()) {
-				if (ga.getAuthority().equals("ROLE_ADMIN"))
-					return true;
-			}
-		}
-		return false;
-
 	}
 
 }

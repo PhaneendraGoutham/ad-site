@@ -46,7 +46,7 @@
 
 						<ul>
 							<li><time datetime="${ad.creationDate}">${ad.creationDate}</time>
-								przez <a href="/user/RAFALOSKAR">${ad.poster.displayName}</a></li>
+								przez <a href="/user/RAFALOSKAR">${ad.user.displayName}</a></li>
 						</ul>
 						<br>
 					</div>

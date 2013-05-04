@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.dto.ChangePasswordDto;
@@ -79,7 +80,8 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public String processRegister(
 			@Valid @ModelAttribute("userRegForm") UserRegForm userRegForm,
-			BindingResult result, Model model, HttpServletRequest request) {
+			BindingResult result, HttpServletRequest request,
+			RedirectAttributes redirectAttributes) {
 		if (userService.chechMailExists(userRegForm.getMail())) {
 			result.addError(new ObjectError("mail", "Uzytkownik zajety"));
 		}
@@ -112,10 +114,12 @@ public class UserController extends BaseController {
 					user.getId());
 		}
 
-		mailService.sendUserVerificationEmail(user);
-		model.addAttribute("info",
-				"Potwierdź założenie konta klikająć w link, który wysłaliśmy na Twoją skrzynkę");
-		return "info-page";
+//		mailService.sendUserVerificationEmail(user); TODO:
+		redirectAttributes
+				.addFlashAttribute(
+						"info",
+						"Potwierdź założenie konta klikająć w link który wysłaliśmy na podany adres email");
+		return "redirect:/info-page";
 	}
 
 	@RequestMapping(value = "/user/profile", method = RequestMethod.GET)

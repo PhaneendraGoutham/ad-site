@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -43,11 +44,11 @@ public class AdComment extends CommonEntity {
 	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Date date;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy="parent")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade=CascadeType.ALL)
 	@OrderBy(value="date")
 	private List<AdComment> children = new ArrayList<AdComment>();
 
-	@ManyToOne(targetEntity = AdComment.class, optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "parenId", insertable = true, updatable = false)
 	private AdComment parent = null;
 

@@ -18,11 +18,11 @@
 <meta name="viewport" content="width=device-width">
 
 		<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/css/jquery/jquery.ui.core.min.css">
-		<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/jquery/jquery-ui-1.10.2.custom.css">
 	<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/jquery/jquery.tagit.css">
+		<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/lib/timepicker.css">
 	
 	<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/normalize.css">
@@ -49,6 +49,12 @@
 	src="${pageContext.request.contextPath}/resources/js/lib/jquery.validate.js"></script>
 			<script
 	src="${pageContext.request.contextPath}/resources/js/lib/messages_pl.js"></script>
+				<script
+	src="${pageContext.request.contextPath}/resources/js/lib/nicEdit.js"></script>
+					<script
+	src="${pageContext.request.contextPath}/resources/js/lib/timepicker.js"></script>
+						<script
+	src="${pageContext.request.contextPath}/resources/js/lib/jquery.base64.js"></script>
 <script type="text/javascript">
 	var basePath = '<c:url value="/"/>';
 </script>

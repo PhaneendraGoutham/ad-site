@@ -42,9 +42,6 @@
 			<!-- 		<button id="submit" class="button-green">Dodaj</button> -->
 			<input type="submit" class="button-green ui-corner-all" value="Dodaj" />
 		</form:form>
-
-
-
 	</div>
 </article>
 

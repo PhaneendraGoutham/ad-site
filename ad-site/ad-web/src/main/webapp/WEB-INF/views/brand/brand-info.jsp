@@ -4,8 +4,8 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<c:if test="${companyAdmin }">
-	<article class="center-article-wrapper ui-corner-all">
+<c:if test="${brandAdmin }">
+	<div class="center-article-wrapper ui-corner-all">
 		<ul id="brand-admin-menu" class="styled center">
 			<li><a
 				href="${pageContext.request.contextPath}/brand/${brand.id}/edit">Edytuj
@@ -14,17 +14,18 @@
 				href="${pageContext.request.contextPath}/brand/${brand.id}/ad/register">Dodaj
 					reklamę</a></li>
 			<li><a
+				href="${pageContext.request.contextPath}/brand/${brand.id}/contest">Konkursy</a></li>
+			<li><a
 				href="${pageContext.request.contextPath}/brand/${brand.id}/edit">Statystyki
 					i koszty</a></li>
 		</ul>
-	</article>
+	</div>
 
 </c:if>
 
 <article class="center-article-wrapper ui-corner-all">
 	<c:if test="${not empty brand.logoUrl }">
-		<img src="${brand.logoUrl }"
-			class="company-brand-img left">
+		<img src="${brand.logoUrl }" class="company-brand-img left">
 	</c:if>
 	<h2 class="color-imp company-brand-img-name left">${brand.name }</h2>
 
@@ -39,6 +40,12 @@
 			<tr>
 				<td class="first">Dodanych reklam</td>
 				<td class="last">${adBrowserWrapper.total}</td>
+			</tr>
+			<tr>
+				<td class="first">Konkursy</td>
+				<td class="last"><a
+					href="${pageContext.request.contextPath}/brand/${brand.id}/contest"
+					class="color-imp">Pokaż</a></td>
 			</tr>
 			<tr>
 				<td class="first">Opis</td>

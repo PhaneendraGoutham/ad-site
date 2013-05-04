@@ -30,7 +30,7 @@ public class BrandDao extends AbstractDao<Brand> {
 	@SuppressWarnings("unchecked")
 	public List<Brand> get(List<DaoQueryObject> queryObjectList, Order order, Integer first, Integer last ) {
 		Criteria brandCriteria = currentSession().createCriteria(Brand.class);
-		brandCriteria.setFetchMode("poster", FetchMode.SELECT);
+		brandCriteria.setFetchMode("user", FetchMode.SELECT);
 		addRestrictions(brandCriteria, "", queryObjectList);
 		criteriaConfigurer.configureCriteria(brandCriteria, order, first, last);
 //		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

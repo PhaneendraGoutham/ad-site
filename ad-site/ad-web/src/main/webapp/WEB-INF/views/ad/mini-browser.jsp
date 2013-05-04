@@ -6,7 +6,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:forEach items="${leftTopAds}" var="ad">
-	<article class="left-article-wrapper">
+	<article class="left-article-wrapper" id="mini-ad-wrapper-${ad.id }">
 		<sec:authorize var="adult" access="hasRole('ROLE_USER')">
 			<sec:authentication property="principal.adult" var="adult" />
 		</sec:authorize>
@@ -23,16 +23,15 @@
 					</c:otherwise>
 				</c:choose>
 				<div class="left-user-name-date-wrapper left">
-					<span class="color-imp">${ad.poster.displayName }</span> <br /> <span
+					<span class="color-imp">${ad.user.displayName }</span> <br /> <span
 						class="video-date smaller-font"><fmt:formatDate
 							value="${ad.creationDate }" pattern="MM.dd.yyyy" /> o <fmt:formatDate
 							value="${ad.creationDate }" pattern="HH:mm" /></span>
 					<div class="relative">
 						<div class="left-rating-wrapper ">
-							<span class="color-imp smaller-font">${ad.rank}</span> <img
+							<span class="color-imp smaller-font rating-rank-value">0</span> <img
 								src="${pageContext.request.contextPath}/resources/img/small-star.png" />
-							<br /> <span class="under-star small-font">${ad.voteCount
-								}</span>
+							<br /> <span class="under-star small-font rating-vote-count">0</span>
 						</div>
 					</div>
 				</div>

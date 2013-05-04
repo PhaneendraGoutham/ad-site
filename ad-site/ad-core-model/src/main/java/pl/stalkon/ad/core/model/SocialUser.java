@@ -65,7 +65,7 @@ public class SocialUser implements RemoteUser {
 	@Column(length = 70)
 	private String refreshToken;
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(name="userId")
 	private User user;
 

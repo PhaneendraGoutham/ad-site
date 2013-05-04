@@ -18,29 +18,62 @@ import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.AutocompleteDto;
 import pl.styall.library.core.model.dao.DaoQueryObject;
 
-public interface AdService  {
-	public Ad register(AdPostDto adPostDto, Ad ad, Long posterId, boolean official);
-	public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList, Order order, Integer first, Integer last);
-	public AdBrowserWrapper get(AdSearchDto adSearchDto, Integer first, Integer last, boolean approved );
+public interface AdService {
+	public Ad register(AdPostDto adPostDto, Ad ad, Long userId,
+			boolean official);
+
+	public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList,
+			Order order, Integer first, Integer last);
+
+	public AdBrowserWrapper get(AdSearchDto adSearchDto, Integer first,
+			Integer last, boolean approved);
+
 	public Ad get(Long id, boolean approved);
+
 	public void vote(Long adId, Long userId, Short value);
-	public AdComment comment(Long adId, Long userId, Long commentId, String message);
+
+	public AdComment comment(Long adId, Long userId, Long commentId,
+			String message);
+
 	public List<AdComment> getComments(Long adId);
-	public AdBrowserWrapper getMain(int pageFrom, int pageCount, boolean approved);
-	public AdBrowserWrapper getWaiting(int pageFrom, int pageCount, boolean approved);
-	public AdBrowserWrapper getUserAds(Long userId, int pageFrom, int pageCount, boolean approved);
-	public AdBrowserWrapper getBrandAds(Long brandId, int pageFrom, int pageCount, boolean approved);
+
+	public AdBrowserWrapper getMain(int pageFrom, int pageCount,
+			boolean approved);
+
+	public AdBrowserWrapper getWaiting(int pageFrom, int pageCount,
+			boolean approved);
+
+	public AdBrowserWrapper getUserAds(Long userId, int pageFrom,
+			int pageCount, boolean approved);
+
+	public AdBrowserWrapper getBrandAds(Long brandId, int pageFrom,
+			int pageCount, boolean approved);
+
+	public AdBrowserWrapper getContestAds(Long contestId, int pageFrom,
+			int pageCount, boolean approved);
+
 	public List<Ad> getTop(int pageFrom, int pageCount, Date date);
+
 	public boolean isOwner(Long adId, Long userId);
-	public Ad update(AdPostDto adPostDto,Long adId, Long userId);
+
+	public Ad update(AdPostDto adPostDto, Long adId, Long userId);
+
 	public void changeApproval(Long id, boolean approved);
+
 	public void changeAgeProtected(Long id, boolean ageProtected);
+
 	public void changePlace(Long id, Place place);
-	public AdBrowserWrapper rand(Integer pageFrom, Integer pageCount, boolean approved);
+
+	public Ad rand();
+
 	public List<Tag> getTags();
-	
+
 	public List<AutocompleteDto> getTagsByTerm(String term);
-	
+
 	public void informAd(Long id, String message);
+
 	public void informComment(Long id, String message);
+
+	public List<Map<String, Object>> getRatings(List<Long> ids);
+	
 }

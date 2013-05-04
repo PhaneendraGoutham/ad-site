@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.User;
+import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.dao.CompanyDao;
 import pl.stalkon.ad.core.model.dao.UserDao;
 import pl.stalkon.ad.core.model.service.CompanyService;
@@ -26,7 +27,7 @@ public class CompanyServiceImpl implements CompanyService {
 	@Transactional
 	public Company register(Company company, Long userId) {
 		User user = userDao.get(userId);
-		user.addUserRole(new UserRole("ROLE_COMPANY"));
+		user.addUserRole(new UserRole(UserRoleDef.ROLE_COMPANY));
 		company.setUser(user);
 		companyDao.save(company);
 		return company;

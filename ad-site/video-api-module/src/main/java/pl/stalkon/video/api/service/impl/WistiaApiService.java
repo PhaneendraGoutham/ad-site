@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -102,6 +103,22 @@ public class WistiaApiService implements InitializingBean {
 		wistiaProject.setWistiaId(new Long((Integer) result.get("id")));
 		wistiaProject.setHashedId((String) result.get("hashedId"));
 		return wistiaProject;
+	}
+	
+	public boolean deleteVideo(String hashedId){
+		Map<String, String> vars = Collections.singletonMap("videoId", hashedId);
+		ResponseEntity<Map> response = restTemplate.exchange(env.getProperty("wistia.mediaJsonUrl"),
+				HttpMethod.DELETE, new HttpEntity<Map<String, String>>(null,
+						headers), Map.class, vars);
+		return response.getStatusCode().equals(HttpStatus.OK);
+	}
+	
+	public boolean deleteProject(String hashedId){
+		Map<String, String> vars = Collections.singletonMap("projectId", hashedId);
+		ResponseEntity<Map> response = restTemplate.exchange(env.getProperty("wistia.mediaProjectJsonUrl"),
+				HttpMethod.DELETE, new HttpEntity<Map<String, String>>(null,
+						headers), Map.class, vars);
+		return response.getStatusCode().equals(HttpStatus.OK);
 	}
 
 	@Override

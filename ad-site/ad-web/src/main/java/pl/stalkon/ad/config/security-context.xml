@@ -31,6 +31,10 @@
 			<security:intercept-url pattern="/company/register" access="hasRole('ROLE_USER')"/>
 			<security:intercept-url pattern="/user/company" access="hasRole('ROLE_USER')" />
 			<security:intercept-url pattern="/brand/*/ad/register" access="hasRole('ROLE_COMPANY')" />
+			<security:intercept-url pattern="/ad/register" access="!hasRole('ROLE_COMPANY')" />
+			<security:intercept-url pattern="/brand/*/contest/register" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" />
+			<security:intercept-url pattern="/contest/register" method="POST" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" />
+			<security:intercept-url pattern="/contest/*/answer" access="hasRole('ROLE_USER')"/>
 	</security:http>
 	<!-- 	<security:global-method-security -->
 <!-- 		secured-annotations="enabled" /> -->
@@ -136,15 +140,15 @@
 	<!-- <list> -->
 	<!-- <bean -->
 	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
-	<!-- <constructor-arg value="ROLE_ADMIN" /> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
 	<!-- </bean> -->
 	<!-- <bean -->
 	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
-	<!-- <constructor-arg value="ROLE_ADMIN" /> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
 	<!-- </bean> -->
 	<!-- <bean -->
 	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
-	<!-- <constructor-arg value="ROLE_ADMIN" /> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
 	<!-- </bean> -->
 	<!-- </list> -->
 	<!-- </constructor-arg> -->

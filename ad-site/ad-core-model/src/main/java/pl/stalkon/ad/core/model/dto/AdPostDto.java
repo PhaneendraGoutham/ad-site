@@ -18,7 +18,7 @@ public class AdPostDto {
 	@Size(max=60, min=3)
 	private String title;
 	
-	@Size(max=500, min=3)
+	@Size(max=500)
 	private String description;
 	
 	@URL
@@ -28,6 +28,8 @@ public class AdPostDto {
 	@NotNull
 	private Long brandId;
 	
+	private Long contestId;
+	
 	private String thumbnail;
 	private Long duration;
 	private String videoId;
@@ -36,7 +38,7 @@ public class AdPostDto {
 	private Integer year;
 	
 	@NotNull
-	private boolean ageProtected;
+	private Boolean ageProtected;
 	
 
 
@@ -46,11 +48,11 @@ public class AdPostDto {
 	
 	
 	
-	public boolean isAgeProtected() {
+	public Boolean getAgeProtected() {
 		return ageProtected;
 	}
 
-	public void setAgeProtected(boolean ageProtected) {
+	public void setAgeProtected(Boolean ageProtected) {
 		this.ageProtected = ageProtected;
 	}
 	
@@ -132,6 +134,14 @@ public class AdPostDto {
 
 	public void setYear(Integer year) {
 		this.year = year;
+	}
+
+	public Long getContestId() {
+		return contestId;
+	}
+
+	public void setContestId(Long contestId) {
+		this.contestId = contestId;
 	}
 
 }

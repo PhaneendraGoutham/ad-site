@@ -15,6 +15,8 @@ public interface VideoApiService {
 	public Ad setVideoDetails(AdPostDto adPostDto)  throws VideoApiException;
 	public void setApiData(Ad ad);
 	
+	public boolean deleteVideo(String hashedId);
+	
 	
 //	public Brand setBrandDetails(Brand brand);
 }

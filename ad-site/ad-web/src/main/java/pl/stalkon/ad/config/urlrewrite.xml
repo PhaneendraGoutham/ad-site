@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<urlrewrite>
+
+	<rule>
+		<from>^/glowna$</from>
+		<to>/ad/main</to>
+	</rule>
+	<rule>
+		<from>^/poczekalnia$</from>
+		<to>/ad/waiting</to>
+	</rule>
+	<rule>
+		<from>^/przegladaj$</from>
+		<to>/ad/search</to>
+	</rule>
+	<rule>
+		<from>^/losuj$</from>
+		<to>/ad/rand</to>
+	</rule>
+	<rule>
+		<from>^/dodaj$</from>
+		<to>/ad/register</to>
+	</rule>
+	<rule>
+		<from>^/uzytkownik/zaloguj$</from>
+		<to>/user/login</to>
+	</rule>
+	<rule>
+		<from>^/uzytkownik/zarejestruj$</from>
+		<to>/user/register</to>
+	</rule>
+	<rule>
+		<from>^/uzytkownik/haslo$</from>
+		<to>/user/password</to>
+	</rule>
+	<rule>
+		<from>^/uzytkownik/profil$</from>
+		<to>/user/profile</to>
+	</rule>
+	<rule>
+		<from>^/uzytkownik/wspolpraca$</from>
+		<to>/user/company</to>
+	</rule>
+	<rule>
+		<from>^/uzytkownik/([0-9]+)$</from>
+		<to>/user/$1</to>
+	</rule>
+	<rule>
+		<from>^/konkursy$</from>
+		<to>/contest</to>
+	</rule>
+	<rule>
+		<from>^/konkursy/([0-9]+)$</from>
+		<to>/contest/$1</to>
+	</rule>
+	<rule>
+		<from>^/konkursy/([0-9]+)/reklamy$</from>
+		<to>/contest/$1/ad</to>
+	</rule>
+	<rule>
+		<from>^/konkursy/([0-9]+)/odpowiedzi$</from>
+		<to>/contest/$1/answer</to>
+	</rule>
+	<rule>
+		<from>^/marka/([0-9]+)$</from>
+		<to>/brand/$1</to>
+	</rule>
+	<rule>
+		<from>^/marka/([0-9]+)/edytuj$</from>
+		<to>/brand/$1/edit</to>
+	</rule>
+	<rule>
+		<from>^/marka/([0-9]+)/dodaj$</from>
+		<to>/brand/$1/ad/register</to>
+	</rule>
+	<rule>
+		<from>^/marka/([0-9]+)/konkursy$</from>
+		<to>/brand/$1/contest</to>
+	</rule>
+	<rule>
+		<from>^/marka/([0-9]+)/konkursy/dodaj$</from>
+		<to>/brand/$1/contest/register</to>
+	</rule>
+
+
+	<outbound-rule>
+		<from>/ad/main$</from>
+		<to>/glowna</to>
+	</outbound-rule>
+	<outbound-rule>
+		<from>/ad/waiting$</from>
+		<to>/poczekalnia</to>
+	</outbound-rule>
+	<outbound-rule>
+		<from>/ad/search$</from>
+		<to>/przegladaj</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/ad/rand$</from>
+		<to>/losuj</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/ad/register$</from>
+		<to>/dodaj</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/user/login$</from>
+		<to>/uzytkownik/zaloguj</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/user/register$</from>
+		<to>/uzytkownik/zarejestruj</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/user/password$</from>
+		<to>/uzytkownik/haslo</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/user/profile$</from>
+		<to>/uzytkownik/profil</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/user/company$</from>
+		<to>/uzytkownik/wspolpraca</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/user/([0-9]+)$</from>
+		<to>/uzytkownik/$1</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/contest$</from>
+		<to>/konkursy</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/contest/([0-9]+)$</from>
+		<to>/konkursy/$1</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/contest/([0-9]+)/ad$</from>
+		<to>/konkursy/$1/reklamy</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/contest/([0-9]+)/answer$</from>
+		<to>/konkursy/$1/odpowiedzi</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/brand/([0-9]+)$</from>
+		<to>/marka/$1</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/brand/([0-9]+)/edit$</from>
+		<to>/marka/$1/edytuj</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/brand/([0-9]+)/ad/register$</from>
+		<to>/marka/$1/dodaj</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/brand/([0-9]+)/contest$</from>
+		<to>/marka/$1/konkursy</to>
+
+	</outbound-rule>
+	<outbound-rule>
+		<from>/brand/([0-9]+)/contest/register$</from>
+		<to>/marka/$1/konkursy/dodaj</to>
+	</outbound-rule>
+
+
+</urlrewrite>

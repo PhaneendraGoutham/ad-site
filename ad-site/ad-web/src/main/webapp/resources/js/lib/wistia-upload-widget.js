@@ -1057,8 +1057,8 @@ if (typeof(wistia) === 'undefined') {
 
           // File Upload Settings
           file_size_limit: '2GB',
-          file_types: '*.*',
-          file_types_description: 'All Files',
+          file_types: options.file_types,
+          file_types_description: 'dd',
           file_upload_limit: 0,
           file_queue_limit: 1,
           // Embed Settings

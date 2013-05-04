@@ -31,8 +31,7 @@
 		<c:otherwise>
 			<c:if test="${ad.official and not empty ad.brand.smallLogoUrl}">
 				<a href="${pageContext.request.contextPath}/brand/${ad.brand.id}"><img
-					class="ad-brand-logo ad-brand-logo-pos"
-					src="${ad.brand.logoUrl}" /></a>
+					class="ad-brand-logo ad-brand-logo-pos" src="${ad.brand.logoUrl}" /></a>
 			</c:if>
 			<h2 class="video-header color-imp bigger-font wrap-text">
 				<a href="<c:url value="/ad/${ad.id}"/>"> ${ad.title} </a>
@@ -62,11 +61,10 @@
 	</div>
 	<div class="video-footer clearfix">
 		<div class="user-data clearfix">
-			<img src="${ad.poster.userData.imageUrl}"
-				class="left avatar" />
+			<img src="${ad.user.userData.imageUrl}" class="left avatar" />
 			<div class="video-user-date-wrapper ">
-				<a href="${pageContext.request.contextPath}/user/${ad.poster.id}/ad"
-					class="color-imp sp-user-name">${ad.poster.displayName}</a> <br />
+				<a href="${pageContext.request.contextPath}/user/${ad.user.id}"
+					class="color-imp sp-user-name">${ad.user.displayName}</a> <br />
 				<span class="smaller-font"><fmt:formatDate
 						value="${ad.creationDate }" pattern="MM.dd.yyyy" /> o <fmt:formatDate
 						value="${ad.creationDate }" pattern="HH:mm" /></span>
@@ -91,11 +89,11 @@
 			</ul>
 		</c:if>
 		<div class="rating-wrapper">
-			<div class="color-imp bigger-font rate">${ad.rank }</div>
+			<div class="color-imp bigger-font rate rating-rank-value">0</div>
 			<img class="star"
 				src="${pageContext.request.contextPath}/resources/img/star.png" />
 			<div class="rating-panel hidden" data-ad-id="${ad.id }"></div>
-			<br /> <span class="under-star smaller-font">${ad.voteCount }</span>
+			<br /> <span class="under-star smaller-font rating-vote-count">0</span>
 
 		</div>
 	</div>
@@ -128,6 +126,21 @@
 			</c:if>
 		</div>
 	</sec:authorize>
+
+	<c:if test="${contestAdmin }">
+		<div class="contest-admin-panel">
+			<c:choose>
+				<c:when test="${ad.contestAd.winner}">
+					<button class="button-blue button-winner" data-target="winner" data-contest-id="${contestId }"
+						data-type="ad" data-id="${ad.contestAd.id }">Zwycięzca</button>
+				</c:when>
+				<c:otherwise>
+					<button class="button-green button-winner"  data-target="winner"
+						data-type="ad" data-contest-id="${contestId }" data-id="${ad.contestAd.id }">Zwycięzca</button>
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</c:if>
 
 
 	<!-- 	<hr class="ad-separator" /> -->

@@ -28,6 +28,10 @@
 				<label for="tags-selector">Tagi</label>
 				<form:input id="tags-selector" class="ui-corner-all" path="tags"></form:input>
 			</div>
+			<div class="checkbox-radio-wrapper">
+				<input type="checkbox" name="ageProtected" /><label>Dla
+					dorosłych</label>
+			</div>
 			<label for="description">Opis</label>
 			<form:textarea path="description" class="ui-corner-all"
 				maxLength="500" />
@@ -82,7 +86,9 @@
 			divId : "wistia-upload-widget",
 			buttonText : "Dodaj",
 			publicProjectId : projectId,
-			callbacks : cb
+			callbacks : cb,
+			file_types : "*.MOV"
+
 		});
 
 	}

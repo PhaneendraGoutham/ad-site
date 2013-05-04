@@ -28,7 +28,7 @@ public class TagDao extends AbstractDao<Tag> {
 	@SuppressWarnings("unchecked")
 	public List<Tag> get(List<DaoQueryObject> queryObjectList, Order order, Integer first, Integer last ) {
 		Criteria tagCriteria = currentSession().createCriteria(Tag.class);
-		tagCriteria.setFetchMode("poster", FetchMode.SELECT);
+		tagCriteria.setFetchMode("user", FetchMode.SELECT);
 		addRestrictions(tagCriteria, "", queryObjectList);
 		criteriaConfigurer.configureCriteria(tagCriteria, order, first, last);
 //		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.User.DisplayNameType;
+import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.dto.UserProfileDto;
 import pl.stalkon.ad.core.model.dto.UserRegForm;
 import pl.stalkon.ad.core.model.service.UserService;
@@ -38,10 +39,10 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		userData.setName(userRegForm.getName());
 		userData.setSurname(userRegForm.getSurname());
 		user.setUserData(userData);
-		UserRole userRole = userDao.loadUserRoleByName("ROLE_USER");
+		UserRole userRole = userDao.loadUserRoleByName(UserRoleDef.ROLE_USER);
 		if (userRole == null) {
 			userRole = new UserRole();
-			userRole.setRole("ROLE_USER");
+			userRole.setRole(UserRoleDef.ROLE_USER);
 		}
 		user.addUserRole(userRole);
 		user.setCredentials(credentials);

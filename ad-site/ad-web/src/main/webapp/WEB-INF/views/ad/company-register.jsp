@@ -9,7 +9,7 @@
 <article class="center-article-wrapper ui-corner-all">
 	<div class="form">
 		<form:form method="POST"
-			action="${pageContext.request.contextPath}/ad" id="ad-form"
+			action="${pageContext.request.contextPath}${postPath }" id="ad-form"
 			commandName="adPostDto">
 			<%-- 			<c:choose> --%>
 			<%-- 				<c:when test="${fn:length(brands) > 1 }"> --%>
@@ -27,7 +27,8 @@
 			<!-- 						checked="checked" class="hidden" /> -->
 			<%-- 				</c:otherwise> --%>
 			<%-- 			</c:choose> --%>
-			<form:hidden path="brandId" data-project-id="${brand.wistiaProject.hashedId }"/>
+			<form:hidden path="brandId"
+				data-project-id="${brand.wistiaProject.hashedId }" />
 			<label for="title">Tytuł</label>
 			<form:input path="title" class="ui-corner-all   required"
 				minLength="3" maxLength="60" />
@@ -38,6 +39,11 @@
 				<label for="tags-selector">Tagi</label>
 				<form:input id="tags-selector" class="ui-corner-all" path="tags"></form:input>
 			</div>
+			<div class="checkbox-radio-wrapper">
+				<input type="checkbox" name="ageProtected" /><label>Dla
+					dorosłych</label>
+			</div>
+
 			<label for="description">Opis</label>
 			<form:textarea path="description" class="ui-corner-all"
 				maxLength="500" />

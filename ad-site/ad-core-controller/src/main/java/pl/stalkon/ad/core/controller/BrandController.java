@@ -25,10 +25,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
+import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.WistiaProject;
+import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.ad.core.model.dto.BrandPostDto;
 import pl.stalkon.ad.core.model.dto.BrandSearchDto;
+import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.BrandService;
 import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.model.service.FileService;
@@ -54,10 +57,39 @@ public class BrandController {
 	@Autowired
 	private ServletContext servletContext;
 
+	@Autowired
+	private AdService adService;
+
+	@Autowired
+	private ControllerHelperBean controllerHelperBean;
+
 	@RequestMapping(value = "brand", method = RequestMethod.GET)
 	@ResponseBody
 	public List<BrandSearchDto> getBrandByTerm(@RequestParam("term") String term) {
 		return brandService.getByTerm(term);
+	}
+
+	@RequestMapping(value = { "brand/{brandId}" }, method = RequestMethod.GET)
+	public String getBrandAds(
+			@PathVariable("brandId") Long brandId,
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal, HttpServletRequest request) {
+		Brand brand = brandService.get(brandId);
+		model.addAttribute("brand", brand);
+		AdBrowserWrapper adBrowserWrapper = adService.getBrandAds(brandId,
+				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+						page), ControllerHelperBean.AD_PER_PAGE,
+				controllerHelperBean.getActive(principal));
+		controllerHelperBean.preparePagination(
+				ControllerHelperBean.AD_PER_PAGE, model,
+				adBrowserWrapper.getTotal(), page);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute(
+				"brandAdmin",
+				controllerHelperBean.isUserBrandOwner(request, principal,
+						brandId) || request.isUserInRole(UserRoleDef.ROLE_ADMIN));
+		return "brand/brand-info";
 	}
 
 	@RequestMapping(value = "brand/register")
@@ -77,7 +109,7 @@ public class BrandController {
 		brandPostDto.setName(brand.getName());
 		model.addAttribute("brandPostDto", brandPostDto);
 		model.addAttribute("path", "brand/register");
-		model.addAttribute("actionUrl", "brand/"+brandId);
+		model.addAttribute("actionUrl", "brand/" + brandId);
 		return "brand/register";
 	}
 
@@ -88,23 +120,26 @@ public class BrandController {
 			BindingResult result, HttpServletRequest request) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
-		Company company = companyService.getCompanyWithBrandsByUser(socialLoggedUser.getId());
+		Company company = companyService
+				.getCompanyWithBrandsByUser(socialLoggedUser.getId());
 		Brand mockBrand = new Brand();
 		mockBrand.setId(brandId);
 		if (!company.getBrands().contains(mockBrand))
 			throw new AccessDeniedException(
 					"Nie masz wystarczających uprawnień");
-		return registerOrUpdateBrand(brandPostDto, result, null, brandId, request);
+		return registerOrUpdateBrand(brandPostDto, result, null, brandId,
+				request);
 	}
 
 	@RequestMapping(value = "company/{id}/brand/register")
 	public String getRegistrationPageByCompany(Model model,
-			@PathVariable("id") Long companyId, Principal principal, HttpServletRequest request) {
+			@PathVariable("id") Long companyId, Principal principal,
+			HttpServletRequest request) {
 		BrandPostDto brandPostDto = new BrandPostDto();
 		model.addAttribute("brandPostDto", brandPostDto);
 		model.addAttribute("companyId", companyId);
 		model.addAttribute("path", "brand/register");
-		model.addAttribute("actionUrl", "company/"+companyId+"/brand");
+		model.addAttribute("actionUrl", "company/" + companyId + "/brand");
 		return "brand/register";
 	}
 
@@ -119,7 +154,8 @@ public class BrandController {
 	public String addByCompany(
 			@Valid @ModelAttribute("brandPostDto") BrandPostDto brandPostDto,
 			BindingResult result, Principal principal,
-			@PathVariable("companyId") Long companyId, HttpServletRequest request) {
+			@PathVariable("companyId") Long companyId,
+			HttpServletRequest request) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		boolean companyOfUser = companyService.isCompanyOfUser(
@@ -127,11 +163,13 @@ public class BrandController {
 		if (!companyOfUser)
 			throw new AccessDeniedException(
 					"Nie masz wystarczających uprawnień");
-		return registerOrUpdateBrand(brandPostDto, result, companyId, null, request);
+		return registerOrUpdateBrand(brandPostDto, result, companyId, null,
+				request);
 	}
 
 	private String registerOrUpdateBrand(BrandPostDto brandPostDto,
-			BindingResult result, Long companyId, Long brandId, HttpServletRequest request) {
+			BindingResult result, Long companyId, Long brandId,
+			HttpServletRequest request) {
 		fileService.validateFile(result, brandPostDto.getLogo(), "logo",
 				10485760);
 		if (result.hasErrors()) {
@@ -148,22 +186,21 @@ public class BrandController {
 		}
 
 		if (!brandPostDto.getLogo().isEmpty()) {
-			String baseUrl = String.format("%s://%s:%d%s/", request.getScheme(),
-					request.getServerName(), request.getServerPort(),
-					request.getContextPath());
+			String baseUrl = String.format("%s://%s:%d%s/",
+					request.getScheme(), request.getServerName(),
+					request.getServerPort(), request.getContextPath());
 			try {
-				String logoName = fileService.getPath("brands", "logo",null, brand.getId()
-						.toString());
+				String logoName = fileService.getPath("brands", "logo", null,
+						brand.getId().toString());
 				String ext = fileService.saveFile(logoName,
-						brandPostDto.getLogo(),250,90);
-				logoName = fileService.getPath("brands", "logo","small", brand.getId()
-						.toString());
-				fileService.saveFile(logoName,
-						brandPostDto.getLogo(),120,40);
-				brandService.setBrandLogo(baseUrl+
-						"resources/brands/logo-" + brand.getId() + "." + ext,baseUrl+
-						"resources/brands/logo-" + brand.getId() + "-small." + ext,
-						brand.getId());
+						brandPostDto.getLogo(), 250, 90);
+				logoName = fileService.getPath("brands", "logo", "small", brand
+						.getId().toString());
+				fileService.saveFile(logoName, brandPostDto.getLogo(), 120, 40);
+				brandService.setBrandLogo(baseUrl + "resources/brands/logo-"
+						+ brand.getId() + "." + ext, baseUrl
+						+ "resources/brands/logo-" + brand.getId() + "-small."
+						+ ext, brand.getId());
 			} catch (IOException e) {
 				// TODO
 			}

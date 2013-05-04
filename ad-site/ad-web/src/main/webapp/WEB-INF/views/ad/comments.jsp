@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="comment-box-wrapper">
 	<sec:authorize access="isAuthenticated()">
 		<sec:authentication property="principal.imageUrl"
@@ -12,7 +13,7 @@
 	<sec:authorize access="!isAuthenticated()">
 		<c:set var="loggedUserPhotoUrl" value="/resources/img/no-user.gif"></c:set>
 	</sec:authorize>
-	<img src="<c:url value="/${loggedUserPhotoUrl }"/>" class="left avatar" />
+	<img src="${loggedUserPhotoUrl }" class="left avatar" />
 	<div class="comment-box-holder">
 		<textarea class="comment-box"></textarea>
 		<button class="button-blue comment-button" data-ad-id="${ad.id}">Skomentuj</button>
@@ -22,11 +23,14 @@
 <ul class="post-list">
 	<c:forEach items="${ad.comments}" var="comment">
 		<li id="post-${comment.id}"><img
-			src="	<c:url value="/${comment.user.userData.imageUrl}"/>"
+			src="${comment.user.userData.imageUrl}"
 			class="left avatar" />
 			<div class="post-header">
 				<span class="color-imp">${comment.user.displayName}</span> <span>-</span>
-				<span class="smaller-font">${comment.date}</span>
+				<span class="smaller-font"><fmt:formatDate
+						value="${comment.date}" pattern="MM.dd.yyyy" /> o <fmt:formatDate
+						value="${comment.date}" pattern="HH:mm" /></span>
+
 			</div>
 			<div class="post-content">
 				<p style="word-wrap: break-word;">${comment.message }</p>
@@ -41,11 +45,14 @@
 			<ul class="post-children">
 				<c:forEach items="${comment.children}" var="childComment">
 					<li id="post-${childComment.id}"><img
-						src="	<c:url value="/${childComment.user.userData.imageUrl}"/>"
+						src="${childComment.user.userData.imageUrl}"
 						class="left avatar" />
 						<div class="post-header">
 							<span class="color-imp">${childComment.user.displayName}</span> <span>-</span>
-							<span class="smaller-font">${childComment.date}</span>
+							<span class="smaller-font"><fmt:formatDate
+									value="${childComment.date}" pattern="MM.dd.yyyy" /> o <fmt:formatDate
+									value="${childComment.date}" pattern="HH:mm" /></span>
+
 						</div>
 						<div class="post-content">
 							<p style="word-wrap: break-word;">${childComment.message }</p>
@@ -56,7 +63,8 @@
 								data-target="#post-${childComment.id}" data-id="${comment.id}"
 								data-ad-id="${ad.id}">Odpowiedz</a></li>
 							<li><a href="#" class="font-blue inform"
-								data-target="#post-${childComment.id}" data-post-id="${childComment.id}">Zgłoś</a></li>
+								data-target="#post-${childComment.id}"
+								data-post-id="${childComment.id}">Zgłoś</a></li>
 						</ul>
 						<ul class="post-children"></ul></li>
 				</c:forEach>

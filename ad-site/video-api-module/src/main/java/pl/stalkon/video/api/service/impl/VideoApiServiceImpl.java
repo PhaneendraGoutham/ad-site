@@ -52,6 +52,11 @@ public class VideoApiServiceImpl implements VideoApiService{
 		wistiaApiService.setApiData(ad);
 	}
 
+	@Override
+	public boolean deleteVideo(String hashedId) {
+		return wistiaApiService.deleteVideo(hashedId);
+	}
+
 
 //	@Override
 //	public Brand setBrandDetails(Brand brand) {

@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
@@ -32,7 +33,7 @@ import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
-@Table(name = "ad")
+@Table(name = "ads")
 public class Ad extends CommonEntity {
 
 	private static final long serialVersionUID = 1335218634734582331L;
@@ -49,33 +50,40 @@ public class Ad extends CommonEntity {
 	private Place place = Place.WAITING;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="date_on_main")
 	private Date dateOnMain;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name="creation_date")
 	private Date creationDate;
 
+	@Column(nullable=false)
 	private Integer year;
 
-	@Column(nullable = false, length = 60)
+	@Column(nullable = false, length = 128)
 	private String title;
 
-	@Column(nullable = false, length = 500)
+	@Column(nullable = false, length = 512)
 	private String description;
 
-	@Column(nullable = false, columnDefinition = "BOOL default false")
+	@Column(nullable = false, columnDefinition = "BOOL default false",name="age_protected")
 	private Boolean ageProtected = false;
 
 	@Column(nullable = false, columnDefinition = "BOOL default true")
 	private Boolean approved = true;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "poster_id")
-	private User poster;
+	@JoinColumn(name = "user_id")
+	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional=false)
-	@JoinColumn(name = "brandId")
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "brand_id")
 	private Brand brand;
+
+//	@ManyToOne(fetch = FetchType.LAZY, optional = true, cascade=CascadeType.ALL)
+//	@JoinTable(name="contest_ad", joinColumns={@JoinColumn(name="ad_id", referencedColumnName="id")}, inverseJoinColumns={@JoinColumn(name="id", referencedColumnName="id")})
+	@OneToOne(optional=true, mappedBy="ad", cascade=CascadeType.ALL)
+	private ContestAd contestAd;
 
 	private Type contentType = Type.MOVIE;
 
@@ -92,11 +100,11 @@ public class Ad extends CommonEntity {
 	@OrderBy(value = "date")
 	private List<AdComment> comments = new ArrayList<AdComment>();
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional=true)
 	@JoinColumn(name = "wistiaVideo")
-	private WistiaVideo wistiaVideo;;
+	private WistiaVideo wistiaVideo;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional=true)
 	@JoinColumn(name = "youtubeVideo")
 	private YoutubeVideo youtubeVideo;;
 
@@ -109,6 +117,7 @@ public class Ad extends CommonEntity {
 
 	@Column(nullable = false)
 	private Boolean official;
+
 	public Long getDuration() {
 		return duration;
 	}
@@ -117,13 +126,20 @@ public class Ad extends CommonEntity {
 		this.duration = duration;
 	}
 
-
 	public String getThumbnail() {
 		if (wistiaVideo != null) {
 			return wistiaVideo.getThumbnail();
 		} else {
 			return youtubeVideo.getVideoThumnail();
 		}
+	}
+
+	public ContestAd getContestAd() {
+		return contestAd;
+	}
+
+	public void setContestAd(ContestAd contestAd) {
+		this.contestAd = contestAd;
 	}
 
 	public String getVideoUrl() {
@@ -145,12 +161,12 @@ public class Ad extends CommonEntity {
 		this.rank = rank;
 	}
 
-	public User getPoster() {
-		return poster;
+	public User getUser() {
+		return user;
 	}
 
-	public void setPoster(User poster) {
-		this.poster = poster;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public void setContentType(Type contentType) {
@@ -200,6 +216,14 @@ public class Ad extends CommonEntity {
 	public String getTitle() {
 		return title;
 	}
+
+	// public Contest getContest() {
+	// return contest;
+	// }
+	//
+	// public void setContest(Contest contest) {
+	// this.contest = contest;
+	// }
 
 	public Integer getYear() {
 		return year;

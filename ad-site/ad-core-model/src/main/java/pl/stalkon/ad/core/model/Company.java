@@ -22,7 +22,7 @@ public class Company extends AbstractCompany<Address> {
 
 	private static final long serialVersionUID = -3276193432406949362L;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="company")
+	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, mappedBy="company")
 	private List<Brand> brands;
 
 	public List<Brand> getBrands() {
