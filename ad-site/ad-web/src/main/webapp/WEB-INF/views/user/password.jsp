@@ -4,17 +4,17 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <article class="center-article-wrapper ui-corner-all">
+<c:url value="/user/password" var="actionUrl"/>
 <form:form class="form" commandName="changePasswordDto"
-	action="${pageContext.request.contextPath}/user/password" method="POST">
-		<form:label for="oldPassword" path="password">Stare hasło</form:label>
+	action="actionUrl" method="POST">
+		<form:label for="oldPassword" path="password"><spring:message code="label.old.password"></spring:message></form:label>
 	<form:password id="oldPassword" path="oldPassword" />
-	<form:label for="password" path="password">Nowe hasło</form:label>
+	<form:label for="password" path="password"><spring:message code="label.new.password"></spring:message></form:label>
 	<form:password   id="password" path="password" class="ui-corner-all"/>
-	<form:label for="confirm-password" path="confirmPassword">Powtórz
-			hasło</form:label>
+	<form:label for="confirm-password" path="confirmPassword"><spring:message code="label.password.confirm"></spring:message></form:label>
 	<form:password  id="confirm-password"
 		path="confirmPassword" class="ui-corner-all"/>
-				<input type="submit" value="Aktualizuj"
+				<input type="submit" value="<spring:message code="label.update"></spring:message>"
 			class="button-green ui-corner-all" />
 </form:form>
 </article>

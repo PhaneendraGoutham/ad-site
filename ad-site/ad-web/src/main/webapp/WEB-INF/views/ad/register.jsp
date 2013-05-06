@@ -7,34 +7,31 @@
 	uri="http://www.springframework.org/security/tags"%>
 <article class="center-article-wrapper ui-corner-all">
 	<div class="form">
+	<c:url value="/ad" var="actionUrl"/>
 		<form:form method="POST"
-			action="${pageContext.request.contextPath}/ad" id="ad-form"
+			action="${actionUrl }" id="ad-form"
 			commandName="adPostDto">
 			<sec:authorize access="!hasRole('ROLE_COMPANY')">
-				<label for="video-url">Link do wideo</label>
+				<label for="video-url"><spring:message code="label.link.to.video"></spring:message></label>
 				<form:input path="url" id="video-url"
-					class="ui-corner-all required url" />
+					class="ui-corner-all" />
 			</sec:authorize>
-			<label for="brand-selector">Marka</label>
-			<input type="text" id="brand-selector" class="ui-corner-all required" />
+			<label for="brand-selector"><spring:message code="label.brand"></spring:message></label>
+			<input type="text" id="brand-selector" class="ui-corner-all" />
 			<form:hidden path="brandId" id="brand-value" />
-			<label for="title">Tytuł</label>
-			<form:input path="title" class="ui-corner-all   required"
-				minLength="3" maxLength="60" />
-			<label for="year">Rok produkcji</label>
-			<form:input path="year" class="ui-corner-all  required number"
-				minLength="4" min="1900" maxLength="4" />
+			<label for="title"><spring:message code="label.title"></spring:message></label>
+			<form:input path="title" class="ui-corner-all"/>
+			<label for="year"><spring:message code="label.production.year"></spring:message></label>
+			<form:input path="year" class="ui-corner-all" />
 			<div>
-				<label for="tags-selector">Tagi</label>
+				<label for="tags-selector"><spring:message code="label.tags"></spring:message></label>
 				<form:input id="tags-selector" class="ui-corner-all" path="tags"></form:input>
 			</div>
 			<div class="checkbox-radio-wrapper">
-				<input type="checkbox" name="ageProtected" /><label>Dla
-					dorosłych</label>
+				<input type="checkbox" name="ageProtected" /><label><spring:message code="label.for.adults"></spring:message></label>
 			</div>
-			<label for="description">Opis</label>
-			<form:textarea path="description" class="ui-corner-all"
-				maxLength="500" />
+			<label for="description"><spring:message code="label.description"></spring:message></label>
+			<form:textarea path="description" class="ui-corner-all"/>
 			<form:hidden path="type" />
 			<%-- 			<form:hidden path="url" id="dailymotion-url" /> --%>
 			<sec:authorize access="hasRole('ROLE_COMPANY')">
@@ -46,14 +43,13 @@
 				<div id="wistia-upload-widget"
 					class="wistia-upload-widget button-green">
 					<div>
-						<a class="upload-media" href="#" style="color: #ffffff">Wybierz
-							plik i dodaj</a>
+						<a class="upload-media" href="#" style="color: #ffffff"><spring:message code="label.choose.and.add.file"></spring:message></a>
 					</div>
 				</div>
 			</sec:authorize>
 			<sec:authorize access="!hasRole('ROLE_COMPANY')">
 				<input id="submit" type="submit" class="button-green ui-corner-all"
-					value="Dodaj" />
+					value="<spring:message code="label.add"></spring:message>" />
 			</sec:authorize>
 		</form:form>
 
@@ -138,6 +134,27 @@
 			},
 			validEvent : function() {
 				checkTagsValidity();
+			},
+			rules:{
+				title : {
+					required : true,
+					maxlength : 128,
+					minlength : 3,
+				},
+				description : {
+					maxlength : 512,
+					minlenght : 3,
+				},
+				year : {
+					required : true,
+					min : 1900,
+					max : new Date().getFullYear(),
+					number : true,
+				},
+				url:{
+					required:true,
+					url:true,
+				}
 			}
 		});
 		$("#wistia-upload-widget").click(function() {

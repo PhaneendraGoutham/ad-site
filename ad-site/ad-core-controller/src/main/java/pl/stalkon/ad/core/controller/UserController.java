@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -49,6 +51,11 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private MailService mailService;
+	
+	@Autowired
+	private MessageSource messageSource;
+	@Autowired
+	private ControllerHelperBean controllerHelperBean;
 
 	// @RequestMapping(value = "/", method = RequestMethod.POST, headers =
 	// "Accept=application/json")
@@ -89,9 +96,11 @@ public class UserController extends BaseController {
 			result.addError(new ObjectError("username", "Uzytkownik zajety"));
 		}
 		fileService.validateFile(result, userRegForm.getAvatarFile(),
-				"avatarFile", 10485760);
+				"avatarFile");
 		if (result.hasErrors()) {
-			return "user/register";
+			System.out.println(result.getAllErrors());
+			return controllerHelperBean.invalidPostRequest(redirectAttributes);
+			
 		}
 
 		User user = userService.register(userRegForm);
@@ -114,11 +123,11 @@ public class UserController extends BaseController {
 					user.getId());
 		}
 
-//		mailService.sendUserVerificationEmail(user); TODO:
+//		 mailService.sendUserVerificationEmail(user); TODO:
 		redirectAttributes
 				.addFlashAttribute(
 						"info",
-						"Potwierdź założenie konta klikająć w link który wysłaliśmy na podany adres email");
+						messageSource.getMessage("info.user.registered", null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 
@@ -137,11 +146,12 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/user/profile", method = RequestMethod.POST)
 	public String updateProfile(
 			@Valid @ModelAttribute("userProfileDto") UserProfileDto userProfileDto,
-			BindingResult result, Principal principal) {
+			BindingResult result, Principal principal,
+			RedirectAttributes redirectAttributes) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		if (result.hasErrors()) {
-			return "user/profile";
+			return controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
 		userService.updateProfile(userProfileDto, socialLoggedUser.getId());
 		return "redirect:/user/profile";
@@ -156,16 +166,18 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/user/password", method = RequestMethod.POST)
 	public String updatePassword(
 			@Valid @ModelAttribute("changePasswordDto") ChangePasswordDto changePasswordDto,
-			BindingResult result, Principal principal) {
+			BindingResult result, Principal principal,
+			RedirectAttributes redirectAttributes) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		if (result.hasErrors()) {
-			return "user/password";
+			return controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
 		userService.changePassword(socialLoggedUser.getId(),
 				changePasswordDto.getOldPassword(),
 				changePasswordDto.getPassword());
-		return "redirect:/user/password";
+		redirectAttributes.addFlashAttribute("info",messageSource.getMessage("info.user.password.changed", null, LocaleContextHolder.getLocale()));
+		return "redirect:/info-page";
 	}
 
 	@RequestMapping(value = "/user/email", method = RequestMethod.GET)
@@ -183,40 +195,15 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "/user/activate/{token}", method = RequestMethod.GET)
-	public String activate(@PathVariable("token") String token) {
+	public String activate(@PathVariable("token") String token, RedirectAttributes redirectAttributes) {
 		boolean activated = userService.activate(token);
 		if (activated) {
-			return "redirect:/user/login";
+			redirectAttributes
+					.addFlashAttribute("info",messageSource.getMessage("info.user.activated", null, LocaleContextHolder.getLocale()));
+			return "redirect:/info-page";
 		}
 		return "redirect:/";
 	}
 
-	// @RequestMapping(value="/password", method = RequestMethod.PUT, headers =
-	// "Accept=application/json")
-	// @ResponseStatus(HttpStatus.OK)
-	// public void changePassword(@Valid @RequestBody ChangePasswordForm
-	// changePasswordForm, Principal principal)throws ValidationException{
-	// LoggedUser loggedUser = (LoggedUser) ((Authentication)
-	// principal).getPrincipal();
-	// if(!userService.changePassword(loggedUser.getId(),
-	// changePasswordForm.getOldPassword(),
-	// changePasswordForm.getNewPassword()))
-	// throw new ValidationException("oldPassword", "WrongPassword");
-	// }
-
-	// @RequestMapping(value = "{userId}/address", method = RequestMethod.POST,
-	// headers = "Accept=application/json")
-	// @ResponseBody
-	// @ResponseStatus(HttpStatus.CREATED)
-	// public UUID add(@Valid @RequestBody Address address,
-	// @PathVariable("userId") UUID userId) throws ValidationException {
-	// userService.addAddress(userId, address);
-	// return address.getId();
-	// }
-
-	@RequestMapping("/test")
-	public String test() {
-		return "test";
-	}
 
 }

@@ -7,19 +7,19 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 import pl.stalkon.ad.core.model.Ad;
-import pl.stalkon.ad.core.model.YoutubeVideo;
+import pl.stalkon.ad.core.model.YoutubeVideoData;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 
 @Component
 public class YoutubeApiService  {
 	public Ad setVideoDetails(AdPostDto adPostDto)throws InvalidYoutubeUrlException {
-		YoutubeVideo video = new YoutubeVideo();
+		YoutubeVideoData video = new YoutubeVideoData();
 		String youtubeId = getYoutubeVideoId(adPostDto.getUrl());
 		Ad ad = null;
 		if (!youtubeId.equals("")) {
 			video.setVideoId(youtubeId);
 			ad = new Ad();
-			ad.setYoutubeVideo(video);
+			ad.setYoutubeVideoData(video);
 		}
 		return ad;
 	}

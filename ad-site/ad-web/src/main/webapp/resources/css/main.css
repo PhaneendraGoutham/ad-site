@@ -528,7 +528,7 @@ a {
 	margin-bottom: 15px;
 }
 
-label.error {
+label.error, label.error-2 {
 	margin: 5px 10px 10px 0;
 	color: #c80f0f;
 	width: 100%;

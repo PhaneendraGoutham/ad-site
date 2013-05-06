@@ -13,9 +13,11 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -26,7 +28,7 @@ import pl.stalkon.ad.core.model.service.FileService;
 @Service
 public class FileServiceImpl implements FileService {
 
-	private static final List<String> extensions = Arrays.asList("png", "jpg",
+	private static final List<String> extensions = Arrays.asList("png", "jpg", "jpeg",
 			"gif");
 
 	@Autowired
@@ -47,23 +49,19 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	public void validateFile(BindingResult bindingResult,
-			CommonsMultipartFile multipartFile, String objectName, long maxSize) {
-		// if (multipartFile.getSize() > maxSize) {
-		// bindingResult.addError(new ObjectError(objectName,
-		// new String[] {"{constraints.file.size}"}, new Object[] {},
-		// "File too big"));
-		// }
-		// if (!extensions.contains(getExtension(multipartFile
-		// .getOriginalFilename()))) {
-		// bindingResult.addError(new ObjectError(objectName,
-		// new String[] {"{constraints.file.type}"}, new Object[] {},
-		// "Wrong file type"));
-		// }
+			CommonsMultipartFile multipartFile, String objectName) {
+		System.out.println(getExtension(multipartFile
+				.getOriginalFilename()));
+		if (!extensions.contains(getExtension(multipartFile
+				.getOriginalFilename()))) {
+			bindingResult.addError(new ObjectError(objectName,
+					new String[] { "{constraints.file.type}" },
+					new Object[] {}, "Wrong file type"));
+		}
 	}
 
 	private String getExtension(String fileName) {
-		String extension = fileName.replaceAll("^.*\\.", "");
-		return extension;
+		return FilenameUtils.getExtension(fileName);
 	}
 
 	@Override

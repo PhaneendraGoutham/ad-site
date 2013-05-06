@@ -21,12 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.UserRoleDef;
-import pl.stalkon.ad.core.model.WistiaProject;
+import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.ad.core.model.dto.BrandPostDto;
@@ -117,7 +118,7 @@ public class BrandController {
 	public String update(Model model, @PathVariable("brandId") Long brandId,
 			Principal principal,
 			@Valid @ModelAttribute("brandPostDto") BrandPostDto brandPostDto,
-			BindingResult result, HttpServletRequest request) {
+			BindingResult result, HttpServletRequest request,RedirectAttributes redirectAttributes) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		Company company = companyService
@@ -125,10 +126,9 @@ public class BrandController {
 		Brand mockBrand = new Brand();
 		mockBrand.setId(brandId);
 		if (!company.getBrands().contains(mockBrand))
-			throw new AccessDeniedException(
-					"Nie masz wystarczających uprawnień");
+			controllerHelperBean.throwAccessDeniedException(request);
 		return registerOrUpdateBrand(brandPostDto, result, null, brandId,
-				request);
+				request,redirectAttributes);
 	}
 
 	@RequestMapping(value = "company/{id}/brand/register")
@@ -146,14 +146,14 @@ public class BrandController {
 	@RequestMapping(value = "/brand", method = RequestMethod.POST)
 	public String add(
 			@Valid @ModelAttribute("brandPostDto") BrandPostDto brandPostDto,
-			BindingResult result, HttpServletRequest request) {
-		return registerOrUpdateBrand(brandPostDto, result, null, null, request);
+			BindingResult result, HttpServletRequest request,RedirectAttributes redirectAttributes) {
+		return registerOrUpdateBrand(brandPostDto, result, null, null, request, redirectAttributes);
 	}
 
 	@RequestMapping(value = "/company/{companyId}/brand", method = RequestMethod.POST)
 	public String addByCompany(
 			@Valid @ModelAttribute("brandPostDto") BrandPostDto brandPostDto,
-			BindingResult result, Principal principal,
+			BindingResult result, Principal principal,RedirectAttributes redirectAttributes,
 			@PathVariable("companyId") Long companyId,
 			HttpServletRequest request) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
@@ -161,25 +161,23 @@ public class BrandController {
 		boolean companyOfUser = companyService.isCompanyOfUser(
 				socialLoggedUser.getId(), companyId);
 		if (!companyOfUser)
-			throw new AccessDeniedException(
-					"Nie masz wystarczających uprawnień");
+			controllerHelperBean.throwAccessDeniedException(request);
 		return registerOrUpdateBrand(brandPostDto, result, companyId, null,
-				request);
+				request, redirectAttributes);
 	}
 
 	private String registerOrUpdateBrand(BrandPostDto brandPostDto,
 			BindingResult result, Long companyId, Long brandId,
-			HttpServletRequest request) {
-		fileService.validateFile(result, brandPostDto.getLogo(), "logo",
-				10485760);
+			HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		fileService.validateFile(result, brandPostDto.getLogo(), "logo");
 		if (result.hasErrors()) {
-			return "brand/register";
+			return controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
 		Brand brand = null;
 		if (brandId == null) {
-			WistiaProject wistiaProject = wistiaApiService
+			WistiaProjectData wistiaProjectData = wistiaApiService
 					.createWistiaProject(brandPostDto.getName());
-			brand = brandService.register(brandPostDto, wistiaProject,
+			brand = brandService.register(brandPostDto, wistiaProjectData,
 					companyId);
 		} else {
 			brand = brandService.update(brandPostDto, brandId);

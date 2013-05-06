@@ -1,7 +1,7 @@
 package pl.stalkon.ad.core.model;
 
-
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
@@ -9,7 +9,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-
 
 import pl.styall.library.core.model.AbstractUser;
 import pl.styall.library.core.model.defaultimpl.Address;
@@ -30,16 +29,14 @@ public class User extends AbstractUser<UserData, Address> {
 		NAME, REVERSED_NAME, EMAIL, SOCIAL_DISPLAY_NAME, USERNAME
 	};
 
-	@NotNull
+	@Column(name = "display_name_type", nullable = false)
 	private DisplayNameType displayNameType;
 
 	@Transient
 	private String displayName;
 
-
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="user")
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
 	private SocialUser socialUser;
-
 
 	public SocialUser getSocialUser() {
 		return socialUser;
@@ -72,7 +69,7 @@ public class User extends AbstractUser<UserData, Address> {
 		case EMAIL:
 			return getCredentials().getMail();
 		case SOCIAL_DISPLAY_NAME:
-			if (getSocialUser() != null ) {
+			if (getSocialUser() != null) {
 				String name = getSocialUser().getDisplayName();
 				if (name != null && !name.isEmpty())
 					return name;

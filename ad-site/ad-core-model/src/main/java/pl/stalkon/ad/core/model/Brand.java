@@ -34,36 +34,38 @@ import org.hibernate.validator.constraints.NotEmpty;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
-@Table(name = "brand")
+@Table(name = "brands")
 public class Brand extends CommonEntity {
 	private static final long serialVersionUID = -3646540035738604078L;
 
-	@Column(length=1024, nullable=false)
+	@Column(length = 1024, nullable = false)
 	private String description;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "brand")
-	private List<Ad> ads = new ArrayList<Ad>();
+	private List<Ad> ads;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String name;
-	
-	private String logoUrl;
-	private String smallLogoUrl;
-	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "wistiaProject")
-	private WistiaProject wistiaProject;
 
+	@Column(name = "logo_url")
+	private String logoUrl;
 	
-	@ManyToOne(fetch=FetchType.LAZY, optional=true)
-	@JoinTable(name = "company_brand", inverseJoinColumns = { @JoinColumn(updatable = false, name = "company_id", referencedColumnName = "id") },
-	joinColumns = { @JoinColumn(updatable = false, name = "brand_id", referencedColumnName = "id") })
+	@Column(name = "small_logo_url")
+	private String smallLogoUrl;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional=false)
+	@JoinColumn(name = "wistia_project_data_id")
+	private WistiaProjectData wistiaProjectData;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+//	@JoinTable(name = "company_brand", inverseJoinColumns = { @JoinColumn(updatable = false, name = "company_id", referencedColumnName = "id") }, joinColumns = { @JoinColumn(updatable = false, name = "brand_id", referencedColumnName = "id") })
+	@JoinColumn(name="company_id")
 	private Company company;
 
-	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name="creation_date")
 	private Date creationDate;
+
 	public List<Ad> getAds() {
 		return ads;
 	}
@@ -72,11 +74,10 @@ public class Brand extends CommonEntity {
 		this.ads = ads;
 	}
 
-	public void addAdd(Ad ad) {
-		ads.add(ad);
-		ad.setBrand(this);
-	}
-
+//	public void addAdd(Ad ad) {
+//		ads.add(ad);
+//		ad.setBrand(this);
+//	}
 
 	public String getDescription() {
 		return description;
@@ -102,14 +103,13 @@ public class Brand extends CommonEntity {
 		this.name = name;
 	}
 
-	public WistiaProject getWistiaProject() {
-		return wistiaProject;
+	public WistiaProjectData getWistiaProjectData() {
+		return wistiaProjectData;
 	}
 
-	public void setWistiaProject(WistiaProject wistiaProject) {
-		this.wistiaProject = wistiaProject;
+	public void setWistiaProjectData(WistiaProjectData wistiaProjectData) {
+		this.wistiaProjectData = wistiaProjectData;
 	}
-
 
 	public Company getCompany() {
 		return company;

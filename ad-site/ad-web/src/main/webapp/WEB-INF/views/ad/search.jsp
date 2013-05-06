@@ -18,20 +18,19 @@
 		</div>
 		<ul id="filters-menu" class="styled">
 			<li id="tag-menu-filter"
-				onclick="toggleFilters('tag'); return false;">Tagi</li>
+				onclick="toggleFilters('tag'); return false;"><spring:message code="label.tags"></spring:message></li>
 			<li id="brand-menu-filter"
-				onclick="toggleFilters('brand'); return false;">Marka</li>
+				onclick="toggleFilters('brand'); return false;"><spring:message code="label.brand"></spring:message></li>
 			<li id="place-menu-filter"
-				onclick="toggleFilters('place'); return false;">Miejsce</li>
+				onclick="toggleFilters('place'); return false;"><spring:message code="label.place"></spring:message></li>
 			<li id="year-menu-filter"
-				onclick="toggleFilters('year'); return false;">Rok produkcji</li>
+				onclick="toggleFilters('year'); return false;"><spring:message code="label.production.year"></spring:message></li>
 			<li id="rank-vote-menu-filter"
-				onclick="toggleFilters('rank-vote'); return false;">Ocena i
-				liczba głosów</li>
+				onclick="toggleFilters('rank-vote'); return false;"><spring:message code="label.rank.and.vote.count"></spring:message></li>
 		</ul>
 		<div id="filters">
 			<div id="year-filters" class="hidden">
-				<span class="color-imp">Lata:</span>
+				<span class="color-imp"><spring:message code="label.years"></spring:message>:</span>
 				<form:select id="year-select" path="year" onchange="displayFilter('year', null, null);" data-target="year">
 					<fmt:formatDate value='${date }' pattern='yyyy' var="yearNow" />
 					<form:option value="1">-</form:option>
@@ -59,8 +58,8 @@
 			</div>
 
 			<div id="rank-vote-filters" class="hidden">
-				<span class="color-imp">Ocena:</span><span class="smaller-font">
-					od </span>
+				<span class="color-imp"><spring:message code="label.rank"></spring:message>:</span><span class="smaller-font">
+					<spring:message code="label.from"></spring:message> </span>
 				<form:select id="rank-select-from" path="rankFrom" onchange="displayFilter('rank', null, null);" data-target="rank">
 					<form:option value="0">-</form:option>
 					<c:forEach var="i" begin="1" end="5">
@@ -75,7 +74,7 @@
 					</c:forEach>
 
 				</form:select>
-				<span class="smaller-font"> do</span>
+				<span class="smaller-font"> <spring:message code="label.to"></spring:message></span>
 				<form:select id="rank-select-to" path="rankTo" onchange="displayFilter('rank', null, null);" data-target="rank">
 					<form:option value="0">-</form:option>
 					<c:forEach var="i" begin="1" end="5">
@@ -90,18 +89,18 @@
 					</c:forEach>
 				</form:select>
 
-				<span class="color-imp">Liczba głosów:</span> <span
-					class="smaller-font"> od </span>
+				<span class="color-imp"><spring:message code="label.vote.count"></spring:message>:</span> <span
+					class="smaller-font"> <spring:message code="label.from"></spring:message> </span>
 				<form:input type="text" path="votesFrom" id="vote-input-from" onkeyup="displayFilter('vote', null, null);" />
-				<span class="smaller-font"> do</span>
+				<span class="smaller-font"> <spring:message code="label.to"></spring:message></span>
 				<form:input type="text" id="vote-input-to" path="votesTo" onkeyup="displayFilter('vote', null, null);"/>
 			</div>
 			<div id="place-filters" class="hidden">
-				<span class="color-imp">Miejsce:</span>
+				<span class="color-imp"><spring:message code="label.place"></spring:message>:</span>
 				<form:select path="place" id="place-select" onchange="displayFilter('place', null, null);" data-target="place">
 					<form:option value="-1">-</form:option>
-					<form:option value="0">Główna</form:option>
-					<form:option value="1">Poczekalnia</form:option>
+					<form:option value="0"><spring:message code="label.main"></spring:message></form:option>
+					<form:option value="1"><spring:message code="label.waiting"></spring:message></form:option>
 				</form:select>
 			</div>
 			<div id="tag-filters" class="hidden">
@@ -158,7 +157,7 @@
 </article>
 <article class="center-article-wrapper ui-corner-all">
 	<ul id="selected-filters" class="styled">
-		<li id="tag-selected-filters" class="hover-opacity-none" ><span >Tagi:</span>
+		<li id="tag-selected-filters" class="hover-opacity-none" ><span ><spring:message code="label.tags"></spring:message>:</span>
 			<ul class="styled">
 				<%-- 				<c:forEach items="${ tags}" var="tag"> --%>
 				<%-- 				<c:if test="${tag.checked }"> --%>
@@ -170,7 +169,7 @@
 				<%-- 					</c:if> --%>
 				<%-- 				</c:forEach> --%>
 			</ul></li>
-		<li id="brand-selected-filters" class="hover-opacity-none" ><span >Marki:</span>
+		<li id="brand-selected-filters" class="hover-opacity-none" ><span ><spring:message code="label.brands"></spring:message>:</span>
 			<ul class="styled">
 				<%-- 				<c:forEach items="${ brands}" var="brand"> --%>
 				<%-- 					<c:if test="${brand.checked }"> --%>
@@ -186,17 +185,17 @@
 	<div  >
 		<ul id="selected-filters-2" class="styled">
 		<li id="place-selected-filters" class="hover-opacity-none" ><span
-			class="inline-label ">Miejsce:</span><span class="value"></span>
+			class="inline-label "><spring:message code="label.place"></spring:message>:</span><span class="value"></span>
 			<div class="close" data-target="place">x</div></li>
 		<li id="year-selected-filters" class="hover-opacity-none" ><span
-			class="inline-label">Rok produkcji:</span><span
+			class="inline-label"><spring:message code="label.production.year"></spring:message>:</span><span
 			class="value"></span>
 			<div class="close" data-target="year">x</div></li>
 		<li id="rank-selected-filters" class="hover-opacity-none" ><span
-			class="inline-label">Ocena:</span><span class="value"></span>
+			class="inline-label"><spring:message code="label.rank"></spring:message>:</span><span class="value"></span>
 			<div class="close" data-target="rank">x</div></li>
 		<li id="vote-selected-filters" class="hover-opacity-none"><span
-			class="inline-label">Liczba głosów:</span><span
+			class="inline-label"><spring:message code="label.vote.count"></spring:message>:</span><span
 			class="value"></span>
 			<div class="close" data-target="vote">x</div></li>
 			</ul>
@@ -204,8 +203,8 @@
 	<div id="sort-filters-holder"  class="clearfix">
 		
 		<ul id="sort-filters" class="styled">
-			<li id="rank-sort" class="<c:if test="${adSearchDto.orderBy == 'rank'}">on</c:if>" onclick="handleSortClick('rank');">Ocena<div class="<c:if test="${adSearchDto.order == 'desc'}">arrow-down-white</c:if><c:if test="${adSearchDto.order == 'asc'}">arrow-up-white</c:if>" ></div></li>
-			<li id="vote-sort" class="<c:if test="${adSearchDto.orderBy == 'vote'}">on</c:if>" onclick="handleSortClick('vote');">Liczba Głosów<div class="<c:if test="${adSearchDto.order == 'desc'}">arrow-down-white</c:if><c:if test="${adSearchDto.order == 'asc'}">arrow-up-white</c:if>" ></div></li>
+			<li id="rank-sort" class="<c:if test="${adSearchDto.orderBy == 'rank'}">on</c:if>" onclick="handleSortClick('rank');"><spring:message code="label.rank"></spring:message><div class="<c:if test="${adSearchDto.order == 'desc'}">arrow-down-white</c:if><c:if test="${adSearchDto.order == 'asc'}">arrow-up-white</c:if>" ></div></li>
+			<li id="vote-sort" class="<c:if test="${adSearchDto.orderBy == 'vote'}">on</c:if>" onclick="handleSortClick('vote');"><spring:message code="label.vote.count"></spring:message><div class="<c:if test="${adSearchDto.order == 'desc'}">arrow-down-white</c:if><c:if test="${adSearchDto.order == 'asc'}">arrow-up-white</c:if>" ></div></li>
 		</ul>
 		<form:input path="orderBy" class="hidden" id="order-by-input"/>
 		<form:input path="order"  class="hidden" id="order-input"/>

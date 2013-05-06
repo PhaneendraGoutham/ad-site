@@ -79,17 +79,17 @@ public class SocialConfig {
 		OAuth2AuthenticationService<Facebook> facebookAuthenticationService = new OAuth2AuthenticationService<Facebook>(
 				facebookConnectionFactory);
 		facebookAuthenticationService
-				.setScope("publish_stream,offline_access,email,user_birthday");
+				.setScope("email,user_birthday");
 		registry.addAuthenticationService(facebookAuthenticationService);
 
 		return registry;
 	}
 
-	@Bean
-	@Scope(value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
-	public FacebookServiceImpl facebookService() {
-		return new FacebookServiceImpl();
-	}
+//	@Bean
+//	@Scope(value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
+//	public FacebookServiceImpl facebookService() {
+//		return new FacebookServiceImpl();
+//	}
 
 	/**
 	 * When a new provider is added to the app, register its

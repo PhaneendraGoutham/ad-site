@@ -6,8 +6,8 @@ import javax.validation.constraints.NotNull;
 
 import pl.styall.library.core.model.CommonEntity;
 
-@Entity
-@Table(name="dailymotion")
+//@Entity
+//@Table(name="dailymotion")
 public class DailymotionData extends CommonEntity {
 	
 	@NotNull

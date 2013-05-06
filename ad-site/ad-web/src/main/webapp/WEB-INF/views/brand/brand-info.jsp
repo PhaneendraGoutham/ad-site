@@ -2,22 +2,20 @@
 	contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <c:if test="${brandAdmin }">
 	<div class="center-article-wrapper ui-corner-all">
 		<ul id="brand-admin-menu" class="styled center">
 			<li><a
-				href="${pageContext.request.contextPath}/brand/${brand.id}/edit">Edytuj
-					markę</a></li>
+				href="<c:url value="/brand/${brand.id}/edit"/>"><spring:message code="label.brand.edit"></spring:message></a></li>
 			<li><a
-				href="${pageContext.request.contextPath}/brand/${brand.id}/ad/register">Dodaj
-					reklamę</a></li>
+				href="<c:url value="/brand/${brand.id}/ad/register"/>"><spring:message code="label.ad.add"></spring:message></a></li>
 			<li><a
-				href="${pageContext.request.contextPath}/brand/${brand.id}/contest">Konkursy</a></li>
+				href="<c:url value="/brand/${brand.id}/contest"/>"><spring:message code="label.contests"></spring:message></a></li>
 			<li><a
-				href="${pageContext.request.contextPath}/brand/${brand.id}/edit">Statystyki
-					i koszty</a></li>
+				href="<c:url value="/brand/${brand.id}/edit"/>"><spring:message code="label.stats.and.costs"></spring:message></a></li>
 		</ul>
 	</div>
 
@@ -33,25 +31,25 @@
 	<table class="info-table">
 		<tbody>
 			<tr>
-				<td class="first">Dodana</td>
+				<td class="first"><spring:message code="label.female.added"></spring:message></td>
 				<td class="last"><fmt:formatDate value="${brand.creationDate}"
-						pattern="yyyy.mm.dd" /></td>
+						pattern="yyyy.MM.dd" /></td>
 			</tr>
 			<tr>
-				<td class="first">Dodanych reklam</td>
+				<td class="first"><spring:message code="label.ads.added"></spring:message></td>
 				<td class="last">${adBrowserWrapper.total}</td>
 			</tr>
 			<tr>
-				<td class="first">Konkursy</td>
+				<td class="first"><spring:message code="label.contests"></spring:message></td>
 				<td class="last"><a
-					href="${pageContext.request.contextPath}/brand/${brand.id}/contest"
-					class="color-imp">Pokaż</a></td>
+					href="<c:url value="/brand/${brand.id}/contest"/>"
+					class="color-imp"><spring:message code="label.show"></spring:message></a></td>
 			</tr>
 			<tr>
 				<td class="first">Opis</td>
 				<td class="last"><c:choose>
 						<c:when test="${empty brand.description }">
-							<p>Brak opisu
+							<p><spring:message code="label.no.description"></spring:message>
 							<p>
 						</c:when>
 						<c:otherwise>

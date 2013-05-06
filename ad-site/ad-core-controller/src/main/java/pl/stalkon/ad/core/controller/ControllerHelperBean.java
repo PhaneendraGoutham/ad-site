@@ -4,12 +4,16 @@ import java.security.Principal;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tiles.locale.LocaleResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
@@ -30,6 +34,10 @@ public class ControllerHelperBean {
 
 	@Autowired
 	private ContestService contestService;
+	
+	@Autowired
+	private MessageSource messageSource;
+	
 
 	public boolean getActive(Principal principal) {
 		if (principal != null) {
@@ -103,11 +111,17 @@ public class ControllerHelperBean {
 		}
 	}
 
+
 	public void throwAccessDeniedException(HttpServletRequest request)
 			throws AccessDeniedException {
 		if (!request.isUserInRole(UserRoleDef.ROLE_ADMIN)) {
-			throw new AccessDeniedException("Nie masz uprawnień");
+			throw new AccessDeniedException(messageSource.getMessage("info.access.denied", null, LocaleContextHolder.getLocale()));
 		}
+	}
+	
+	public String invalidPostRequest(RedirectAttributes redirectAttributes){
+		redirectAttributes.addFlashAttribute("info", messageSource.getMessage("info.incorrect.data", null, LocaleContextHolder.getLocale()));
+		return "redirect:/info-page";
 	}
 
 	public boolean isContestAdmin(HttpServletRequest request,

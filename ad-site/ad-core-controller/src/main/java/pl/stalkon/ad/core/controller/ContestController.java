@@ -8,6 +8,8 @@ import javax.validation.Valid;
 
 import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -54,6 +56,9 @@ public class ContestController {
 
 	@Autowired
 	private ControllerHelperBean controllerHelperBean;
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	@RequestMapping(value = "brand/{brandId}/contest/register", method = RequestMethod.GET)
 	public String getRegistrationPage(@PathVariable("brandId") Long brandId,
@@ -74,11 +79,11 @@ public class ContestController {
 	public String register(
 			@Valid @ModelAttribute("contestPostDto") ContestPostDto contestPostDto,
 			BindingResult result, Principal principal,
-			HttpServletRequest request) {
+			HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		fileService.validateFile(result, contestPostDto.getImage(), "image");
 		if (result.hasErrors() || contestPostDto.getImage().isEmpty()) {
-			return "contest/register";
+			return controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
-
 		if (!controllerHelperBean.isUserBrandOwner(request, principal,
 				contestPostDto.getBrandId())) {
 			controllerHelperBean.throwAccessDeniedException(request);
@@ -100,7 +105,7 @@ public class ContestController {
 							+ "." + ext, contest.getId());
 		} catch (IOException e) {
 		}
-		return "contest/register";
+		return "redirect:/contest";
 	}
 
 	@RequestMapping(value = "contest", method = RequestMethod.GET)
@@ -224,12 +229,18 @@ public class ContestController {
 		if (answer == null) {
 			return "contest/" + contestId;
 		}
+		Contest contest = contestService.get(contestId);
+		if (contest.getState() == State.FINISHED) {
+			redirectAttributes
+					.addFlashAttribute("info",
+							"Konkurs już się zakończył");
+			return "redirect:/info-page";
+		}
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		contestService.registerAnswer(socialLoggedUser.getId(), contestId,
 				answer);
-		redirectAttributes.addFlashAttribute("info",
-				"Życzymy powodzenia w konkursie");
+		redirectAttributes.addFlashAttribute("info",messageSource.getMessage("info.contest.answer.post", null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 

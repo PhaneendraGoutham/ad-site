@@ -16,21 +16,21 @@
 		<c:when test="${!ad.approved and !isAdmin}">
 
 			<h2 class="video-header color-imp bigger-font wrap-text">
-				Reklama została zablokowana przez administratora</h2>
+				<spring:message code="info.ad.banned"></spring:message></h2>
 			<img class="video"
 				src="${pageContext.request.contextPath}/resources/img/red-cross.png" />
 		</c:when>
 		<c:when test="${!adult and ad.ageProtected}">
-			<a href="${pageContext.request.contextPath}/user/login">
+			<a href="<c:url value="/user/login"/>">
 				<h2 class="video-header color-imp bigger-font wrap-text">
 
-					Zaloguj się aby zobaczyć</h2> <img class="video"
-				src="${pageContext.request.contextPath}/resources/img/18.png" />
+					<spring:message code="info.log.in.to.see"></spring:message></h2> <img class="video"
+				src="<c:url value="/resources/img/18.png"/>" />
 			</a>
 		</c:when>
 		<c:otherwise>
 			<c:if test="${ad.official and not empty ad.brand.smallLogoUrl}">
-				<a href="${pageContext.request.contextPath}/brand/${ad.brand.id}"><img
+				<a href="<c:url value="/brand/${ad.brand.id}"/>"><img
 					class="ad-brand-logo ad-brand-logo-pos" src="${ad.brand.logoUrl}" /></a>
 			</c:if>
 			<h2 class="video-header color-imp bigger-font wrap-text">
@@ -63,7 +63,7 @@
 		<div class="user-data clearfix">
 			<img src="${ad.user.userData.imageUrl}" class="left avatar" />
 			<div class="video-user-date-wrapper ">
-				<a href="${pageContext.request.contextPath}/user/${ad.user.id}"
+				<a href="<c:url value="/user/${ad.user.id}"/>"
 					class="color-imp sp-user-name">${ad.user.displayName}</a> <br />
 				<span class="smaller-font"><fmt:formatDate
 						value="${ad.creationDate }" pattern="MM.dd.yyyy" /> o <fmt:formatDate
@@ -75,15 +75,15 @@
 			<ul class="video-footer-nav clearfix menu styled">
 
 				<li><a href="#" data-target=".video-description"
-					data-id="${ad.id}">Opis</a>
+					data-id="${ad.id}"><spring:message code="label.description"></spring:message></a>
 					<div class="arrow-down-white"></div></li>
 
 
-				<li><a href="#" data-target=".comments" data-id="${ad.id}">Skomentuj</a>
+				<li><a href="#" data-target=".comments" data-id="${ad.id}"><spring:message code="label.comment"></spring:message></a>
 					<div class="arrow-down-white"></div></li>
 
 
-				<li><a href="#" data-target=".inform" data-id="${ad.id}">Zgłoś</a>
+				<li><a href="#" data-target=".inform" data-id="${ad.id}"><spring:message code="label.inform"></spring:message></a>
 					<div class="arrow-down-white"></div></li>
 
 			</ul>
@@ -102,27 +102,27 @@
 		<div class="admin-panel">
 			<c:if test="${ad.place eq 'MAIN'}">
 				<button class="button-blue button-main" data-target="place"
-					data-id="${ad.id }">Główna</button>
+					data-id="${ad.id }"><spring:message code="label.main"></spring:message></button>
 			</c:if>
 			<c:if test="${ad.place eq 'WAITING'}">
 				<button class="button-green button-main" data-target="place"
-					data-id="${ad.id }">Główna</button>
+					data-id="${ad.id }"><spring:message code="label.main"></spring:message></button>
 			</c:if>
 			<c:if test="${ad.approved}">
 				<button class="button-blue" data-target="approved"
-					data-id="${ad.id }">Aktywny</button>
+					data-id="${ad.id }"><spring:message code="label.active"></spring:message></button>
 			</c:if>
 			<c:if test="${!ad.approved}">
 				<button class="button-green" data-target="approved"
-					data-id="${ad.id }">Aktywny</button>
+					data-id="${ad.id }"><spring:message code="label.active"></spring:message></button>
 			</c:if>
 			<c:if test="${ad.ageProtected}">
 				<button class="button-blue" data-target="ageProtected"
-					data-id="${ad.id }">Dla dorosłych</button>
+					data-id="${ad.id }"><spring:message code="label.for.adults"></spring:message></button>
 			</c:if>
 			<c:if test="${!ad.ageProtected}">
 				<button class="button-green" data-target="ageProtected"
-					data-id="${ad.id }">Dla dorosłych</button>
+					data-id="${ad.id }"><spring:message code="label.for.adults"></spring:message></button>
 			</c:if>
 		</div>
 	</sec:authorize>
@@ -132,11 +132,11 @@
 			<c:choose>
 				<c:when test="${ad.contestAd.winner}">
 					<button class="button-blue button-winner" data-target="winner" data-contest-id="${contestId }"
-						data-type="ad" data-id="${ad.contestAd.id }">Zwycięzca</button>
+						data-type="ad" data-id="${ad.contestAd.id }"><spring:message code="label.winner"></spring:message></button>
 				</c:when>
 				<c:otherwise>
 					<button class="button-green button-winner"  data-target="winner"
-						data-type="ad" data-contest-id="${contestId }" data-id="${ad.contestAd.id }">Zwycięzca</button>
+						data-type="ad" data-contest-id="${contestId }" data-id="${ad.contestAd.id }"><spring:message code="label.winner"></spring:message></button>
 				</c:otherwise>
 			</c:choose>
 		</div>
@@ -155,7 +155,7 @@
 			<div class="inform-box-holder">
 				<textarea class="comment-box"
 					placeholder="Podaj jak najdokładniejszy powód zgłoszenia..."></textarea>
-				<button class="button-blue inform-button" data-ad-id="${ad.id}">Zgłoś</button>
+				<button class="button-blue inform-button" data-ad-id="${ad.id}"><spring:message code="label.inform"></spring:message></button>
 			</div>
 		</div>
 	</div>

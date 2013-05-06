@@ -16,28 +16,31 @@ import javax.persistence.UniqueConstraint;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
-@Table(name = "contest_answer", uniqueConstraints={
+@Table(name = "contest_answers", uniqueConstraints={
 		@UniqueConstraint(columnNames={"user_id", "contest_id"})
 })
 public class ContestAnswer extends CommonEntity {
 
 	private static final long serialVersionUID = 7251846403172177384L;
 
+	@Column(nullable=false, length=512)
 	private String answer;
-	@OneToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	@JoinColumn(name="user_id")
 	private User user;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name="creation_date")
 	private Date creationDate;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY, optional=false)
 	@JoinColumn(name="contest_id")
 	private Contest contest;
 
 	@Column(nullable=false)
 	private Boolean winner = false;
+	
 	public Boolean getWinner() {
 		return winner;
 	}

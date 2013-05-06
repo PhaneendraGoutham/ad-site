@@ -15,8 +15,8 @@
 	</sec:authorize>
 	<img src="${loggedUserPhotoUrl }" class="left avatar" />
 	<div class="comment-box-holder">
-		<textarea class="comment-box"></textarea>
-		<button class="button-blue comment-button" data-ad-id="${ad.id}">Skomentuj</button>
+		<textarea class="comment-box" maxlength="512"></textarea>
+		<button class="button-blue comment-button" data-ad-id="${ad.id}"><spring:message code="label.comment"></spring:message></button>
 	</div>
 
 </div>
@@ -28,8 +28,8 @@
 			<div class="post-header">
 				<span class="color-imp">${comment.user.displayName}</span> <span>-</span>
 				<span class="smaller-font"><fmt:formatDate
-						value="${comment.date}" pattern="MM.dd.yyyy" /> o <fmt:formatDate
-						value="${comment.date}" pattern="HH:mm" /></span>
+						value="${comment.creationDate}" pattern="yyyy.MM.dd" /> <spring:message code="label.at"></spring:message> <fmt:formatDate
+						value="${comment.creationDate}" pattern="HH:mm" /></span>
 
 			</div>
 			<div class="post-content">
@@ -40,7 +40,7 @@
 					data-target="#post-${comment.id}" data-id="${comment.id}"
 					data-ad-id="${ad.id}">Odpowiedz</a></li>
 				<li><a href="#" class="font-blue inform"
-					data-target="#post-${comment.id}" data-post-id="${comment.id}">Zgłoś</a></li>
+					data-target="#post-${comment.id}" data-post-id="${comment.id}"><spring:message code="label.inform"></spring:message></a></li>
 			</ul>
 			<ul class="post-children">
 				<c:forEach items="${comment.children}" var="childComment">
@@ -50,8 +50,8 @@
 						<div class="post-header">
 							<span class="color-imp">${childComment.user.displayName}</span> <span>-</span>
 							<span class="smaller-font"><fmt:formatDate
-									value="${childComment.date}" pattern="MM.dd.yyyy" /> o <fmt:formatDate
-									value="${childComment.date}" pattern="HH:mm" /></span>
+									value="${childComment.creationDate}" pattern="yyyy.MM.dd" /> <spring:message code="label.at"></spring:message> <fmt:formatDate
+									value="${childComment.creationDate}" pattern="HH:mm" /></span>
 
 						</div>
 						<div class="post-content">
@@ -61,10 +61,10 @@
 						<ul class="post-footer  smaller-font right  styled">
 							<li><a href="#" class="font-blue show-answer-box"
 								data-target="#post-${childComment.id}" data-id="${comment.id}"
-								data-ad-id="${ad.id}">Odpowiedz</a></li>
+								data-ad-id="${ad.id}"><spring:message code="label.answer"></spring:message></a></li>
 							<li><a href="#" class="font-blue inform"
 								data-target="#post-${childComment.id}"
-								data-post-id="${childComment.id}">Zgłoś</a></li>
+								data-post-id="${childComment.id}"><spring:message code="label.inform"></spring:message></a></li>
 						</ul>
 						<ul class="post-children"></ul></li>
 				</c:forEach>

@@ -25,6 +25,10 @@
 		<to>/ad/register</to>
 	</rule>
 	<rule>
+		<from>^/reklamy/([0-9]+)$</from>
+		<to>/ad/$1</to>
+	</rule>
+	<rule>
 		<from>^/uzytkownik/zaloguj$</from>
 		<to>/user/login</to>
 	</rule>
@@ -60,6 +64,7 @@
 		<from>^/konkursy/([0-9]+)/reklamy$</from>
 		<to>/contest/$1/ad</to>
 	</rule>
+
 	<rule>
 		<from>^/konkursy/([0-9]+)/odpowiedzi$</from>
 		<to>/contest/$1/answer</to>
@@ -87,100 +92,105 @@
 
 
 	<outbound-rule>
-		<from>/ad/main$</from>
+		<from>^/ad/main$</from>
 		<to>/glowna</to>
 	</outbound-rule>
 	<outbound-rule>
-		<from>/ad/waiting$</from>
+		<from>^/ad/waiting$</from>
 		<to>/poczekalnia</to>
 	</outbound-rule>
 	<outbound-rule>
-		<from>/ad/search$</from>
+		<from>^/ad/search$</from>
 		<to>/przegladaj</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/ad/rand$</from>
+		<from>^/ad/rand$</from>
 		<to>/losuj</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/ad/register$</from>
+		<from>^/ad/register$</from>
 		<to>/dodaj</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/user/login$</from>
+		
+		<from>^/ad/$1$</from>
+		<to>/reklamy/([0-9]+)</to>
+	</outbound-rule>
+	<outbound-rule>
+		<from>^/user/login$</from>
 		<to>/uzytkownik/zaloguj</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/user/register$</from>
+		<from>^/user/register$</from>
 		<to>/uzytkownik/zarejestruj</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/user/password$</from>
+		<from>^/user/password$</from>
 		<to>/uzytkownik/haslo</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/user/profile$</from>
+		<from>^/user/profile$</from>
 		<to>/uzytkownik/profil</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/user/company$</from>
+		<from>^/user/company$</from>
 		<to>/uzytkownik/wspolpraca</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/user/([0-9]+)$</from>
+		<from>^/user/([0-9]+)$</from>
 		<to>/uzytkownik/$1</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/contest$</from>
+		<from>^/contest$</from>
 		<to>/konkursy</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/contest/([0-9]+)$</from>
+		<from>^/contest/([0-9]+)$</from>
 		<to>/konkursy/$1</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/contest/([0-9]+)/ad$</from>
+		<from>^/contest/([0-9]+)/ad$</from>
 		<to>/konkursy/$1/reklamy</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/contest/([0-9]+)/answer$</from>
+		<from>^/contest/([0-9]+)/answer$</from>
 		<to>/konkursy/$1/odpowiedzi</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/brand/([0-9]+)$</from>
+		<from>^/brand/([0-9]+)$</from>
 		<to>/marka/$1</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/brand/([0-9]+)/edit$</from>
+		<from>^/brand/([0-9]+)/edit$</from>
 		<to>/marka/$1/edytuj</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/brand/([0-9]+)/ad/register$</from>
+		<from>^/brand/([0-9]+)/ad/register$</from>
 		<to>/marka/$1/dodaj</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/brand/([0-9]+)/contest$</from>
+		<from>^/brand/([0-9]+)/contest$</from>
 		<to>/marka/$1/konkursy</to>
 
 	</outbound-rule>
 	<outbound-rule>
-		<from>/brand/([0-9]+)/contest/register$</from>
+		<from>^/brand/([0-9]+)/contest/register$</from>
 		<to>/marka/$1/konkursy/dodaj</to>
 	</outbound-rule>
 

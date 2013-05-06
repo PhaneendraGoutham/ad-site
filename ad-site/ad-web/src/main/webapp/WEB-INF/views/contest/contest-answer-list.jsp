@@ -2,6 +2,7 @@
 	contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <c:forEach items="${answers }" var="answer">
 	<div class="center-article-wrapper ui-corner-all">
 		<p style="word-wrap: break-word;">${answer.answer }</p>

@@ -3,6 +3,7 @@ package pl.stalkon.ad.core.model.dto;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,6 +14,7 @@ import pl.stalkon.ad.core.model.Contest;
 public class ContestPostDto {
 
 	@NotEmpty
+	@Size(min=3, max=128)
 	private String name;
 	@NotEmpty
 	private String description;

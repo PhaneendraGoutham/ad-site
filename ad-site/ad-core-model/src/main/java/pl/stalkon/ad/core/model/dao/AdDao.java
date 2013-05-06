@@ -123,7 +123,7 @@ public class AdDao extends AbstractDao<Ad> {
 	public List<Map<String, Object>> getRatings(List<Long> ids) {
 		ScrollableResults results = currentSession()
 				.createSQLQuery(
-						"SELECT SUM(r.rank)/COUNT(*), COUNT(*), adId from ranks as r where r.adId in (:ids) Group by r.adId")
+						"SELECT SUM(r.rank)/COUNT(*), COUNT(*), ad_id from ranks as r where r.ad_id in (:ids) Group by r.ad_id")
 				.setParameterList("ids", ids).scroll();
 
 		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();

@@ -24,7 +24,7 @@ import org.apache.commons.codec.binary.Base64;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
-@Table(name = "contest")
+@Table(name = "contests")
 public class Contest extends CommonEntity {
 
 	private static final long serialVersionUID = 116695731544765566L;
@@ -37,34 +37,46 @@ public class Contest extends CommonEntity {
 		AD, ANSWER_QUESTION
 	}
 
+	@Column(length = 128, nullable = false)
 	private String name;
+
+	@Column(length = Integer.MAX_VALUE, nullable = false)
 	private String description;
+
+	@Column(name="image_url")
 	private String imageUrl;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name = "creation_date")
 	private Date creationDate;
 
+	@Column(name = "finish_date", nullable=false)
 	private Date finishDate;
+	@Column(name = "scores_date", nullable=false)
 	private Date scoresDate;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Brand brand;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+
+	@ManyToOne(fetch = FetchType.LAZY, optional=false)
 	private User user;
 
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy="contest")
-//	private List<Ad> ads;
-	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="contest", cascade=CascadeType.PERSIST)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy="contest")
+	// private List<Ad> ads;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contest", cascade = CascadeType.PERSIST)
 	private List<ContestAd> contestAds;
 
-	private State state;
+	@Column(nullable=false)
+	private State state = State.ON_GOING;
+
+	@Column(nullable=false)
+	private Boolean active = true;
 	
-	private Boolean active;
-	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="contest", cascade=CascadeType.ALL)
+	@Column(nullable=false)
+	private Type type;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contest", cascade = CascadeType.ALL)
 	private List<ContestAnswer> answers;
 
 	public String getName() {
@@ -100,20 +112,20 @@ public class Contest extends CommonEntity {
 		this.brand = brand;
 	}
 
-//	public List<Ad> getAds() {
-//		return ads;
-//	}
-//
-//	public void setAds(List<Ad> ads) {
-//		this.ads = ads;
-//	}
-//
-//	public void addAd(Ad ad) {
-//		if (ads == null) {
-//			ads = new ArrayList<Ad>();
-//		}
-//		ads.add(ad);
-//	}
+	// public List<Ad> getAds() {
+	// return ads;
+	// }
+	//
+	// public void setAds(List<Ad> ads) {
+	// this.ads = ads;
+	// }
+	//
+	// public void addAd(Ad ad) {
+	// if (ads == null) {
+	// ads = new ArrayList<Ad>();
+	// }
+	// ads.add(ad);
+	// }
 
 	public State getState() {
 		return state;
@@ -131,7 +143,7 @@ public class Contest extends CommonEntity {
 		this.type = type;
 	}
 
-	private Type type;
+
 
 	public Date getCreationDate() {
 		return creationDate;

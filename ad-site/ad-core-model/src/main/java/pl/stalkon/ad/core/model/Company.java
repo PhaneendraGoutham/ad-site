@@ -17,7 +17,7 @@ import pl.styall.library.core.model.UserRole;
 import pl.styall.library.core.model.defaultimpl.Address;
 
 @Entity
-@Table(name = "company")
+@Table(name = "companies")
 public class Company extends AbstractCompany<Address> {
 
 	private static final long serialVersionUID = -3276193432406949362L;
@@ -33,7 +33,8 @@ public class Company extends AbstractCompany<Address> {
 		this.brands = brands;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional=false)
+	@JoinColumn(name="user_id")
 	private User user;
 
 	public User getUser() {

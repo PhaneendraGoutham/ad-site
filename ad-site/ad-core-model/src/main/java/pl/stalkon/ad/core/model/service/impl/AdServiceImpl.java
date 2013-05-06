@@ -98,9 +98,8 @@ public class AdServiceImpl implements AdService {
 		User user = userDao.get(userId);
 		ad.setUser(user);
 		ad.setOfficial(official);
-		ad.setDuration(adPostDto.getDuration());
+//		ad.setDuration(adPostDto.getDuration());
 		ad.setYear(adPostDto.getYear());
-		System.out.println(adPostDto.getContestId());
 		if(adPostDto.getContestId() != null){
 			Contest contest = contestDao.get(adPostDto.getContestId());
 			ContestAd contestAd = new ContestAd();
@@ -109,10 +108,12 @@ public class AdServiceImpl implements AdService {
 			ad.setContestAd(contestAd);
 		}
 		Brand brand = brandDao.get(adPostDto.getBrandId());
-		brand.addAdd(ad);
+//		brand.addAdd(ad);
 		ad.setBrand(brand);
 		ad.setTitle(adPostDto.getTitle());
 		ad.setDescription(adPostDto.getDescription());
+		ad.setAgeProtected(adPostDto.getAgeProtected());
+		ad.setApproved(true);
 		adDao.save(ad);
 		return ad;
 	}
@@ -207,8 +208,9 @@ public class AdServiceImpl implements AdService {
 			return null;
 		}
 		Brand brand = brandDao.get(adPostDto.getBrandId());
-		brand.addAdd(ad);
+//		brand.addAdd(ad);
 		// ad.update(adPostDto, getTags(adPostDto.getTagsIds()), brand);
+		ad.setBrand(brand);
 		adDao.save(ad);
 		return ad;
 	}

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
-import pl.stalkon.ad.core.model.WistiaProject;
+import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.dao.BrandDao;
 import pl.stalkon.ad.core.model.dao.CompanyDao;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
@@ -34,8 +34,8 @@ public class BrandServiceImpl implements BrandService {
 
 //	@Transactional
 //	@Override
-//	public Brand register(BrandPostDto brandPostDto, WistiaProject wistiaProject) {
-//		Brand brand = createBrand(brandPostDto, wistiaProject);
+//	public Brand register(BrandPostDto brandPostDto, WistiaProject wistiaProjectData) {
+//		Brand brand = createBrand(brandPostDto, wistiaProjectData);
 //		brandDao.add(brand);
 //		return brand;
 //	}
@@ -69,7 +69,7 @@ public class BrandServiceImpl implements BrandService {
 				brands.size());
 		for (Brand brand : brands) {
 			result.add(new BrandSearchDto(brand.getName(), brand.getId(), brand
-					.getWistiaProject().getHashedId()));
+					.getWistiaProjectData().getHashedId()));
 		}
 		return result;
 	}
@@ -77,8 +77,8 @@ public class BrandServiceImpl implements BrandService {
 	@Override
 	@Transactional
 	public Brand register(BrandPostDto brandPostDto,
-			WistiaProject wistiaProject, Long companyId) {
-		Brand brand = createBrand(brandPostDto, wistiaProject);
+			WistiaProjectData wistiaProjectData, Long companyId) {
+		Brand brand = createBrand(brandPostDto, wistiaProjectData);
 		System.out.println(companyId);
 		if (companyId != null) {
 			System.out.println("adfasdfsdfasdf");
@@ -111,11 +111,11 @@ public class BrandServiceImpl implements BrandService {
 	}
 	
 	private Brand createBrand(BrandPostDto brandPostDto,
-			WistiaProject wistiaProject) {
+			WistiaProjectData wistiaProjectData) {
 		Brand brand = new Brand();
 		brand.setDescription(brandPostDto.getDescription());
 		brand.setName(brandPostDto.getName());
-		brand.setWistiaProject(wistiaProject);
+		brand.setWistiaProjectData(wistiaProjectData);
 		return brand;
 	}
 

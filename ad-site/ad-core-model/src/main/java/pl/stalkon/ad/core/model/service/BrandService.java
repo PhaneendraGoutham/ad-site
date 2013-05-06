@@ -7,15 +7,15 @@ import java.util.UUID;
 import org.hibernate.criterion.Order;
 
 import pl.stalkon.ad.core.model.Brand;
-import pl.stalkon.ad.core.model.WistiaProject;
+import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.dto.BrandPostDto;
 import pl.stalkon.ad.core.model.dto.BrandSearchDto;
 import pl.styall.library.core.ext.QueryObject;
 import pl.styall.library.core.model.dao.DaoQueryObject;
 
 public interface BrandService  {
-//	public Brand register(BrandPostDto brandPostDto, WistiaProject wistiaProject);
-	public Brand register(BrandPostDto brandPostDto, WistiaProject wistiaProject, Long companyId);
+//	public Brand register(BrandPostDto brandPostDto, WistiaProject wistiaProjectData);
+	public Brand register(BrandPostDto brandPostDto, WistiaProjectData wistiaProjectData, Long companyId);
 	public Brand update(BrandPostDto brandPostDto, Long brandId);
 	public Brand get(Long id);
 	public List<BrandSearchDto> getByTerm(String term);

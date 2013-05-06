@@ -10,7 +10,7 @@
 		<sec:authorize var="adult" access="hasRole('ROLE_USER')">
 			<sec:authentication property="principal.adult" var="adult" />
 		</sec:authorize>
-		<a href="${pageContext.request.contextPath}/ad/${ad.id}"> <span
+		<a href="<c:url value="/ad/${ad.id}"/>"> <span
 			class="color-imp left full-width wrap-text">${ad.title } </span>
 			<div class="left-list-item-wrapper clearfix">
 				<c:choose>

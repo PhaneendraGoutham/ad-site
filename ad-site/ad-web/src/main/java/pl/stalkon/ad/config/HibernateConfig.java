@@ -9,6 +9,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -21,7 +22,7 @@ import pl.styall.library.core.model.defaultimpl.Company;
 import pl.styall.library.core.model.defaultimpl.UserData;
 
 @Configuration
-@EnableTransactionManagement(order=2)
+@EnableTransactionManagement(order = 2)
 public class HibernateConfig {
 
 	@Inject
@@ -31,7 +32,8 @@ public class HibernateConfig {
 	public DataSource dataSource() {
 		BasicDataSource source = new BasicDataSource();
 		source.setDriverClassName("com.mysql.jdbc.Driver");
-		source.setUrl(env.getProperty("database.url")+"?characterEncoding=UTF-8");
+		source.setUrl(env.getProperty("database.url")
+				+ "?characterEncoding=UTF-8");
 		source.setUsername(env.getProperty("database.username"));
 		source.setPassword(env.getProperty("database.password"));
 		return source;
@@ -43,23 +45,28 @@ public class HibernateConfig {
 	}
 
 	@Bean
-	public LocalSessionFactoryBean sessionFactory(){
+	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setPackagesToScan("pl.stalkon.ad.core.model");
 		sessionFactory.setDataSource(dataSource());
-		sessionFactory.setAnnotatedClasses(new Class[]{UserData.class, Address.class, UserRole.class, SocialUser.class});
+		sessionFactory.setAnnotatedClasses(new Class[] { UserData.class,
+				Address.class, UserRole.class, SocialUser.class });
 		Properties prop = new Properties();
-		prop.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+		prop.setProperty("hibernate.dialect",
+				"org.hibernate.dialect.MySQLDialect");
 		prop.setProperty("hibernate.show_sql", "true");
 		prop.setProperty("hibernate.hbm2ddl.auto", "update");
 		prop.setProperty("connection.characterEncoding", "UTF-8");
 		prop.setProperty("hibernate.connection.useUnicode", "yes");
+		prop.setProperty("hibernate.hbm2ddl.import_files",
+				new ClassPathResource("hibernate/persistent_logins.sql")
+						.getPath());
 		sessionFactory.setHibernateProperties(prop);
 		return sessionFactory;
 	}
-	
+
 	@Bean
-	public HibernateTransactionManager transactionManager(){
+	public HibernateTransactionManager transactionManager() {
 		return new HibernateTransactionManager(sessionFactory().getObject());
 	}
 }

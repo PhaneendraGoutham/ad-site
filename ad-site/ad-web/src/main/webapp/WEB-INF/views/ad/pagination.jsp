@@ -30,7 +30,7 @@
 
 		<c:if test="${currentPage < pageAmount}">
 			<a href="${pagePrefix }${currentPage+1 }"><button
-					id="paggination-button-next" class="button-green ui-corner-all">Następna</button></a>
+					id="paggination-button-next" class="button-green ui-corner-all"><spring:message code="label.female.next"></spring:message></button></a>
 	${parameters.size }
 </c:if>
 

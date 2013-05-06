@@ -20,8 +20,8 @@ import org.springframework.web.client.RestTemplate;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Brand;
-import pl.stalkon.ad.core.model.WistiaProject;
-import pl.stalkon.ad.core.model.WistiaVideo;
+import pl.stalkon.ad.core.model.WistiaProjectData;
+import pl.stalkon.ad.core.model.WistiaVideoData;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 
 @Component
@@ -74,9 +74,10 @@ public class WistiaApiService implements InitializingBean {
 
 	public Ad setVideoDetails(AdPostDto adPostDto) {
 		Ad ad = new Ad();
-		WistiaVideo wistiaVideo = new WistiaVideo(adPostDto.getVideoId(),
-				adPostDto.getThumbnail());
-		ad.setWistiaVideo(wistiaVideo);
+		WistiaVideoData wistiaVideoData = new WistiaVideoData(
+				adPostDto.getVideoId(), adPostDto.getThumbnail(),
+				adPostDto.getDuration());
+		ad.setWistiaVideoData(wistiaVideoData);
 		return ad;
 	}
 
@@ -84,13 +85,13 @@ public class WistiaApiService implements InitializingBean {
 		Map<String, String> map = Collections.singletonMap("name",
 				ad.getTitle());
 		Map<String, String> vars = Collections.singletonMap("videoId", ad
-				.getWistiaVideo().getVideoId());
+				.getWistiaVideoData().getVideoId());
 		restTemplate.exchange(env.getProperty("wistia.mediaJsonUrl"),
 				HttpMethod.PUT, new HttpEntity<Map<String, String>>(map,
 						headers), Map.class, vars);
 	}
 
-	public WistiaProject createWistiaProject(String name) {
+	public WistiaProjectData createWistiaProject(String name) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("name", name);
 		map.put("anonymousCanUpload", "1");
@@ -99,25 +100,29 @@ public class WistiaApiService implements InitializingBean {
 				env.getProperty("wistia.createProjectUrl"), HttpMethod.POST,
 				new HttpEntity<Map<String, String>>(map, headers), Map.class);
 		Map<String, Object> result = response.getBody();
-		WistiaProject wistiaProject = new WistiaProject();
-		wistiaProject.setWistiaId(new Long((Integer) result.get("id")));
-		wistiaProject.setHashedId((String) result.get("hashedId"));
-		return wistiaProject;
+		WistiaProjectData wistiaProjectData = new WistiaProjectData();
+		wistiaProjectData.setWistiaId(new Long((Integer) result.get("id")));
+		wistiaProjectData.setHashedId((String) result.get("hashedId"));
+		return wistiaProjectData;
 	}
-	
-	public boolean deleteVideo(String hashedId){
-		Map<String, String> vars = Collections.singletonMap("videoId", hashedId);
-		ResponseEntity<Map> response = restTemplate.exchange(env.getProperty("wistia.mediaJsonUrl"),
-				HttpMethod.DELETE, new HttpEntity<Map<String, String>>(null,
-						headers), Map.class, vars);
+
+	public boolean deleteVideo(String hashedId) {
+		Map<String, String> vars = Collections
+				.singletonMap("videoId", hashedId);
+		ResponseEntity<Map> response = restTemplate.exchange(
+				env.getProperty("wistia.mediaJsonUrl"), HttpMethod.DELETE,
+				new HttpEntity<Map<String, String>>(null, headers), Map.class,
+				vars);
 		return response.getStatusCode().equals(HttpStatus.OK);
 	}
-	
-	public boolean deleteProject(String hashedId){
-		Map<String, String> vars = Collections.singletonMap("projectId", hashedId);
-		ResponseEntity<Map> response = restTemplate.exchange(env.getProperty("wistia.mediaProjectJsonUrl"),
-				HttpMethod.DELETE, new HttpEntity<Map<String, String>>(null,
-						headers), Map.class, vars);
+
+	public boolean deleteProject(String hashedId) {
+		Map<String, String> vars = Collections.singletonMap("projectId",
+				hashedId);
+		ResponseEntity<Map> response = restTemplate.exchange(env
+				.getProperty("wistia.mediaProjectJsonUrl"), HttpMethod.DELETE,
+				new HttpEntity<Map<String, String>>(null, headers), Map.class,
+				vars);
 		return response.getStatusCode().equals(HttpStatus.OK);
 	}
 

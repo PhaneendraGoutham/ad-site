@@ -7,17 +7,17 @@
 	uri="http://www.springframework.org/security/tags"%>
 <article class="center-article-wrapper ui-corner-all">
 	<div class="form">
+	<c:url value="/ad" var="actionUrl"/>
 		<form:form method="POST"
-			action="${pageContext.request.contextPath}/ad" id="ad-form"
+			action="${actionUrl }" id="ad-form"
 			commandName="adPostDto">
-			<label for="brand-selector">Marka</label>
+			<label for="brand-selector"><spring:message code="label.brand"></spring:message></label>
 			<input type="text" id="brand-selector" class="ui-corner-all required" />
 			
 			<div id="wistia-upload-widget"
 				class="wistia-upload-widget button-green">
 				<div>
-					<a class="upload-media" href="#" style="color: #ffffff">Wybierz
-						plik i dodaj</a>
+					<a class="upload-media" href="#" style="color: #ffffff"><spring:message code=""></spring:message></a>
 				</div>
 			</div>
 			

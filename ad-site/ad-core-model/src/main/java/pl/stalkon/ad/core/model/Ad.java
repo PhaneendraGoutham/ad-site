@@ -50,27 +50,27 @@ public class Ad extends CommonEntity {
 	private Place place = Place.WAITING;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="date_on_main")
+	@Column(name = "date_on_main")
 	private Date dateOnMain;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name="creation_date")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name = "creation_date")
 	private Date creationDate;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Integer year;
 
 	@Column(nullable = false, length = 128)
 	private String title;
 
-	@Column(nullable = false, length = 512)
+	@Column(length = 512)
 	private String description;
 
-	@Column(nullable = false, columnDefinition = "BOOL default false",name="age_protected")
-	private Boolean ageProtected = false;
+	@Column(nullable = false, columnDefinition = "BOOL default false", name = "age_protected")
+	private Boolean ageProtected;
 
 	@Column(nullable = false, columnDefinition = "BOOL default true")
-	private Boolean approved = true;
+	private Boolean approved;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_id")
@@ -80,57 +80,51 @@ public class Ad extends CommonEntity {
 	@JoinColumn(name = "brand_id")
 	private Brand brand;
 
-//	@ManyToOne(fetch = FetchType.LAZY, optional = true, cascade=CascadeType.ALL)
-//	@JoinTable(name="contest_ad", joinColumns={@JoinColumn(name="ad_id", referencedColumnName="id")}, inverseJoinColumns={@JoinColumn(name="id", referencedColumnName="id")})
-	@OneToOne(optional=true, mappedBy="ad", cascade=CascadeType.ALL)
+	// @ManyToOne(fetch = FetchType.LAZY, optional = true,
+	// cascade=CascadeType.ALL)
+	// @JoinTable(name="contest_ad", joinColumns={@JoinColumn(name="ad_id",
+	// referencedColumnName="id")}, inverseJoinColumns={@JoinColumn(name="id",
+	// referencedColumnName="id")})
+	@OneToOne(optional = true, mappedBy = "ad", cascade = CascadeType.ALL)
 	private ContestAd contestAd;
 
+	@Column(name = "content_type", nullable = false)
 	private Type contentType = Type.MOVIE;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ad")
 	private List<Rank> ranks;
 
-	@Formula("(SELECT (SUM(r.rank)/COUNT(*)) from ranks as r where r.adId = id)")
+	@Formula("(SELECT (SUM(r.rank)/COUNT(*)) from ranks as r where r.ad_id = id)")
 	private Double rank;
 
-	@Formula("(SELECT COUNT(*) from ranks as r where r.adId = id)")
+	@Formula("(SELECT COUNT(*) from ranks as r where r.ad_id = id)")
 	private Long voteCount;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "ad")
-	@OrderBy(value = "date")
-	private List<AdComment> comments = new ArrayList<AdComment>();
+	@OrderBy(value = "creation_date")
+	private List<AdComment> comments;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional=true)
-	@JoinColumn(name = "wistiaVideo")
-	private WistiaVideo wistiaVideo;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name = "wistia_video_data_id")
+	private WistiaVideoData wistiaVideoData;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional=true)
-	@JoinColumn(name = "youtubeVideo")
-	private YoutubeVideo youtubeVideo;;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name = "youtube_video_data_id")
+	private YoutubeVideoData youtubeVideoData;
 
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "ad_tags", joinColumns = { @JoinColumn(name = "ad_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }, uniqueConstraints = { @UniqueConstraint(name = "ad_tag_unique", columnNames = {
+	@JoinTable(name = "ad_tag_maps", joinColumns = { @JoinColumn(name = "ad_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }, uniqueConstraints = { @UniqueConstraint(name = "ad_tag_uq", columnNames = {
 			"ad_id", "tag_id" }) })
 	private List<Tag> tags = new ArrayList<Tag>();
 
-	private Long duration;
-
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "BOOL default false")
 	private Boolean official;
 
-	public Long getDuration() {
-		return duration;
-	}
-
-	public void setDuration(Long duration) {
-		this.duration = duration;
-	}
-
 	public String getThumbnail() {
-		if (wistiaVideo != null) {
-			return wistiaVideo.getThumbnail();
+		if (wistiaVideoData != null) {
+			return wistiaVideoData.getThumbnail();
 		} else {
-			return youtubeVideo.getVideoThumnail();
+			return youtubeVideoData.getVideoThumnail();
 		}
 	}
 
@@ -143,10 +137,10 @@ public class Ad extends CommonEntity {
 	}
 
 	public String getVideoUrl() {
-		if (wistiaVideo != null) {
-			return wistiaVideo.getVideoUrl();
+		if (wistiaVideoData != null) {
+			return wistiaVideoData.getVideoUrl();
 		} else {
-			return youtubeVideo.getVideoUrl();
+			return youtubeVideoData.getVideoUrl();
 		}
 	}
 
@@ -189,13 +183,13 @@ public class Ad extends CommonEntity {
 		this.ranks = ranks;
 	}
 
-	public void addRank(Rank rank) {
-		rank.setAd(this);
-		if (ranks == null) {
-			ranks = new ArrayList<Rank>();
-		}
-		ranks.add(rank);
-	}
+	// public void addRank(Rank rank) {
+	// rank.setAd(this);
+	// if (ranks == null) {
+	// ranks = new ArrayList<Rank>();
+	// }
+	// ranks.add(rank);
+	// }
 
 	public List<AdComment> getComments() {
 		return comments;
@@ -257,12 +251,12 @@ public class Ad extends CommonEntity {
 		this.title = title;
 	}
 
-	public YoutubeVideo getYoutubeVideo() {
-		return youtubeVideo;
+	public YoutubeVideoData getYoutubeVideoData() {
+		return youtubeVideoData;
 	}
 
-	public void setYoutubeVideo(YoutubeVideo youtubeVideo) {
-		this.youtubeVideo = youtubeVideo;
+	public void setYoutubeVideoData(YoutubeVideoData youtubeVideoData) {
+		this.youtubeVideoData = youtubeVideoData;
 	}
 
 	public Boolean getOfficial() {
@@ -289,12 +283,12 @@ public class Ad extends CommonEntity {
 		this.place = place;
 	}
 
-	public WistiaVideo getWistiaVideo() {
-		return wistiaVideo;
+	public WistiaVideoData getWistiaVideoData() {
+		return wistiaVideoData;
 	}
 
-	public void setWistiaVideo(WistiaVideo wistiaVideo) {
-		this.wistiaVideo = wistiaVideo;
+	public void setWistiaVideoData(WistiaVideoData wistiaVideoData) {
+		this.wistiaVideoData = wistiaVideoData;
 	}
 
 	public Date getDateOnMain() {

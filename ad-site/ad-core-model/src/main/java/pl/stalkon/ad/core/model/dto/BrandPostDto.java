@@ -8,6 +8,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 public class BrandPostDto {
 	@NotEmpty
 	private String name;
+	
 	@Size(max=1024)
 	private String description;
 	

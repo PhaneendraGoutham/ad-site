@@ -68,6 +68,14 @@ $(function() {
 		}
 		return param.test(value);
 	}, "Nieprawidłowe znaki");
+	jQuery.validator.addMethod("image_extensions", function(value, element) {
+		var ext = $(element).val().split('.').pop().toLowerCase();
+		if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+		    return false;
+		}
+		return true;
+	}, "Tylko pliki z rozszerzeniem: gif, png, jpg, jpeg");
+	
 
 	$(".admin-panel button").click(function() {
 		var $this = $(this);

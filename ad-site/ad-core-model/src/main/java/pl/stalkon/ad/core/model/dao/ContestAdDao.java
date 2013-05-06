@@ -72,13 +72,9 @@ public class ContestAdDao extends AbstractDao<ContestAd> {
 	
 	public boolean hasUserPostedAd(Long userId, Long contestId){
 		Criteria criteria = currentSession().createCriteria(ContestAd.class);
-//		criteria.createCriteria("ad").createCriteria("user");
-//		criteria.add(Restrictions.eq("ad.user.id", userId));
 		criteria.add(Restrictions.eq("contest.id", contestId));
-//		criteria.setProjection(Property.forName("id"));
 		ContestAd contestAd = (ContestAd) criteria.uniqueResult();
-		
-		if(contestAd.getAd().getUser().getId().equals(userId)){
+		if(contestAd != null && contestAd.getAd().getUser().getId().equals(userId)){
 			return true;
 		}
 		return false;

@@ -8,45 +8,26 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <article class="center-article-wrapper ui-corner-all">
 	<div class="form">
-		<form:form method="POST"
-			action="${pageContext.request.contextPath}${postPath }" id="ad-form"
+		<c:url value="${postPath }" var="actionUrl" />
+		<form:form method="POST" action="${actionUrl }" id="ad-form"
 			commandName="adPostDto">
-			<%-- 			<c:choose> --%>
-			<%-- 				<c:when test="${fn:length(brands) > 1 }"> --%>
-			<!-- 					<label>Marka</label> -->
-			<!-- 					<ul> -->
-			<%-- 						<c:forEach items="${brands }" var="brand"> --%>
-			<%-- 							<li><input type="radio" name="brandId" value="${brand.id }" --%>
-			<%-- 								data-project-id="${brand.wistiaProject.hashedId }" /> <label --%>
-			<%-- 								style="width: initial">${brand.name }</label></li> --%>
-			<%-- 						</c:forEach> --%>
-			<!-- 					</ul> -->
-			<%-- 				</c:when> --%>
-			<%-- 				<c:otherwise> --%>
-			<%-- 					<input type="radio" name="brandId" value="${brand[0].id }" --%>
-			<!-- 						checked="checked" class="hidden" /> -->
-			<%-- 				</c:otherwise> --%>
-			<%-- 			</c:choose> --%>
 			<form:hidden path="brandId"
-				data-project-id="${brand.wistiaProject.hashedId }" />
-			<label for="title">Tytuł</label>
-			<form:input path="title" class="ui-corner-all   required"
-				minLength="3" maxLength="60" />
-			<label for="year">Rok produkcji</label>
-			<form:input path="year" class="ui-corner-all  required number"
-				minLength="4" min="1900" maxLength="4" />
+				data-project-id="${brand.wistiaProjectData.hashedId }" />
+			<label for="title"><spring:message code="label.title"></spring:message></label>
+			<form:input path="title" class="ui-corner-all" />
+			<label for="year"><spring:message code="label.production.year"></spring:message></label>
+			<form:input path="year" class="ui-corner-all" />
 			<div>
-				<label for="tags-selector">Tagi</label>
+				<label for="tags-selector"><spring:message code="label.tags"></spring:message></label>
 				<form:input id="tags-selector" class="ui-corner-all" path="tags"></form:input>
 			</div>
 			<div class="checkbox-radio-wrapper">
-				<input type="checkbox" name="ageProtected" /><label>Dla
-					dorosłych</label>
+				<form:checkbox path="ageProtected" />
+				<label><spring:message code="label.for.adults"></spring:message></label>
 			</div>
 
-			<label for="description">Opis</label>
-			<form:textarea path="description" class="ui-corner-all"
-				maxLength="500" />
+			<label for="description"><spring:message code="label.description"></spring:message></label>
+			<form:textarea path="description" class="ui-corner-all" />
 			<form:hidden path="type" />
 			<%-- 			<form:hidden path="url" id="dailymotion-url" /> --%>
 			<form:hidden path="videoId" id="video-id" />
@@ -57,8 +38,7 @@
 			<div id="wistia-upload-widget"
 				class="wistia-upload-widget button-green disabled">
 				<div>
-					<span class="upload-media" style="color: #ffffff">Wybierz
-						plik i dodaj</span>
+					<span class="upload-media" style="color: #ffffff"><spring:message code="label.choose.and.add.file"></spring:message></span>
 				</div>
 			</div>
 		</form:form>
@@ -142,6 +122,24 @@
 			},
 			validEvent : function() {
 				checkTagsValidity(true);
+			},
+			rules : {
+
+				title : {
+					required : true,
+					maxlength : 128,
+					minlength : 3,
+				},
+				description : {
+					maxlength : 512,
+					minlength : 3,
+				},
+				year : {
+					required : true,
+					min : 1900,
+					max : new Date().getFullYear(),
+					number : true,
+				},
 			}
 		});
 

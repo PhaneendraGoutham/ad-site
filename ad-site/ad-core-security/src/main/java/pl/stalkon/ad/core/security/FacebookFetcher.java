@@ -40,8 +40,6 @@ public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 		String username = RandomStringUtils.random(10,0,35,true,true,"abcdefghijklmnopqrstuvwxyz1234567890".toCharArray(), new SecureRandom());
 		userRegForm.setPassword(password);
 		userRegForm.setConfirmPassword(password);
-		
-		System.out.println(username);
 		userRegForm.setUsername(username);
 		String birthday = profile.getBirthday();
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");

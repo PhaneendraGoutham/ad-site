@@ -1,5 +1,6 @@
 package pl.stalkon.ad.core.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -7,11 +8,18 @@ import javax.validation.constraints.NotNull;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
-@Table(name="tag")
+@Table(name="tags")
 public class Tag extends CommonEntity {
 
-	@NotNull
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1036182504585898010L;
+	
+	
+	@Column(length=64, nullable=false)
 	private String name;
+	
 	private String description;
 	
 	public String getName() {

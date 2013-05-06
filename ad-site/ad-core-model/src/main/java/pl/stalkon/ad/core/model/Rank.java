@@ -11,19 +11,20 @@ import javax.persistence.UniqueConstraint;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
-@Table(name = "ranks", uniqueConstraints={@UniqueConstraint(columnNames={"userId", "adId"})})
+@Table(name = "ranks", uniqueConstraints={@UniqueConstraint(columnNames={"user_id", "ad_id"})})
 public class Rank extends CommonEntity {
 
 	private static final long serialVersionUID = -7464103449661778198L;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="userId")
+	@ManyToOne(fetch = FetchType.LAZY, optional=false)
+	@JoinColumn(name="user_id")
 	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="adId")
+	@ManyToOne(fetch = FetchType.LAZY, optional=false)
+	@JoinColumn(name="ad_id")
 	private Ad ad;
 	
+	@Column(nullable=false)
 	private Short rank;
 
 	public Short getRank() {

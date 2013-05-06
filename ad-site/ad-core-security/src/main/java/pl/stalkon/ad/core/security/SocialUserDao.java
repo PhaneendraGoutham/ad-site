@@ -27,14 +27,14 @@ public class SocialUserDao {
 
 	public RemoteUser get(Long userId) {
 		return (SocialUser) currentSession().createQuery(
-				"from SocialUser where userId = :userId").setLong(
+				"from SocialUser where user = :userId").setLong(
 				"userId", userId).uniqueResult();
 	}
 
 	public RemoteUser get(Long userId, String providerId, String providerUserId) {
 		return (SocialUser) currentSession()
 				.createQuery(
-						"from SocialUser where providerId = :providerId and providerUserId = :providerUserId and userId = :userId")
+						"from SocialUser where providerId = :providerId and providerUserId = :providerUserId and user = :userId")
 				.setString("providerId", providerId)
 				.setString("providerUserId", providerUserId)
 				.setLong("userId", userId).uniqueResult();
@@ -50,7 +50,7 @@ public class SocialUserDao {
 	public boolean isUserIdConnectedTo(String providerId, Long userId) {
 		List<SocialUser> list = currentSession()
 		.createQuery(
-				"from SocialUser where providerId = :providerId and userId = :userId")
+				"from SocialUser where providerId = :providerId and user = :userId")
 		.setString("providerId", providerId)
 		.setLong("userId", userId).list();
 		if(list.size() > 0)

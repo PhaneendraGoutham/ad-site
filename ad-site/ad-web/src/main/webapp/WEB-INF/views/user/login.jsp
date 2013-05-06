@@ -5,8 +5,7 @@
 <article class="center-article-wrapper">
 	<div class="form">
 		<c:if test="${not empty param.login_error}">
-			<label class="error">Nieprawidłowa nazwa użytkownika lub
-				hasło</label>
+			<label class="error"><spring:message code="info.incorrect.username.password"></spring:message></label>
 		</c:if>
 	</div>
 	<form class="form"
@@ -14,17 +13,15 @@
 		method="POST">
 
 
-		<label for="name">Nazwa użytkownika lub email</label> <input
-			type="text" id="name" name="username" /> <label for="password">Hasło</label>
+		<label for="name"><spring:message code="label.username.or.email"></spring:message></label> <input
+			type="text" id="name" name="username" /> <label for="password"><spring:message code="label.password"></spring:message></label>
 		<input type="password" id="password" name="password" /> <a
-			href="register.html" id="forget-password" class="color-imp">Nie
-			pamiętam hasła</a> <a
-			href="${pageContext.request.contextPath}/user/register"
-			id="register-link">Zarejestruj</a>
+			href="#" id="forget-password" class="color-imp"><spring:message code="label.forgot.password"></spring:message></a> <a
+			href="<c:url value="/user/register"/>"
+			id="register-link"><spring:message code="label.register"></spring:message></a>
 		<div id="form-buttons">
 			<input type="submit" class="button-green" value="Zaloguj" /> <a
-				href="<c:url value="/social/login/facebook"/>" class="button-blue">Zaloguj
-				z facebook</a>
+				href="<c:url value="/social/login/facebook"/>" class="button-blue"><spring:message code="label.facebook.login"></spring:message></a>
 		</div>
 	</form>
 </article>

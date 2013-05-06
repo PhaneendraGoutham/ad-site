@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Brand;
-import pl.stalkon.ad.core.model.WistiaProject;
+import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.video.api.service.VideoApiException;
 import pl.stalkon.video.api.service.VideoApiService;
@@ -48,7 +48,7 @@ public class VideoApiServiceImpl implements VideoApiService{
 
 	@Override
 	public void setApiData(Ad ad) {
-		if(ad.getWistiaVideo() != null)
+		if(ad.getWistiaVideoData() != null)
 		wistiaApiService.setApiData(ad);
 	}
 

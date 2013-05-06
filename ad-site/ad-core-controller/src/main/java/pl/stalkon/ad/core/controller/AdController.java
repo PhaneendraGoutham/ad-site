@@ -7,9 +7,13 @@ import java.util.Map;
 import javax.jws.HandlerChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Place;
@@ -76,8 +81,8 @@ public class AdController {
 	@Autowired
 	private VideoApiService videoApiService;
 
-	@Autowired
-	private SiteFacebookIntegrator siteFacebookIntegrator;
+//	@Autowired
+//	private SiteFacebookIntegrator siteFacebookIntegrator;
 
 	@Autowired
 	private CompanyService companyService;
@@ -90,6 +95,9 @@ public class AdController {
 
 	@Autowired
 	private ControllerHelperBean controllerHelperBean;
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	@RequestMapping(value = "ad/register")
 	public String getAddPage(Model model) {
@@ -109,15 +117,13 @@ public class AdController {
 				.getCompanyWithBrandsByUser(socialLoggedUser.getId());
 		if (brand == null || company.getBrands() == null
 				|| !company.getBrands().contains(brand)) {
-			throw new AccessDeniedException(
-					"Nie masz wystarczających uprawnień aby dodać reklamę do tej marki");
+			controllerHelperBean.throwAccessDeniedException(request);
 		}
 		AdPostDto adDto = new AdPostDto();
 		model.addAttribute("adPostDto", adDto);
 		model.addAttribute("path", "ad/register");
 		model.addAttribute("postPath", "/ad");
 		model.addAttribute("brand", brand);
-		adDto.setBrandId(brandId);
 		return "ad/company-register";
 	}
 
@@ -141,18 +147,16 @@ public class AdController {
 			RedirectAttributes redirectAttributes) {
 
 		if (result.hasErrors()) {
-			redirectAttributes
-					.addFlashAttribute("info",
-							"Źle wprowadzone dane. Proszę postępować zgodnie z zaleceniami");
-			return "redirect:/info-page";
+			controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
 		Contest contest = contestService.get(contestId);
-		if (!contest.getBrand().getId().equals(adPostDto.getBrandId())
-				|| contest.getState() == State.FINISHED) {
-			redirectAttributes
-					.addFlashAttribute("info",
-							"Źle wprowadzone dane. Proszę postępować zgodnie z zaleceniami");
+		if (contest.getState() == State.FINISHED) {
+			redirectAttributes.addFlashAttribute("info",
+					messageSource.getMessage("info.contest.finished", null, LocaleContextHolder.getLocale()));
 			return "redirect:/info-page";
+		}
+		if (!contest.getBrand().getId().equals(adPostDto.getBrandId())) {
+			controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
@@ -160,14 +164,13 @@ public class AdController {
 		try {
 			ad = videoApiService.setVideoDetails(adPostDto);
 		} catch (VideoApiException e) {
-			result.addError(new ObjectError("url", e.getMessage()));
-			return "ad/register";
+			controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
 		adPostDto.setContestId(contestId);
 		adService.register(adPostDto, ad, socialLoggedUser.getId(), false);
 		videoApiService.setApiData(ad);
 		redirectAttributes.addFlashAttribute("info",
-				"Życzymy powodzenia w konkursie");
+				messageSource.getMessage("info.contest.answer.post", null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 
@@ -202,10 +205,7 @@ public class AdController {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		if (result.hasErrors()) {
-			redirectAttributes
-					.addFlashAttribute("info",
-							"Źle wprowadzone dane. Proszę postępować zgodnie z zaleceniami");
-			return "redirect:/info-page";
+			return controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
 		// DailymotionData dailymotionData = dailyService.createMedia(
 		// adPostDto.getUrl(), adPostDto.getTitle());
@@ -218,16 +218,15 @@ public class AdController {
 			if (company.getBrands().contains(mockBrand)) {
 				official = true;
 			} else {
-				throw new AccessDeniedException(
-						"Nie masz wystarczających uprawnień aby dodać reklamę do tej marki");
+				controllerHelperBean.throwAccessDeniedException(request);
 			}
 		}
 		Ad ad = null;
 		try {
 			ad = videoApiService.setVideoDetails(adPostDto);
 		} catch (VideoApiException e) {
-			result.addError(new ObjectError("url", e.getMessage()));
-			return "ad/register";
+			redirectAttributes.addFlashAttribute("info", messageSource.getMessage("info.youtube.url.invalid",null, LocaleContextHolder.getLocale()));
+			return "redirect:/info-page";
 		}
 		adService.register(adPostDto, ad, socialLoggedUser.getId(), official);
 		videoApiService.setApiData(ad);
@@ -235,7 +234,7 @@ public class AdController {
 		// siteFacebookIntegrator.notifyOnAdCreated(env.getProperty("app.domain")
 		// + "/ad/" + ad.getId(), ad.getTitle(), ad.getDescription());
 		// TODO:
-		redirectAttributes.addFlashAttribute("info", "Reklama została dodana");
+		redirectAttributes.addFlashAttribute("info", messageSource.getMessage("info.ad.added",null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 
@@ -375,8 +374,10 @@ public class AdController {
 	}
 
 	@RequestMapping(value = "ad/{id}/comment", method = RequestMethod.POST)
-	public String postComment(@PathVariable(value = "id") Long id, Model model,
-			@RequestParam(value = "message") String message,
+	public String postComment(
+			@PathVariable(value = "id") Long id,
+			Model model,
+			@NotNull @Size(max = 512) @RequestParam(value = "message") String message,
 			@RequestParam(value = "postId", required = false) Long postId,
 			Principal principal) throws AjaxNotLoggedInException {
 		if (principal == null) {

@@ -27,6 +27,7 @@ import pl.stalkon.social.singleconnection.interfaces.RemoteUser;
 // "users_id", "providerId", "providerUserId" }),
 // @org.hibernate.annotations.Index(name = "idxSocialProvider", columnNames = {
 // "providerId", "providerUserId" }) })
+@Table(name="social_users")
 public class SocialUser implements RemoteUser {
 	/**
 	 * 
@@ -37,36 +38,37 @@ public class SocialUser implements RemoteUser {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "socialUserId", nullable = true, insertable = false, updatable = false)
+	@Column(nullable = true, insertable = false, updatable = false)
 	private Long id;
 	
-	@Column
+	@Column(name="expire_time")
 	private Long expireTime;
 	
-	@Column(length = 25, nullable = false)
+	@Column(length = 25, nullable = false, name="provider_user_id")
 	private String providerUserId;
 	
-	@Column(length = 25, nullable = false)
+	@Column(length = 25, nullable = false, name="idx_social_provider_id")
 	@Index(name = "idxSocialProviderId")
 	private String providerId;
 	
 	@Column(length = 55)
 	private String secret;
 	
-	@Column(length = 55)
+	@Column(length = 55, name="display_name")
 	private String displayName;
 	
-	@Column
+	@Column(name="profile_url")
 	private String profileUrl;
 	
+	@Column(name="access_token")
 	private String accessToken;
 	
 	
-	@Column(length = 70)
+	@Column(length = 70,name="refresh_token")
 	private String refreshToken;
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name="userId")
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, optional=false)
+	@JoinColumn(name="user_id")
 	private User user;
 
 	public SocialUser() {

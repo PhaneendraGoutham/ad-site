@@ -27,7 +27,7 @@ public class CompanyServiceImpl implements CompanyService {
 	@Transactional
 	public Company register(Company company, Long userId) {
 		User user = userDao.get(userId);
-		user.addUserRole(new UserRole(UserRoleDef.ROLE_COMPANY));
+		user.addUserRole(userDao.loadUserRoleByName(UserRoleDef.ROLE_COMPANY));
 		company.setUser(user);
 		companyDao.save(company);
 		return company;

@@ -1,12 +1,14 @@
 package pl.stalkon.ad.config;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 
 import pl.stalkon.ad.core.interceptors.MiniBrowserInterceptor;
@@ -30,6 +33,9 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	
 	@Inject
 	private AdService adService;
+	
+	@Inject
+	private Environment env;
 
 	@Bean
 	public ReloadableResourceBundleMessageSource messageSource() {
@@ -41,13 +47,16 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public LocaleResolver localeResolver() {
-		return new CookieLocaleResolver();
+		SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+		localeResolver.setDefaultLocale(new Locale("pl"));
+		return localeResolver;
 	}
+	
 	
 	@Bean
 	public MultipartResolver multipartResolver(){
 		CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
-		commonsMultipartResolver.setMaxUploadSize(2000000);
+		commonsMultipartResolver.setMaxUploadSize(new Long(env.getProperty("file.maxSize")));
 		return commonsMultipartResolver;
 	}
 

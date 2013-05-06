@@ -15,10 +15,10 @@ import pl.stalkon.ad.core.model.Ad.Type;
 public class AdPostDto {
 	
 	@NotEmpty
-	@Size(max=60, min=3)
+	@Size(max=128, min=3)
 	private String title;
 	
-	@Size(max=500)
+	@Size(max=512)
 	private String description;
 	
 	@URL
@@ -38,7 +38,7 @@ public class AdPostDto {
 	private Integer year;
 	
 	@NotNull
-	private Boolean ageProtected;
+	private Boolean ageProtected = false;
 	
 
 

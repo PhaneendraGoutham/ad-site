@@ -3,32 +3,32 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:if test="${contest.state == 'FINISHED' }">
 	<article class="center-article-wrapper ui-corner-all contest-info">
-		<h2 class="clearfix color-imp bigger-font">Konkurs został
-			zakończony</h2>
-		<br /> <br /> <span class="clearfix color-imp bigger-font">Uczestnicy</span>
+		<h2 class="clearfix color-imp bigger-font"><spring:message code="info.contest.finished"></spring:message></h2>
+		<br /> <br /> <span class="clearfix color-imp bigger-font"><spring:message code="label.contestants"></spring:message></span>
 		<br />
 		<c:choose>
 			<c:when test="${contest.type == 'ANSWER_QUESTION' }">
 				<c:forEach items="${contest.answers }" var="answer">
-					<a href="${pageContext.request.contextPath}/user/${answer.user.id}">${answer.user.displayName
+					<a href="<c:url value="/user/${answer.user.id}"/>">${answer.user.displayName
 						}</a>
 				</c:forEach>
 			</c:when>
 			<c:otherwise>
 				<c:forEach items="${contest.ads }" var="ad">
 					<a
-						href="${pageContext.request.contextPath}/user/${answer.user.id}">${answer.user.displayName
+						href="<c:url value="/user/${answer.user.id}"/>">${answer.user.displayName
 						}</a>
 				</c:forEach>
 			</c:otherwise>
 		</c:choose>
 	</article>
 </c:if>
-<article class="center-article-wrapper ui-corner-all clearfix">
+<article class="center-article-wrapper ui-corner-all clearfix full-width">
 
 	<img src="${contest.imageUrl}" class="contest-image" />
 	<div class="image-right">
@@ -37,8 +37,7 @@
 	</div>
 </article>
 <article class="center-article-wrapper ui-corner-all contest-info">
-	<span class="clearfix color-imp bigger-font">Informacje
-		dodatkowe</span>
+	<span class="clearfix color-imp bigger-font"><spring:message code="label.additional.info"></spring:message></span>
 
 	<sec:authorize access="!hasRole('ROLE_USER')">
 		<span class="clearfix color-imp full-width">Zaloguj się się aby
@@ -47,12 +46,12 @@
 
 	<span class="clearfix full-width">Data zakończenia konkursu <span
 		class="color-imp"><fmt:formatDate
-				value="${contest.finishDate }" pattern="yy-mm-dd" /> o <fmt:formatDate
-				value="${contest.finishDate }" pattern="hh:mm" /></span>
+				value="${contest.finishDate }" pattern="yyyy-mm-dd" /> o <fmt:formatDate
+				value="${contest.finishDate }" pattern="HH:mm" /></span>
 	</span> <span class="clearfix full-width">Wyniki zostaną podane <span
 		class="color-imp"><fmt:formatDate
-				value="${contest.scoresDate }" pattern="yy-mm-dd" /> o <fmt:formatDate
-				value="${contest.scoresDate }" pattern="hh:mm" /></span></span> <span
+				value="${contest.scoresDate }" pattern="yyyy-mm-dd" /> o <fmt:formatDate
+				value="${contest.scoresDate }" pattern="HH:mm" /></span></span> <span
 		class="color-imp clearfix full-width">O wygranej dowiesz się na
 		swoim koncie spotnik.pl</span>
 </article>
@@ -63,9 +62,9 @@
 			<c:choose>
 				<c:when test="${contest.type == 'ANSWER_QUESTION' }">
 					<span class="bigger-font color-imp clearfix full-width"
-						style="text-align: center">Wyślij odpowiedź</span>
+						style="text-align: center"><spring:message code="label.send.answer"></spring:message></span>
 					<form method="POST" class="form"
-						action="${pageContext.request.contextPath}/contest/${contest.id }/answer">
+						action="<c:url value="/contest/${contest.id }/answer"/>">
 						<textarea name="answer"></textarea>
 						<input type="submit" class="ui-corner-all button-green"
 							value="Wyślij" />
@@ -73,9 +72,8 @@
 				</c:when>
 				<c:otherwise>
 					<a
-						href="${pageContext.request.contextPath}/contest/${contest.id}/ad/register"><button
-							class="ui-corner-all button-green full-width">Dodaj
-							reklamę</button></a>
+						href="<c:url value="/contest/${contest.id}/ad/register"/>"><button
+							class="ui-corner-all button-green full-width"><spring:message code="label.ad.add"></spring:message></button></a>
 				</c:otherwise>
 			</c:choose>
 		</div>

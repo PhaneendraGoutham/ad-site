@@ -32,7 +32,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 				credentials.getSalt()));
 		credentials.setMail(userRegForm.getMail());
 		credentials.setUsername(userRegForm.getUsername());
-		credentials.setActive(false);
+		credentials.setActive(true);// TODO:
 		UserData userData = new UserData();
 		userData.setBirthDate(userRegForm.getBirthdate());
 		userData.setSex(userRegForm.getSex());
@@ -40,13 +40,12 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		userData.setSurname(userRegForm.getSurname());
 		user.setUserData(userData);
 		UserRole userRole = userDao.loadUserRoleByName(UserRoleDef.ROLE_USER);
-		if (userRole == null) {
-			userRole = new UserRole();
-			userRole.setRole(UserRoleDef.ROLE_USER);
-		}
 		user.addUserRole(userRole);
 		user.setCredentials(credentials);
-		user.setDisplayNameType(DisplayNameType.USERNAME);
+		if (userRegForm.getDisplayNameType() != null)
+			user.setDisplayNameType(userRegForm.getDisplayNameType());
+		else
+			user.setDisplayNameType(DisplayNameType.USERNAME);
 		userDao.save(user);
 		return user;
 	}
@@ -67,7 +66,5 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		user.getUserData().setImageUrl(url);
 		userDao.update(user);
 	}
-
-
 
 }
