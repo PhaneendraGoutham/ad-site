@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Contest;
+import pl.stalkon.ad.core.model.ContestAd;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.styall.library.core.model.dao.AbstractDao;
@@ -22,39 +23,47 @@ import pl.styall.library.core.model.dao.DaoQueryObject;
 @Repository
 public class ContestDao extends AbstractDao<Contest> {
 
-//	@SuppressWarnings("unchecked")
-//	public ContestBrowserWrapper get(int first, int last) {
-//		Criteria contestCriteria = currentSession().createCriteria(
-//				Contest.class);
-//		contestCriteria.add(Restrictions.eq("active", true));
-//		contestCriteria.addOrder(Order.desc("state"));
-//		contestCriteria.addOrder(Order.desc("creationDate"));
-//		Long total = (Long) contestCriteria.setProjection(
-//				Projections.rowCount()).uniqueResult();
-//
-//		contestCriteria.setProjection(null).setResultTransformer(
-//				Criteria.ROOT_ENTITY);
-//		contestCriteria.setFirstResult(first);
-//		contestCriteria.setMaxResults(last);
-//		List<Contest> contests = (List<Contest>) contestCriteria.list();
-//		return new ContestBrowserWrapper(contests, total);
-//	}
+	// @SuppressWarnings("unchecked")
+	// public ContestBrowserWrapper get(int first, int last) {
+	// Criteria contestCriteria = currentSession().createCriteria(
+	// Contest.class);
+	// contestCriteria.add(Restrictions.eq("active", true));
+	// contestCriteria.addOrder(Order.desc("state"));
+	// contestCriteria.addOrder(Order.desc("creationDate"));
+	// Long total = (Long) contestCriteria.setProjection(
+	// Projections.rowCount()).uniqueResult();
+	//
+	// contestCriteria.setProjection(null).setResultTransformer(
+	// Criteria.ROOT_ENTITY);
+	// contestCriteria.setFirstResult(first);
+	// contestCriteria.setMaxResults(last);
+	// List<Contest> contests = (List<Contest>) contestCriteria.list();
+	// return new ContestBrowserWrapper(contests, total);
+	// }
 	@Autowired
 	private BrandDao brandDao;
-	
+
+//	
+//	public Contest getContestWithAds(Long contestId){
+////		Criteria criteria = currentSession().createCriteria(Contest.class);
+////		criteria.createCriteria("ad").createCriteria("user");
+////		ContestAd contestAd = (ContestAd) criteria.uniqueResult();
+//		Contest contest = contestDao.get(contestId);
+//		
+//	}	
 	@SuppressWarnings("unchecked")
 	public ContestBrowserWrapper get(List<DaoQueryObject> queryObjectList,
 			Order order, Integer first, Integer last) {
 		Criteria contestCriteria = currentSession().createCriteria(
 				Contest.class);
 		addRestrictions(contestCriteria, "", queryObjectList);
-		Long total = (Long) contestCriteria.setProjection(Projections.rowCount())
-				.uniqueResult();
+		Long total = (Long) contestCriteria.setProjection(
+				Projections.rowCount()).uniqueResult();
 
 		contestCriteria.setProjection(null).setResultTransformer(
 				Criteria.ROOT_ENTITY);
-		
-		contestCriteria.addOrder(Order.desc("state"));
+
+		contestCriteria.addOrder(Order.asc("state"));
 		contestCriteria.addOrder(Order.desc("creationDate"));
 		contestCriteria.setFirstResult(first);
 		contestCriteria.setMaxResults(last);
@@ -63,7 +72,7 @@ public class ContestDao extends AbstractDao<Contest> {
 		List<Contest> contests = (List<Contest>) contestCriteria.list();
 		return new ContestBrowserWrapper(contests, total);
 	}
-	
+
 	public boolean addRestrictions(Criteria criteria, String alias,
 			List<DaoQueryObject> queryObjectList) {
 		boolean added = false;
@@ -71,6 +80,10 @@ public class ContestDao extends AbstractDao<Contest> {
 			boolean temp;
 			if (qo.name.equals("brand")) {
 				temp = brandDao.addRestrictions(criteria, "brand",
+						(List<DaoQueryObject>) qo.value);
+			} else if (qo.name.equals("contestAd")) {
+				criteria.createCriteria("contestAds");
+				temp = brandDao.addRestrictions(criteria, "contestAd",
 						(List<DaoQueryObject>) qo.value);
 			} else {
 				// qo.addCriteria(criteria, alias, Ad.class);

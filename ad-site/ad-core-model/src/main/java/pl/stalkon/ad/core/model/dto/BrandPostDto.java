@@ -12,13 +12,13 @@ public class BrandPostDto {
 	@Size(max=1024)
 	private String description;
 	
-	private CommonsMultipartFile logo;
-	public CommonsMultipartFile getLogo() {
-		return logo;
-	}
-	public void setLogo(CommonsMultipartFile logo) {
-		this.logo = logo;
-	}
+//	private CommonsMultipartFile logo;
+//	public CommonsMultipartFile getLogo() {
+//		return logo;
+//	}
+//	public void setLogo(CommonsMultipartFile logo) {
+//		this.logo = logo;
+//	}
 	public String getName() {
 		return name;
 	}

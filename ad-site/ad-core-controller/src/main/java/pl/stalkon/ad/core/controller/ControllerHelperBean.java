@@ -1,6 +1,7 @@
 package pl.stalkon.ad.core.controller;
 
 import java.security.Principal;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -20,7 +25,9 @@ import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.model.service.ContestService;
+import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
+import pl.styall.library.core.security.filter.UserMessageSessionAttribute;
 
 @Component
 public class ControllerHelperBean {
@@ -34,10 +41,15 @@ public class ControllerHelperBean {
 
 	@Autowired
 	private ContestService contestService;
-	
+
 	@Autowired
 	private MessageSource messageSource;
+
+	@Autowired
+	private UserDetailsService userDetailsService;
 	
+	@Autowired
+	private UserInfoService userInfoService;
 
 	public boolean getActive(Principal principal) {
 		if (principal != null) {
@@ -60,6 +72,16 @@ public class ControllerHelperBean {
 	public int getFrom(int perPage, int page) {
 		page--;
 		return page * perPage;
+	}
+
+	public void reathenticateUser(String username) {
+		SocialLoggedUser userDetails = (SocialLoggedUser) userDetailsService
+				.loadUserByUsername(username);
+		userDetails.eraseCredentials();
+		Authentication authentication = new UsernamePasswordAuthenticationToken(
+				userDetails, userDetails.getPassword(),
+				userDetails.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 	// public boolean isUserCompanyAdmin(HttpServletRequest request,
@@ -111,16 +133,18 @@ public class ControllerHelperBean {
 		}
 	}
 
-
 	public void throwAccessDeniedException(HttpServletRequest request)
 			throws AccessDeniedException {
 		if (!request.isUserInRole(UserRoleDef.ROLE_ADMIN)) {
-			throw new AccessDeniedException(messageSource.getMessage("info.access.denied", null, LocaleContextHolder.getLocale()));
+			throw new AccessDeniedException(
+					messageSource.getMessage("info.access.denied", null,
+							LocaleContextHolder.getLocale()));
 		}
 	}
-	
-	public String invalidPostRequest(RedirectAttributes redirectAttributes){
-		redirectAttributes.addFlashAttribute("info", messageSource.getMessage("info.incorrect.data", null, LocaleContextHolder.getLocale()));
+
+	public String invalidPostRequest(RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
+				"info.incorrect.data", null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 
@@ -135,6 +159,17 @@ public class ControllerHelperBean {
 			}
 		}
 		return false;
+	}
+	
+	public void setUserMessagesSessionAttr(SocialLoggedUser socialLoggedUser, HttpServletRequest request){
+		//TODO: rethink use of this method its a copy of the one from filter
+		int userMessagesCount = userInfoService.getUserMessagesCount(socialLoggedUser.getId());
+		UserMessageSessionAttribute attr = new UserMessageSessionAttribute();
+		attr.setUnhandledMessagesCount(userMessagesCount);
+		long currentTimestamp = new Date().getTime();
+		attr.setTimestamp(currentTimestamp);
+		request.getSession().setAttribute("userMessagesAttribute", attr);
+		
 	}
 
 }

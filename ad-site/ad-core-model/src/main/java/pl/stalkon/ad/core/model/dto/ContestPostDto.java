@@ -13,11 +13,13 @@ import pl.stalkon.ad.core.model.Contest;
 
 public class ContestPostDto {
 
+
 	@NotEmpty
 	@Size(min=3, max=128)
 	private String name;
 	@NotEmpty
 	private String description;
+	
 	@NotNull
 	private Contest.Type type;
 	
@@ -31,9 +33,19 @@ public class ContestPostDto {
 	
 	private Long brandId;
 	
-	
-	@NotNull
-	private CommonsMultipartFile image;
+	public ContestPostDto(Contest contest) {
+		super();
+		this.name = contest.getName();
+		this.description = contest.getDescription();
+		this.finishDate = contest.getFinishDate();
+		this.scoresDate = contest.getScoresDate();
+		this.type = contest.getType();
+	}
+	public ContestPostDto(){
+		
+	}
+//	@NotNull
+//	private CommonsMultipartFile image;
 	
 	public String getName() {
 		return name;
@@ -71,11 +83,11 @@ public class ContestPostDto {
 	public void setBrandId(Long brandId) {
 		this.brandId = brandId;
 	}
-	public CommonsMultipartFile getImage() {
-		return image;
-	}
-	public void setImage(CommonsMultipartFile image) {
-		this.image = image;
-	}
+//	public CommonsMultipartFile getImage() {
+//		return image;
+//	}
+//	public void setImage(CommonsMultipartFile image) {
+//		this.image = image;
+//	}
 
 }

@@ -28,8 +28,10 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
 import com.octo.captcha.service.CaptchaService;
 import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
 
+import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.extensions.CaptchaValidator;
 import pl.styall.library.core.security.authentication.AuthenticationProvider;
+import pl.styall.library.core.security.filter.UserMessageFilter;
 
 @Configuration
 @ImportResource("classpath:pl/stalkon/ad/config/security-context.xml")
@@ -43,6 +45,9 @@ public class SecurityConfig {
 	
 	@Inject
 	private UserDetailsService userDetailsService;
+	
+	@Inject
+	private UserInfoService userInfoService;
 
 	@Bean
 	public JdbcTokenRepositoryImpl tokenRepository() {
@@ -60,7 +65,16 @@ public class SecurityConfig {
 		service.setAlwaysRemember(true);
 		return service;
 	}
-
+	
+	
+	
+	@Bean
+	public UserMessageFilter userMessageFilter(){
+		UserMessageFilter filter = new UserMessageFilter(userInfoService);
+		filter.setExpires(5*60);
+		return filter;
+	}
+	
 	@Bean
 	public ShaPasswordEncoder passwordEncoder() {
 		return new ShaPasswordEncoder(256);

@@ -1,7 +1,7 @@
 package pl.stalkon.ad.core.controller;
 
-import java.io.IOException;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,21 +23,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
-import pl.stalkon.ad.core.model.dto.AdPostDto;
+import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.BrandPostDto;
 import pl.stalkon.ad.core.model.dto.BrandSearchDto;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.BrandService;
 import pl.stalkon.ad.core.model.service.CompanyService;
-import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
-import pl.stalkon.dailymotion.api.module.service.DailymotionException;
 import pl.stalkon.video.api.service.impl.WistiaApiService;
 
 @Controller
@@ -53,9 +50,6 @@ public class BrandController {
 	private CompanyService companyService;
 
 	@Autowired
-	private FileService fileService;
-
-	@Autowired
 	private ServletContext servletContext;
 
 	@Autowired
@@ -63,6 +57,9 @@ public class BrandController {
 
 	@Autowired
 	private ControllerHelperBean controllerHelperBean;
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@RequestMapping(value = "brand", method = RequestMethod.GET)
 	@ResponseBody
@@ -75,10 +72,11 @@ public class BrandController {
 			@PathVariable("brandId") Long brandId,
 			Model model,
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal, HttpServletRequest request) {
+			Principal principal, HttpServletRequest request, @ModelAttribute("adSearchDto") AdSearchDto adSearchDto) {
 		Brand brand = brandService.get(brandId);
 		model.addAttribute("brand", brand);
-		AdBrowserWrapper adBrowserWrapper = adService.getBrandAds(brandId,
+		adSearchDto.setBrandList(Arrays.asList(brandId));
+		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
 				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
 						page), ControllerHelperBean.AD_PER_PAGE,
 				controllerHelperBean.getActive(principal));
@@ -89,7 +87,8 @@ public class BrandController {
 		model.addAttribute(
 				"brandAdmin",
 				controllerHelperBean.isUserBrandOwner(request, principal,
-						brandId) || request.isUserInRole(UserRoleDef.ROLE_ADMIN));
+						brandId)
+						|| request.isUserInRole(UserRoleDef.ROLE_ADMIN));
 		return "brand/brand-info";
 	}
 
@@ -109,7 +108,8 @@ public class BrandController {
 		brandPostDto.setDescription(brand.getDescription());
 		brandPostDto.setName(brand.getName());
 		model.addAttribute("brandPostDto", brandPostDto);
-		model.addAttribute("path", "brand/register");
+		model.addAttribute("brand", brand);
+		model.addAttribute("path", "brand/edit");
 		model.addAttribute("actionUrl", "brand/" + brandId);
 		return "brand/register";
 	}
@@ -118,7 +118,8 @@ public class BrandController {
 	public String update(Model model, @PathVariable("brandId") Long brandId,
 			Principal principal,
 			@Valid @ModelAttribute("brandPostDto") BrandPostDto brandPostDto,
-			BindingResult result, HttpServletRequest request,RedirectAttributes redirectAttributes) {
+			BindingResult result, HttpServletRequest request,
+			RedirectAttributes redirectAttributes) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		Company company = companyService
@@ -128,7 +129,7 @@ public class BrandController {
 		if (!company.getBrands().contains(mockBrand))
 			controllerHelperBean.throwAccessDeniedException(request);
 		return registerOrUpdateBrand(brandPostDto, result, null, brandId,
-				request,redirectAttributes);
+				request, redirectAttributes);
 	}
 
 	@RequestMapping(value = "company/{id}/brand/register")
@@ -146,14 +147,17 @@ public class BrandController {
 	@RequestMapping(value = "/brand", method = RequestMethod.POST)
 	public String add(
 			@Valid @ModelAttribute("brandPostDto") BrandPostDto brandPostDto,
-			BindingResult result, HttpServletRequest request,RedirectAttributes redirectAttributes) {
-		return registerOrUpdateBrand(brandPostDto, result, null, null, request, redirectAttributes);
+			BindingResult result, HttpServletRequest request,
+			RedirectAttributes redirectAttributes) {
+		return registerOrUpdateBrand(brandPostDto, result, null, null, request,
+				redirectAttributes);
 	}
 
 	@RequestMapping(value = "/company/{companyId}/brand", method = RequestMethod.POST)
 	public String addByCompany(
 			@Valid @ModelAttribute("brandPostDto") BrandPostDto brandPostDto,
-			BindingResult result, Principal principal,RedirectAttributes redirectAttributes,
+			BindingResult result, Principal principal,
+			RedirectAttributes redirectAttributes,
 			@PathVariable("companyId") Long companyId,
 			HttpServletRequest request) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
@@ -169,7 +173,6 @@ public class BrandController {
 	private String registerOrUpdateBrand(BrandPostDto brandPostDto,
 			BindingResult result, Long companyId, Long brandId,
 			HttpServletRequest request, RedirectAttributes redirectAttributes) {
-		fileService.validateFile(result, brandPostDto.getLogo(), "logo");
 		if (result.hasErrors()) {
 			return controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
@@ -183,31 +186,13 @@ public class BrandController {
 			brand = brandService.update(brandPostDto, brandId);
 		}
 
-		if (!brandPostDto.getLogo().isEmpty()) {
-			String baseUrl = String.format("%s://%s:%d%s/",
-					request.getScheme(), request.getServerName(),
-					request.getServerPort(), request.getContextPath());
-			try {
-				String logoName = fileService.getPath("brands", "logo", null,
-						brand.getId().toString());
-				String ext = fileService.saveFile(logoName,
-						brandPostDto.getLogo(), 250, 90);
-				logoName = fileService.getPath("brands", "logo", "small", brand
-						.getId().toString());
-				fileService.saveFile(logoName, brandPostDto.getLogo(), 120, 40);
-				brandService.setBrandLogo(baseUrl + "resources/brands/logo-"
-						+ brand.getId() + "." + ext, baseUrl
-						+ "resources/brands/logo-" + brand.getId() + "-small."
-						+ ext, brand.getId());
-			} catch (IOException e) {
-				// TODO
-			}
-		}
 		if (brandId == null) {
-			return "redirect:/user/company";
-		} else {
-			return "redirect:/brand/" + brandId;
+			redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
+					"info.brand.registered", null,
+					LocaleContextHolder.getLocale()));
 		}
+		return "redirect:/brand/" + brand.getId()+"/edit";
+
 	}
 	// private void registerBrand(BrandPostDto brandPostDto){
 	//

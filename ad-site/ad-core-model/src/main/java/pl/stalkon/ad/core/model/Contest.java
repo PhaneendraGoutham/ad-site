@@ -30,7 +30,7 @@ public class Contest extends CommonEntity {
 	private static final long serialVersionUID = 116695731544765566L;
 
 	public enum State {
-		FINISHED, ON_GOING
+		ON_GOING,SCORED, FINISHED, 
 	};
 
 	public enum Type {
@@ -58,7 +58,7 @@ public class Contest extends CommonEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Brand brand;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional=false)
+	@ManyToOne(fetch = FetchType.LAZY, optional=false, cascade = CascadeType.PERSIST)
 	private User user;
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy="contest")

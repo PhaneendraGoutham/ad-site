@@ -349,7 +349,9 @@ a {
 	left: 10px;
 	top: 120px;
 }
-
+#top-bar-menu li.font-red, .font-red{
+	color: #c80f0f;
+}
 .logged-user-wrapper {
 	bottom: -15px;
 }
@@ -410,9 +412,12 @@ a {
 
 .bottom-video-panel {
 	padding-top: 5px;
-	border-top: 1px solid rgba(160, 160, 160, 0.4);
 	width: 100%;
 	margin-top: 10px;
+}
+.video-description, .inform{
+		border-top: 1px solid #666;
+		padding-top: 9px;
 }
 
 .post-footer {
@@ -558,7 +563,7 @@ ul.column,#selected-filters>li#place-selected-filters,#selected-filters>li#year-
 	margin-right: 15px
 }
 
-#place-selected-filters>.close,#year-selected-filters>.close,#rank-selected-filters>.close,#vote-selected-filters>.close
+#winner-selected-filters>.close,#place-selected-filters>.close,#year-selected-filters>.close,#rank-selected-filters>.close,#vote-selected-filters>.close
 	{
 	float: none;
 }
@@ -689,6 +694,10 @@ ul.column {
 	max-width: 250px;
 	max-height: 90px;
 }
+.company-brand-img-wrapper {
+	width: 250px;
+	height: 90px;
+}
 
 .company-brand-img-holder {
 	float: left;
@@ -733,10 +742,13 @@ ul.column {
 	width: 100%;
 }
 
-#brand-admin-menu {
+.center-panel-menu {
 	margin-bottom: 15px;
 }
-
+.ad-brand-logo-wrapper{
+		width: 120px;
+	height: 40px;
+}
 .ad-brand-logo {
 	max-width: 120px;
 	max-height: 40px;
@@ -756,6 +768,10 @@ ul.column {
 	margin-left: 15px;
 	float: right;
 }
+.register-contest-image,.contest-image{
+	max-width:120px;
+	max-height:120px;
+}
 
 .mini-contest-wrapper:hover {
 	opacity:.8;
@@ -773,4 +789,7 @@ ul.column {
 }
 .contest-info > span{
 	margin-bottom: 10px;
+}
+.cursor{
+	cursor:pointer;
 }

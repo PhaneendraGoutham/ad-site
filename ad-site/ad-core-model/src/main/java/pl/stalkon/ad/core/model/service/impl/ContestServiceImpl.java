@@ -17,11 +17,15 @@ import pl.stalkon.ad.core.model.ContestAd;
 import pl.stalkon.ad.core.model.Contest.State;
 import pl.stalkon.ad.core.model.ContestAnswer;
 import pl.stalkon.ad.core.model.User;
+import pl.stalkon.ad.core.model.UserInfo;
+import pl.stalkon.ad.core.model.UserRoleDef;
+import pl.stalkon.ad.core.model.UserInfo.Type;
 import pl.stalkon.ad.core.model.dao.BrandDao;
 import pl.stalkon.ad.core.model.dao.ContestAdDao;
 import pl.stalkon.ad.core.model.dao.ContestAnswerDao;
 import pl.stalkon.ad.core.model.dao.ContestDao;
 import pl.stalkon.ad.core.model.dao.UserDao;
+import pl.stalkon.ad.core.model.dao.UserInfoDao;
 import pl.stalkon.ad.core.model.dto.ContestAnswerBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestPostDto;
@@ -43,6 +47,8 @@ public class ContestServiceImpl implements ContestService{
 	
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private UserInfoDao userInfoDao;
 	
 	@Autowired
 	private ContestAnswerDao contestAnswerDao;
@@ -55,6 +61,7 @@ public class ContestServiceImpl implements ContestService{
 	public Contest register(Long userId, ContestPostDto contestPostDto) {
 		Contest contest = new Contest();
 		User user = userDao.get(userId);
+		user.addUserRole(userDao.loadUserRoleByName(UserRoleDef.ROLE_CONTEST));
 		contest.setUser(user);
 		Brand brand = brandDao.get(contestPostDto.getBrandId());
 		contest.setBrand(brand);
@@ -66,6 +73,19 @@ public class ContestServiceImpl implements ContestService{
 		contest.setScoresDate(contestPostDto.getScoresDate());
 		contest.setActive(true);
 		contestDao.add(contest);
+		return contest;
+	}
+	
+	@Override
+	@Transactional
+	public Contest upadate(Long contestId, ContestPostDto contestPostDto) {
+		Contest contest = contestDao.get(contestId);
+		contest.setName(contestPostDto.getName());
+		contest.setDescription(contestPostDto.getDescription());
+		contest.setType(contestPostDto.getType());
+		contest.setFinishDate(contestPostDto.getFinishDate());
+		contest.setScoresDate(contestPostDto.getScoresDate());
+		contestDao.update(contest);
 		return contest;
 	}
 
@@ -205,6 +225,45 @@ public class ContestServiceImpl implements ContestService{
 		}
 		return false;
 	}
+
+	@Override
+	@Transactional
+	public Contest getWithContestAds(Long contestId) {
+		Contest contest = contestDao.get(contestId);
+		List<ContestAd> contestAds = contestAdDao.getContestAdsWithAds(contestId);
+		Hibernate.initialize(contest);
+		contest.setContestAds(contestAds);
+		return contest;
+	}
+
+	@Override
+	@Transactional
+	public void score(Long contestId) {
+		Contest contest = contestDao.get(contestId);
+		contest.setState(State.SCORED);
+		contestDao.update(contest);
+	}
+
+	@Override
+	@Transactional
+	public List<User> setWinnerUserInfo(List<Ad> ads, Long contestId) {
+		List<User> users = new ArrayList<User>(ads.size());
+		for(Ad ad: ads){
+			UserInfo userInfo = new UserInfo();
+			userInfo.setHandled(false);
+			Contest contest = contestDao.get(contestId);
+			userInfo.setContest(contest);
+			userInfo.setType(Type.CONTEST_WINNER);
+			User user = userDao.get(ad.getUser().getId());
+			userInfo.setUser(user);
+			//TODO: batch insert
+			userInfoDao.add(userInfo);
+			users.add(ad.getUser());
+		}
+		return users;
+	}
+
+
 
 
 

@@ -17,14 +17,14 @@
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width">
 
-		<link rel="stylesheet"
+<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/jquery/jquery-ui-1.10.2.custom.css">
-	<link rel="stylesheet"
+<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/jquery/jquery.tagit.css">
-		<link rel="stylesheet"
+<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/lib/timepicker.css">
-	
-	<link rel="stylesheet"
+
+<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/normalize.css">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/main.css">
@@ -32,6 +32,8 @@
 	src="${pageContext.request.contextPath}/resources/js/vendor/modernizr-2.6.2.min.js"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/vendor/jquery-1.9.1.min.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/lib/jquery.ui.widget.min.js"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/lib/jquery-rating.js"></script>
 
@@ -41,26 +43,40 @@
 	src="${pageContext.request.contextPath}/resources/js/lib/jsonp.js"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/lib/wistia-upload-widget.js"></script>
-	<script
+<script
 	src="${pageContext.request.contextPath}/resources/js/lib/tagme.js"></script>
-	
 
-	<script
+
+<script
 	src="${pageContext.request.contextPath}/resources/js/lib/jquery.validate.js"></script>
-			<script
+<script
 	src="${pageContext.request.contextPath}/resources/js/lib/messages_pl.js"></script>
-				<script
+<script
 	src="${pageContext.request.contextPath}/resources/js/lib/nicEdit.js"></script>
-					<script
+<script
 	src="${pageContext.request.contextPath}/resources/js/lib/timepicker.js"></script>
-						<script
+<script
 	src="${pageContext.request.contextPath}/resources/js/lib/jquery.base64.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/lib/jquery.fileupload.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/lib/jquery.iframe-transport.js"></script>
+<!-- 									<script -->
+<%-- 	src="${pageContext.request.contextPath}/resources/js/lib/jquery.file.validation.js"></script> --%>
 <script type="text/javascript">
 	var basePath = '<c:url value="/"/>';
 </script>
 <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
 </head>
 <body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/pl_PL/all.js#xfbml=1&appId=537711946262789";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 	<div id="wrapper">
 		<tiles:insertAttribute name="header" />
 		<div id="content-wrapper" class="page">

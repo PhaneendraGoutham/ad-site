@@ -5,28 +5,57 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<c:if test="${not empty info }">
+	<tiles:insertAttribute name="info"></tiles:insertAttribute>
+</c:if>
 <article class="center-article-wrapper ui-corner-all">
-<c:url value="/contest" var="actionUrl"/>
-	<form:form method="POST"
-		action="${actionUrl }" id="contest-form"
+	<c:url value="${actionUrl }" var="actionUrl2" />
+	<form:form method="POST" action="${actionUrl2 }" id="contest-form"
 		commandName="contestPostDto" enctype="multipart/form-data">
-		<div class="form">
-			<form:label path="name"><spring:message code="label.name"></spring:message></form:label>
+		<c:if test="${path == 'contest/edit' }">
+
+			<div class="form">
+				<label><spring:message code="label.image"></spring:message></label>
+				<c:choose>
+					<c:when test="${not empty contest.imageUrl }">
+						<c:set var="imageUrl" value="${contest.imageUrl }" />
+					</c:when>
+					<c:otherwise>
+						<c:url var="imageUrl" value="/resources/img/no-photo.png" />
+					</c:otherwise>
+				</c:choose>
+				<img id="contest-image" src="${imageUrl }"
+					class="register-contest-image left cursor"
+					style="margin: 10px 10px 10px 0" />
+			</div>
+			<input id="fileupload" type="file" name="file" class="hidden"
+				data-url="/contest/${contest.id}/upload/image" />
+		</c:if>
+		<div class="form" style="clear: both">
+			<form:label path="name">
+				<spring:message code="label.name"></spring:message>
+			</form:label>
 			<form:input path="name" class="ui-corner-all" />
 
-			<form:label path="finishDate"><spring:message code="label.finish.date"></spring:message></form:label>
+			<form:label path="finishDate">
+				<spring:message code="label.finish.date"></spring:message>
+			</form:label>
 			<form:input path="finishDate" class="ui-corner-all" id="finish-date" />
-			<form:label path="scoresDate"><spring:message code="label.scores.date"></spring:message></form:label>
+			<form:label path="scoresDate">
+				<spring:message code="label.scores.date"></spring:message>
+			</form:label>
 			<form:input path="scoresDate" class="ui-corner-all" id="scores-date" />
-			<label><spring:message code="label.image"></spring:message></label> <input type="text" id="image-chooser"
-				placeholder="Kliknij aby wybrać obrazek..." class="ui-corner-all required image_extensions"
-				readonly="readonly" />
-			<form:input id="image" path="image" type="file" class="hidden" accept="image/png, image/jpeg, image/gif"/>
+
 			<div class="checkbox-radio-wrapper">
 				<form:radiobutton path="type" value="AD" />
-				<form:label for="type" class="inline-separator" path="type"><spring:message code="label.ad.add"></spring:message></form:label>
+				<form:label for="type" class="inline-separator" path="type">
+					<spring:message code="label.ad.add"></spring:message>
+				</form:label>
 				<form:radiobutton path="type" value="ANSWER_QUESTION" />
-				<form:label for="type" path="type" class="type-last"><spring:message code="label.answer.question"></spring:message></form:label>
+				<form:label for="type" path="type" class="type-last">
+					<spring:message code="label.answer.question"></spring:message>
+				</form:label>
 			</div>
 			<!-- 			<div id="brand-selector-holder" class="hidden"> -->
 			<%-- 				<sec:authorize access="hasRole('ROLE_ADMIN')"> --%>
@@ -56,7 +85,7 @@
 			<!-- 			</div> -->
 
 		</div>
-		<textarea id="description" class="nic-edit-textarea"></textarea>
+		<textarea id="description" class="nic-edit-textarea">${contestPostDto.description}</textarea>
 		<form:hidden path="description" id="enc-description"></form:hidden>
 		<form:hidden path="brandId" />
 		<div class="form">
@@ -70,8 +99,9 @@
 		if ($(".nicEdit-main").text() == "") {
 			if (!$("#enc-description").hasClass("error")) {
 				$("#enc-description").addClass("error");
-				$("#description").after(
-						"<label id='descrption-error'  class='error-2'>Musisz dodać opis</label>");
+				$("#description")
+						.after(
+								"<label id='descrption-error'  class='error-2'>Musisz dodać opis</label>");
 			}
 			$("#descrption-error").show();
 			return false;
@@ -81,12 +111,12 @@
 			return true;
 		}
 	}
-	function encodeDescription(){
+	function encodeDescription() {
 		var toEncode = $(".nicEdit-main").html();
 		var encoded = $.base64.btoa(toEncode, true);
 		$("#enc-description").val(encoded);
 	}
-	
+
 	$(function() {
 
 		$("#contest-form").validate({
@@ -128,7 +158,7 @@
 		});
 		new nicEditor(
 				{
-					iconsPath : basePath + "/resources/img/nicEditorIcons.gif",
+					iconsPath : "/resources/img/nicEditorIcons.gif",
 					buttonList : [ 'bold', 'italic', 'underline', 'left',
 							'center', 'right', 'image', 'forecolor', 'link',
 							'unlink', 'fontSize' ]
@@ -140,15 +170,17 @@
 			dateFormat : "yy-mm-dd"
 
 		});
-
-// 		$("#contest-form").submit(function() {
-
-// 		});
-		$("#image-chooser").click(function() {
-			$("#image").click();
+		$('#fileupload').fileupload({
+			dataType : 'json',
+			done : function(e, data) {
+				$("#contest-image").attr("src", data.result);
+			},
+			add : function(e, data) {
+				validateImageFile(data, $("#contest-image").parent());
+			}
 		});
-		$("#image").change(function() {
-			$("#image-chooser").val($(this).val());
+		$("#contest-image").click(function() {
+			$("#fileupload").click();
 		});
 
 	});

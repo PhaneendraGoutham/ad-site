@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Place;
@@ -63,7 +64,7 @@ public class AdServiceImpl implements AdService {
 
 	@Autowired
 	private AdCommentDao adCommentDao;
-	
+
 	@Autowired
 	private ContestDao contestDao;
 
@@ -79,7 +80,7 @@ public class AdServiceImpl implements AdService {
 
 	@Transactional
 	@Override
-	@Cacheable(value="ad", key="#id")
+	@Cacheable(value = "ad", key = "#id")
 	public Ad get(Long id, boolean approved) {
 		Ad ad = adDao.get(id);
 		Hibernate.initialize(ad.getUser());
@@ -89,8 +90,7 @@ public class AdServiceImpl implements AdService {
 
 	@Transactional
 	@Override
-	public Ad register(AdPostDto adPostDto, Ad ad, Long userId,
-			boolean official) {
+	public Ad register(AdPostDto adPostDto, Ad ad, Long userId, boolean official) {
 		for (Long tagId : adPostDto.getTags()) {
 			Tag tag = tagDao.get(tagId);
 			ad.addTag(tag);
@@ -98,9 +98,9 @@ public class AdServiceImpl implements AdService {
 		User user = userDao.get(userId);
 		ad.setUser(user);
 		ad.setOfficial(official);
-//		ad.setDuration(adPostDto.getDuration());
+		// ad.setDuration(adPostDto.getDuration());
 		ad.setYear(adPostDto.getYear());
-		if(adPostDto.getContestId() != null){
+		if (adPostDto.getContestId() != null) {
 			Contest contest = contestDao.get(adPostDto.getContestId());
 			ContestAd contestAd = new ContestAd();
 			contestAd.setAd(ad);
@@ -108,7 +108,7 @@ public class AdServiceImpl implements AdService {
 			ad.setContestAd(contestAd);
 		}
 		Brand brand = brandDao.get(adPostDto.getBrandId());
-//		brand.addAdd(ad);
+		// brand.addAdd(ad);
 		ad.setBrand(brand);
 		ad.setTitle(adPostDto.getTitle());
 		ad.setDescription(adPostDto.getDescription());
@@ -158,7 +158,7 @@ public class AdServiceImpl implements AdService {
 	@Transactional
 	@Override
 	@Cacheable("main")
-	public AdBrowserWrapper getMain(int pageFrom, int pageCount,
+	public AdBrowserWrapper getMain(Integer pageFrom, Integer pageCount,
 			boolean approved) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
 		queryObjectList.add(new DaoQueryObject("place", Ad.Place.MAIN));
@@ -171,7 +171,7 @@ public class AdServiceImpl implements AdService {
 	@Transactional
 	@Override
 	@Cacheable("waiting")
-	public AdBrowserWrapper getWaiting(int pageFrom, int pageCount,
+	public AdBrowserWrapper getWaiting(Integer pageFrom, Integer pageCount,
 			boolean approved) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
 		queryObjectList.add(new DaoQueryObject("place", Ad.Place.WAITING));
@@ -184,7 +184,7 @@ public class AdServiceImpl implements AdService {
 	@Transactional
 	@Override
 	@Cacheable("top")
-	public List<Ad> getTop(int pageFrom, int pageCount, Date date) {
+	public List<Ad> getTop(Integer pageFrom, Integer pageCount, Date date) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
 		if (date != null) {
 			queryObjectList.add(new DaoQueryObject("creationDate", date));
@@ -208,7 +208,7 @@ public class AdServiceImpl implements AdService {
 			return null;
 		}
 		Brand brand = brandDao.get(adPostDto.getBrandId());
-//		brand.addAdd(ad);
+		// brand.addAdd(ad);
 		// ad.update(adPostDto, getTags(adPostDto.getTagsIds()), brand);
 		ad.setBrand(brand);
 		adDao.save(ad);
@@ -268,7 +268,7 @@ public class AdServiceImpl implements AdService {
 
 	@Override
 	@Transactional
-	@Cacheable(value="comments")
+	@Cacheable(value = "comments")
 	public List<AdComment> getComments(Long adId) {
 		Ad ad = adDao.get(adId);
 		ad.getComments().size();
@@ -291,39 +291,25 @@ public class AdServiceImpl implements AdService {
 	@Transactional
 	public AdBrowserWrapper get(AdSearchDto adSearchDto, Integer first,
 			Integer last, boolean approved) {
+		List<DaoQueryObject> queryObjectList = glueConditions(adSearchDto,
+				approved);
+		Order order = prepareOrder(adSearchDto);
+
+		return adDao.get(queryObjectList, order, first, last);
+	}
+
+	private List<DaoQueryObject> glueConditions(AdSearchDto adSearchDto,
+			boolean approved) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
-		queryObjectList.add(new DaoQueryObject("rank", adSearchDto
-				.getRankFrom(), CompareType.MORE));
-		queryObjectList.add(new DaoQueryObject("rank", adSearchDto.getRankTo(),
-				CompareType.LESS));
-		queryObjectList.add(new DaoQueryObject("voteCount", adSearchDto
-				.getVotesFrom(), CompareType.MORE));
-		queryObjectList.add(new DaoQueryObject("voteCount", adSearchDto
-				.getVotesTo(), CompareType.LESS));
-		queryObjectList.add(new DaoQueryObject("year", adSearchDto
-				.getYearFrom(), CompareType.MORE));
-		queryObjectList.add(new DaoQueryObject("year", adSearchDto.getYearTo(),
-				CompareType.LESS));
-		if(adSearchDto.getText() != null && !adSearchDto.getText().equals("")){
-			queryObjectList.add(new DaoQueryObject("title", "%"+adSearchDto.getText()+"%",
-					CompareType.LIKE));
-		}
-		if (adSearchDto.getPlace() != null && adSearchDto.getPlace() > -1) {
-			queryObjectList.add(new DaoQueryObject("place",
-					Place.values()[adSearchDto.getPlace()]));
-		}
-		List<DaoQueryObject> brandList = new ArrayList<DaoQueryObject>();
-		brandList.add(new DaoQueryObject("id", adSearchDto.getBrandList(),
-				CompareType.IN));
-		queryObjectList.add(new DaoQueryObject("brand", brandList));
+		prepareAdConditions(queryObjectList, adSearchDto, approved);
+		prepareBrandConditions(queryObjectList, adSearchDto);
+		prepareTagConditions(queryObjectList, adSearchDto);
+		prepareContestConditions(queryObjectList, adSearchDto);
+		prepareUserConditions(queryObjectList, adSearchDto);
+		return queryObjectList;
+	}
 
-		List<DaoQueryObject> tagList = new ArrayList<DaoQueryObject>();
-		tagList.add(new DaoQueryObject("id", adSearchDto.getTagList(),
-				CompareType.IN_DISJUNCTION));
-		queryObjectList.add(new DaoQueryObject("tags", tagList));
-
-		if (!approved)
-			queryObjectList.add(new DaoQueryObject("approved", true));
+	private Order prepareOrder(AdSearchDto adSearchDto) {
 		Order order;
 		String orderBy = null;
 		if (adSearchDto.getOrderBy().equals("vote")) {
@@ -336,7 +322,79 @@ public class AdServiceImpl implements AdService {
 		} else {
 			order = Order.asc(orderBy);
 		}
-		return adDao.get(queryObjectList, order, first, last);
+		return order;
+	}
+
+	private void prepareAdConditions(List<DaoQueryObject> queryObjectList,
+			AdSearchDto adSearchDto, boolean approved) {
+		queryObjectList.add(new DaoQueryObject("rank", adSearchDto
+				.getRankFrom(), CompareType.MORE));
+		queryObjectList.add(new DaoQueryObject("rank", adSearchDto.getRankTo(),
+				CompareType.LESS));
+		queryObjectList.add(new DaoQueryObject("voteCount", adSearchDto
+				.getVotesFrom(), CompareType.MORE));
+		queryObjectList.add(new DaoQueryObject("voteCount", adSearchDto
+				.getVotesTo(), CompareType.LESS));
+		queryObjectList.add(new DaoQueryObject("year", adSearchDto
+				.getYearFrom(), CompareType.MORE));
+		queryObjectList.add(new DaoQueryObject("year", adSearchDto.getYearTo(),
+				CompareType.LESS));
+		if (adSearchDto.getText() != null && !adSearchDto.getText().equals("")) {
+			queryObjectList.add(new DaoQueryObject("title", "%"
+					+ adSearchDto.getText() + "%", CompareType.LIKE));
+		}
+		if (adSearchDto.getPlace() != null && adSearchDto.getPlace() > -1) {
+			queryObjectList.add(new DaoQueryObject("place",
+					Place.values()[adSearchDto.getPlace()]));
+		}
+		if (!approved)
+			queryObjectList.add(new DaoQueryObject("approved", true));
+	}
+
+	private void prepareBrandConditions(List<DaoQueryObject> queryObjectList,
+			AdSearchDto adSearchDto) {
+		if (adSearchDto.getBrandList() != null
+				&& adSearchDto.getBrandList().size() > 0) {
+			List<DaoQueryObject> brandList = new ArrayList<DaoQueryObject>();
+			brandList.add(new DaoQueryObject("id", adSearchDto.getBrandList(),
+					CompareType.IN));
+			queryObjectList.add(new DaoQueryObject("brand", brandList));
+		}
+	}
+
+	private void prepareTagConditions(List<DaoQueryObject> queryObjectList,
+			AdSearchDto adSearchDto) {
+		if (adSearchDto.getTagList() != null
+				&& adSearchDto.getTagList().size() > 0) {
+			List<DaoQueryObject> tagList = new ArrayList<DaoQueryObject>();
+			tagList.add(new DaoQueryObject("id", adSearchDto.getTagList(),
+					CompareType.IN_DISJUNCTION));
+			queryObjectList.add(new DaoQueryObject("tags", tagList));
+		}
+	}
+
+	private void prepareContestConditions(List<DaoQueryObject> queryObjectList,
+			AdSearchDto adSearchDto) {
+		if (adSearchDto.getContestId() != null) {
+			List<DaoQueryObject> contestAdQueryObjectList = new ArrayList<DaoQueryObject>();
+			contestAdQueryObjectList.add((new DaoQueryObject("contest.id",
+					adSearchDto.getContestId())));
+			contestAdQueryObjectList.add((new DaoQueryObject("winner",
+					adSearchDto.getWinner())));
+			queryObjectList.add(new DaoQueryObject("contestAd",
+					contestAdQueryObjectList));
+		}
+	}
+
+	private void prepareUserConditions(List<DaoQueryObject> queryObjectList,
+			AdSearchDto adSearchDto) {
+		if (adSearchDto.getUserId() != null) {
+			List<DaoQueryObject> userQueryObjectList = new ArrayList<DaoQueryObject>();
+			userQueryObjectList.add((new DaoQueryObject("id", adSearchDto
+					.getUserId())));
+			queryObjectList
+					.add(new DaoQueryObject("user", userQueryObjectList));
+		}
 	}
 
 	@Override
@@ -353,19 +411,20 @@ public class AdServiceImpl implements AdService {
 		return result;
 	}
 
-	@Override
-	@Transactional
-	public AdBrowserWrapper getUserAds(Long userId, int pageFrom,
-			int pageCount, boolean approved) {
-		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
-		List<DaoQueryObject> userQueryObjectList = new ArrayList<DaoQueryObject>();
-		userQueryObjectList.add((new DaoQueryObject("id", userId)));
-		queryObjectList.add(new DaoQueryObject("user", userQueryObjectList));
-		if (!approved)
-			queryObjectList.add(new DaoQueryObject("approved", true));
-		return adDao.get(queryObjectList, Order.desc("creationDate"), new Integer(
-				pageFrom), new Integer(pageCount));
-	}
+	// @Override
+	// @Transactional
+	// public AdBrowserWrapper getUserAds(Long userId, Integer pageFrom,
+	// Integer pageCount, boolean approved) {
+	// List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
+	// List<DaoQueryObject> userQueryObjectList = new
+	// ArrayList<DaoQueryObject>();
+	// userQueryObjectList.add((new DaoQueryObject("id", userId)));
+	// queryObjectList.add(new DaoQueryObject("user", userQueryObjectList));
+	// if (!approved)
+	// queryObjectList.add(new DaoQueryObject("approved", true));
+	// return adDao.get(queryObjectList, Order.desc("creationDate"),
+	// new Integer(pageFrom), new Integer(pageCount));
+	// }
 
 	@Override
 	@Transactional
@@ -387,39 +446,54 @@ public class AdServiceImpl implements AdService {
 		informDao.save(inform);
 	}
 
-	@Override
-	@Transactional
-	public AdBrowserWrapper getBrandAds(Long brandId, int pageFrom,
-			int pageCount, boolean approved) {
-		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
-		List<DaoQueryObject> brandQueryObjectList = new ArrayList<DaoQueryObject>();
-		brandQueryObjectList.add((new DaoQueryObject("id", brandId)));
-		queryObjectList.add(new DaoQueryObject("brand", brandQueryObjectList));
-		if (!approved)
-			queryObjectList.add(new DaoQueryObject("approved", true));
-		return adDao.get(queryObjectList, Order.desc("creationDate"), new Integer(
-				pageFrom), new Integer(pageCount));
-	}
+	// @Override
+	// @Transactional
+	// public AdBrowserWrapper getBrandAds(Long brandId, Integer pageFrom,
+	// Integer pageCount, boolean approved) {
+	// List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
+	// List<DaoQueryObject> brandQueryObjectList = new
+	// ArrayList<DaoQueryObject>();
+	// brandQueryObjectList.add((new DaoQueryObject("id", brandId)));
+	// queryObjectList.add(new DaoQueryObject("brand", brandQueryObjectList));
+	// if (!approved)
+	// queryObjectList.add(new DaoQueryObject("approved", true));
+	// return adDao.get(queryObjectList, Order.desc("creationDate"),
+	// new Integer(pageFrom), new Integer(pageCount));
+	// }
 
 	@Override
 	@Transactional
-	@Cacheable(value="raitings")
+	@Cacheable(value = "raitings")
 	public List<Map<String, Object>> getRatings(List<Long> ids) {
 		return adDao.getRatings(ids);
 	}
 
 	@Override
 	@Transactional
-	public AdBrowserWrapper getContestAds(Long contestId, int pageFrom,
-			int pageCount, boolean approved) {
-		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
-		List<DaoQueryObject> contestAdQueryObjectList = new ArrayList<DaoQueryObject>();
-		contestAdQueryObjectList.add((new DaoQueryObject("id", contestId)));
-		queryObjectList.add(new DaoQueryObject("contestAd", contestAdQueryObjectList));
-		if (!approved)
-			queryObjectList.add(new DaoQueryObject("approved", true));
-		return adDao.get(queryObjectList, Order.desc("creationDate"), new Integer(
-				pageFrom), new Integer(pageCount));
+	public List<Ad> getList(AdSearchDto adSearchDto, Integer first,
+			Integer last, boolean approved) {
+		List<DaoQueryObject> queryObjectList = glueConditions(adSearchDto,
+				approved);
+		Order order = prepareOrder(adSearchDto);
+		return adDao.getList(queryObjectList, order, first, last);
 	}
+
+	// @Override
+	// @Transactional
+	// public AdBrowserWrapper getContestAds(Long contestId,
+	// ContestAdAndAnswerSearchDto contestAdAndAnswerSearchDto,
+	// Integer pageFrom, Integer pageCount, boolean approved) {
+	// List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
+	// List<DaoQueryObject> contestAdQueryObjectList = new
+	// ArrayList<DaoQueryObject>();
+	// contestAdQueryObjectList.add((new DaoQueryObject("contest.id",
+	// contestId)));
+	// queryObjectList.add(new DaoQueryObject("contestAd",
+	// contestAdQueryObjectList));
+	// if (!approved)
+	// queryObjectList.add(new DaoQueryObject("approved", true));
+	// return adDao.get(queryObjectList, Order.desc("creationDate"),
+	// new Integer(pageFrom), new Integer(pageCount));
+	// }
 
 }

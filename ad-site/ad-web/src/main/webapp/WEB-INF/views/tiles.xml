@@ -35,7 +35,17 @@
 		<put-attribute name="pagination" value="/WEB-INF/views/ad/pagination.jsp"
 			cascade="true"></put-attribute>
 	</definition>
-	
+
+	<definition name="user/info-contest-list" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content"
+			value="/WEB-INF/views/user/info-contest-list.jsp" />
+	</definition>
+		<definition name="contest/contest-winner-info" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content"
+			value="/WEB-INF/views/contest/contest-winner-info.jsp" />
+	</definition>
+
+
 	<definition name="contest/contest-answer-list" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/contest/contest-answer-list.jsp" />
@@ -70,6 +80,8 @@
 	<definition name="contest/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/contest/register.jsp" />
+		<put-attribute name="info" value="/WEB-INF/views/info-page.jsp"
+			cascade="true" />
 	</definition>
 	<definition name="ad/company-register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
@@ -85,6 +97,8 @@
 	</definition>
 	<definition name="brand/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/brand/register.jsp" />
+		<put-attribute name="info" value="/WEB-INF/views/info-page.jsp"
+			cascade="true" />
 	</definition>
 	<definition name="company/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
@@ -95,6 +109,7 @@
 	</definition>
 	<definition name="user/profile" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/profile.jsp" />
+
 	</definition>
 	<definition name="user/login" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/login.jsp" />

@@ -68,7 +68,15 @@ public class ContestAdDao extends AbstractDao<ContestAd> {
 //			}
 //		}
 //		return added;
-//	}
+
+	public List<ContestAd> getContestAdsWithAds(Long contestId){
+		Criteria criteria = currentSession().createCriteria(ContestAd.class);
+		Criteria userCriteria = criteria.createCriteria("ad").createCriteria("user");
+		userCriteria.createCriteria("userData");
+		userCriteria.createCriteria("socialUser");
+		criteria.add(Restrictions.eq("contest.id", contestId));
+		return (List<ContestAd>) criteria.list();
+	}
 	
 	public boolean hasUserPostedAd(Long userId, Long contestId){
 		Criteria criteria = currentSession().createCriteria(ContestAd.class);

@@ -37,22 +37,24 @@ public interface AdService {
 
 	public List<AdComment> getComments(Long adId);
 
-	public AdBrowserWrapper getMain(int pageFrom, int pageCount,
+	public AdBrowserWrapper getMain(Integer pageFrom, Integer pageCount,
 			boolean approved);
 
-	public AdBrowserWrapper getWaiting(int pageFrom, int pageCount,
+	public AdBrowserWrapper getWaiting(Integer pageFrom, Integer pageCount,
 			boolean approved);
 
-	public AdBrowserWrapper getUserAds(Long userId, int pageFrom,
-			int pageCount, boolean approved);
+//	public AdBrowserWrapper getUserAds(Long userId, Integer pageFrom,
+//			Integer pageCount, boolean approved);
+//
+//	public AdBrowserWrapper getBrandAds(Long brandId, Integer pageFrom,
+//			Integer pageCount, boolean approved);
 
-	public AdBrowserWrapper getBrandAds(Long brandId, int pageFrom,
-			int pageCount, boolean approved);
+//	public AdBrowserWrapper getContestAds(Long contestId, Integer pageFrom,
+//			Integer pageCount, boolean approved);
 
-	public AdBrowserWrapper getContestAds(Long contestId, int pageFrom,
-			int pageCount, boolean approved);
-
-	public List<Ad> getTop(int pageFrom, int pageCount, Date date);
+	public List<Ad> getTop(Integer pageFrom, Integer pageCount, Date date);
+	public List<Ad> getList(AdSearchDto adSearchDto, Integer first,
+			Integer last, boolean approved);
 
 	public boolean isOwner(Long adId, Long userId);
 

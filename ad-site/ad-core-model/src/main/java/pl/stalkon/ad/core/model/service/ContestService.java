@@ -1,5 +1,7 @@
 package pl.stalkon.ad.core.model.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import EDU.oswego.cs.dl.util.concurrent.CopyOnWriteArrayList;
@@ -7,6 +9,7 @@ import EDU.oswego.cs.dl.util.concurrent.CopyOnWriteArrayList;
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.ContestAnswer;
+import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.dto.ContestAnswerBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestPostDto;
@@ -23,6 +26,8 @@ public interface ContestService {
 	public Contest get(Long contestId);
 
 	public Contest getWithAnswers(Long contestId);
+	
+	public Contest getWithContestAds(Long contestId);
 
 	// public Contest getWithAds(Long contestId);
 
@@ -48,4 +53,9 @@ public interface ContestService {
 
 	public ContestAnswerBrowserWrapper getContestAnswers(Long contestId,
 			int first, int last);
+	public Contest upadate(Long contestId, ContestPostDto contestPostDto);
+	
+	public void score(Long contestId);
+	
+	public List<User> setWinnerUserInfo(List<Ad> ads, Long contestId);
 }

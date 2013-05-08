@@ -11,6 +11,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.Assert;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -23,8 +24,11 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 
+import pl.stalkon.ad.core.controller.FileController;
 import pl.stalkon.ad.core.interceptors.MiniBrowserInterceptor;
 import pl.stalkon.ad.core.model.service.AdService;
+import pl.stalkon.ad.core.model.service.FileService;
+import pl.stalkon.ad.core.model.service.impl.FileServiceImpl;
 import pl.styall.library.core.ext.QueryArgumentResolver;
 
 @EnableWebMvc
@@ -58,6 +62,22 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
 		commonsMultipartResolver.setMaxUploadSize(new Long(env.getProperty("file.maxSize")));
 		return commonsMultipartResolver;
+	}
+	
+	@Bean
+	public FileController fileController(){
+		return new FileController();
+	}
+	
+	@Bean
+	public FileService fileService(){
+		String uploadsFolder = env.getProperty("upload.folder");
+		boolean starts =  uploadsFolder != null && uploadsFolder.startsWith("/");
+		Assert.state(starts, "Upload folder if not empty must starts with /");
+		String uploadsRootDirectory = env.getProperty("upload.root.directory");
+		boolean ends = uploadsRootDirectory != null &&  uploadsRootDirectory.endsWith("/");
+		Assert.state(!ends, "Uploads root path can't end with /");
+		return new FileServiceImpl(uploadsRootDirectory, uploadsFolder);
 	}
 
 	// @Bean
@@ -101,6 +121,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/resources/**").addResourceLocations(
 				"/resources/**");
 		registry.addResourceHandler("/favicon.ico").addResourceLocations("/favicon.ico");
+		registry.addResourceHandler("/uploads/**").addResourceLocations("file:/"+env.getProperty("upload.root.directory")+env.getProperty("upload.folder")+"/**");
 	}
 	
 

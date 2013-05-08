@@ -15,7 +15,7 @@
 		onclick="window.location='${onClickUrl}'">
 		<img src="${contest.imageUrl}" class="contest-image" />
 		<div class="image-right">
-			<h2 class="color-imp">${contest.name }</h2>
+			<h2 class="color-imp"style="word-wrap: break-word;">${contest.name }</h2>
 			<div class="contest-description">${contest.description}</div>
 		</div>
 

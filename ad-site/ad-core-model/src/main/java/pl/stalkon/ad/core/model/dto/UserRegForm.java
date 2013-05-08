@@ -41,15 +41,15 @@ public class UserRegForm extends UserFormModel {
 	
 	private String captcha;
 
-	private CommonsMultipartFile avatarFile;
+//	private CommonsMultipartFile avatarFile;
 
-	public CommonsMultipartFile getAvatarFile() {
-		return avatarFile;
-	}
-
-	public void setAvatarFile(CommonsMultipartFile avatarFile) {
-		this.avatarFile = avatarFile;
-	}
+//	public CommonsMultipartFile getAvatarFile() {
+//		return avatarFile;
+//	}
+//
+//	public void setAvatarFile(CommonsMultipartFile avatarFile) {
+//		this.avatarFile = avatarFile;
+//	}
 
 	public String getCaptcha() {
 		return captcha;

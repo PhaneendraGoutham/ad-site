@@ -7,7 +7,7 @@
 
 <c:if test="${brandAdmin }">
 	<div class="center-article-wrapper ui-corner-all">
-		<ul id="brand-admin-menu" class="styled center">
+		<ul  class="styled center center-panel-menu">
 			<li><a
 				href="<c:url value="/brand/${brand.id}/edit"/>"><spring:message code="label.brand.edit"></spring:message></a></li>
 			<li><a

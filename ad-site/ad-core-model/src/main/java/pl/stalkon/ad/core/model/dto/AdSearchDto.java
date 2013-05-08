@@ -30,6 +30,9 @@ public class AdSearchDto {
 	private List<Long> brandList;
 	private String orderBy = "rank";
 	private String order = "desc";
+	private Long contestId;
+	private Boolean winner;
+	private Long userId;
 
 
 	public String getOrderBy() {
@@ -143,6 +146,31 @@ public class AdSearchDto {
 	public void setPlace(Short place) {
 		this.place = place;
 	}
+
+	public Long getContestId() {
+		return contestId;
+	}
+
+	public void setContestId(Long contestId) {
+		this.contestId = contestId;
+	}
+
+	public Boolean getWinner() {
+		return winner;
+	}
+
+	public void setWinner(Boolean winner) {
+		this.winner = winner;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 
 
 }

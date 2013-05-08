@@ -7,5 +7,11 @@
 	<c:set var="ad" value="${ad}" scope="request"></c:set>
 	<tiles:insertAttribute name="ad" />
 </c:forEach>
+<c:if test="${empty adBrowserWrapper.ads }">
+	<article class="center-article-wrapper ui-corner-all">
+		<p class="color-imp" style="word-wrap: break-word;"><spring:message code="info.no.ads"></spring:message></p>
+	</article>
+</c:if>
+
 
 <tiles:insertAttribute name="pagination" />

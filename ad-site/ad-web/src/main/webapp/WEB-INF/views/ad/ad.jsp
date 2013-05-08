@@ -44,17 +44,6 @@
 		</c:otherwise>
 	</c:choose>
 	<div class="social-plugin-holder">
-		<script>
-			(function(d, s, id) {
-				var js, fjs = d.getElementsByTagName(s)[0];
-				if (d.getElementById(id))
-					return;
-				js = d.createElement(s);
-				js.id = id;
-				js.src = "//connect.facebook.net/pl_PL/all.js#xfbml=1&appId=537711946262789";
-				fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));
-		</script>
 		<div class="fb-like" data-send="true" data-layout="button_count"
 			data-width="450" data-show-faces="true" data-font="arial"
 			data-colorscheme="dark"></div>
@@ -149,7 +138,8 @@
 			<p>${ad.description}</p>
 		</div>
 		<div class="comments hidden">
-			<tiles:insertAttribute name="comments" ignore="true" />
+		<div class="fb-comments" data-href="http://localhost:8080<c:url value="/ad/${ad.id }"/>" data-width="590" data-num-posts="20" data-colorscheme="dark"></div>
+<%-- 			<tiles:insertAttribute name="comments" ignore="true" /> --%>
 		</div>
 		<div class="inform">
 			<div class="inform-box-holder">

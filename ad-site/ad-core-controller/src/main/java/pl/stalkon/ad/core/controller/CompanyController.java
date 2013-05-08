@@ -33,7 +33,7 @@ public class CompanyController {
 	private CompanyService companyService;
 
 	@Autowired
-	private UserDetailsService userDetailsService;
+	private ControllerHelperBean controllerHelperBean;
 	
 	@RequestMapping(value = "company/register")
 	public String getRegistrationPage(Model model){
@@ -52,9 +52,7 @@ public class CompanyController {
 			return "company/register";
 		}
 		companyService.register(company, socialLoggedUser.getId());
-		UserDetails  userDetails = userDetailsService.loadUserByUsername(socialLoggedUser.getUsername());
-		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+		controllerHelperBean.reathenticateUser(socialLoggedUser.getUsername());
 		return "redirect:/user/company";
 	}
 	

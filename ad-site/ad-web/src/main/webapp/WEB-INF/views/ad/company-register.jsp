@@ -76,16 +76,19 @@
 
 	}
 	function checkTagsValidity(showError) {
+		$(".tagit").parent().children("label.error").remove();
 		if ($("#tags-selector").val() == "") {
 			if (!$(".tagit").hasClass("error") && showError) {
 				$(".tagit").addClass("error");
+			}
+			if(showError)
 				$(".tagit").parent().append(
 						"<label class='error'>To pole jest wymagane</label>");
-			}
+		
 			return false;
 		} else {
 			$(".tagit").removeClass("error");
-			$(".tagit").parent().children("label.error").remove();
+
 			return true;
 		}
 	}

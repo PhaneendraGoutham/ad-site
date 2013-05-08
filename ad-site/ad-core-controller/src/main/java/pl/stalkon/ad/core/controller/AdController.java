@@ -81,8 +81,8 @@ public class AdController {
 	@Autowired
 	private VideoApiService videoApiService;
 
-//	@Autowired
-//	private SiteFacebookIntegrator siteFacebookIntegrator;
+	// @Autowired
+	// private SiteFacebookIntegrator siteFacebookIntegrator;
 
 	@Autowired
 	private CompanyService companyService;
@@ -95,7 +95,7 @@ public class AdController {
 
 	@Autowired
 	private ControllerHelperBean controllerHelperBean;
-	
+
 	@Autowired
 	private MessageSource messageSource;
 
@@ -151,8 +151,9 @@ public class AdController {
 		}
 		Contest contest = contestService.get(contestId);
 		if (contest.getState() == State.FINISHED) {
-			redirectAttributes.addFlashAttribute("info",
-					messageSource.getMessage("info.contest.finished", null, LocaleContextHolder.getLocale()));
+			redirectAttributes.addFlashAttribute("info", messageSource
+					.getMessage("info.contest.finished", null,
+							LocaleContextHolder.getLocale()));
 			return "redirect:/info-page";
 		}
 		if (!contest.getBrand().getId().equals(adPostDto.getBrandId())) {
@@ -169,8 +170,9 @@ public class AdController {
 		adPostDto.setContestId(contestId);
 		adService.register(adPostDto, ad, socialLoggedUser.getId(), false);
 		videoApiService.setApiData(ad);
-		redirectAttributes.addFlashAttribute("info",
-				messageSource.getMessage("info.contest.answer.post", null, LocaleContextHolder.getLocale()));
+		redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
+				"info.contest.answer.post", null,
+				LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 
@@ -179,8 +181,9 @@ public class AdController {
 			@PathVariable("contestId") Long contestId,
 			Model model,
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal, HttpServletRequest request) {
-		AdBrowserWrapper adBrowserWrapper = adService.getContestAds(contestId,
+			Principal principal, HttpServletRequest request,
+			@ModelAttribute("adSearchDto") AdSearchDto adSearchDto) {
+		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
 				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
 						page), ControllerHelperBean.AD_PER_PAGE,
 				controllerHelperBean.getActive(principal));
@@ -188,14 +191,18 @@ public class AdController {
 				ControllerHelperBean.AD_PER_PAGE, model,
 				adBrowserWrapper.getTotal(), page);
 		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-		model.addAttribute(
-				"contestAdmin",
-				controllerHelperBean.isContestAdmin(request, principal,
-						contestId)
-						|| request.isUserInRole(UserRoleDef.ROLE_ADMIN));
+		boolean contestAdmin = controllerHelperBean.isContestAdmin(
+				request, principal, contestId);
+		model.addAttribute("contestAdmin", contestAdmin);
+		Contest contest = contestService.get(contestId);
+		model.addAttribute("adSearchDto", adSearchDto);
 		model.addAttribute("contestId", contestId);
-		model.addAttribute("path", "ad/main");
-		return "browser";
+		model.addAttribute("tagFilter", false);
+		model.addAttribute("brandFilter", false);
+		model.addAttribute("yearFilter", false);
+		if(contest.getState() == State.SCORED || contestAdmin)
+			model.addAttribute("winnerFilter", true);
+		return "ad/browser";
 	}
 
 	@RequestMapping(value = "/ad", method = RequestMethod.POST)
@@ -225,7 +232,9 @@ public class AdController {
 		try {
 			ad = videoApiService.setVideoDetails(adPostDto);
 		} catch (VideoApiException e) {
-			redirectAttributes.addFlashAttribute("info", messageSource.getMessage("info.youtube.url.invalid",null, LocaleContextHolder.getLocale()));
+			redirectAttributes.addFlashAttribute("info", messageSource
+					.getMessage("info.youtube.url.invalid", null,
+							LocaleContextHolder.getLocale()));
 			return "redirect:/info-page";
 		}
 		adService.register(adPostDto, ad, socialLoggedUser.getId(), official);
@@ -234,7 +243,8 @@ public class AdController {
 		// siteFacebookIntegrator.notifyOnAdCreated(env.getProperty("app.domain")
 		// + "/ad/" + ad.getId(), ad.getTitle(), ad.getDescription());
 		// TODO:
-		redirectAttributes.addFlashAttribute("info", messageSource.getMessage("info.ad.added",null, LocaleContextHolder.getLocale()));
+		redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
+				"info.ad.added", null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 
@@ -275,11 +285,10 @@ public class AdController {
 
 	@RequestMapping(value = { "user/{userId}" }, method = RequestMethod.GET)
 	public String getUserAds(
-			@PathVariable("userId") Long userId,
 			Model model,
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal) {
-		AdBrowserWrapper adBrowserWrapper = adService.getUserAds(userId,
+			Principal principal,@ModelAttribute("adSearchDto") AdSearchDto adSearchDto) {
+		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
 				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
 						page), ControllerHelperBean.AD_PER_PAGE,
 				controllerHelperBean.getActive(principal));
@@ -287,7 +296,10 @@ public class AdController {
 				ControllerHelperBean.AD_PER_PAGE, model,
 				adBrowserWrapper.getTotal(), page);
 		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-		return "browser";
+		model.addAttribute("tagFilter", false);
+		model.addAttribute("brandFilter", false);
+		model.addAttribute("yearFilter", false);
+		return "ad/browser";
 	}
 
 	// @RequestMapping(value = { "ad/search"}, method = RequestMethod.GET)
@@ -351,7 +363,6 @@ public class AdController {
 			Principal principal) {
 		Ad ad = adService.get(id, controllerHelperBean.getActive(principal));
 		model.addAttribute("ad", ad);
-
 		return "ad";
 	}
 

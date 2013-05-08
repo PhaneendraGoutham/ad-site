@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.User.DisplayNameType;
 import pl.stalkon.ad.core.model.UserRoleDef;
+import pl.stalkon.ad.core.model.dto.UserAddressDto;
 import pl.stalkon.ad.core.model.dto.UserProfileDto;
 import pl.stalkon.ad.core.model.dto.UserRegForm;
 import pl.stalkon.ad.core.model.service.UserService;
@@ -38,6 +39,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		userData.setSex(userRegForm.getSex());
 		userData.setName(userRegForm.getName());
 		userData.setSurname(userRegForm.getSurname());
+		userData.setImageUrl("/resources/img/no-user.gif");
 		user.setUserData(userData);
 		UserRole userRole = userDao.loadUserRoleByName(UserRoleDef.ROLE_USER);
 		user.addUserRole(userRole);
@@ -65,6 +67,33 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		User user = userDao.get(id);
 		user.getUserData().setImageUrl(url);
 		userDao.update(user);
+	}
+
+	@Override
+	@Transactional
+	public User getWithAddresses(Long userId) {
+		User user = userDao.get(userId);
+		user.getAddresses().size();
+		return user;
+	}
+
+	@Override
+	@Transactional
+	public void updateUserAddress(UserAddressDto userAddressDto, Long userId) {
+		User user = userDao.get(userId);
+		user.getUserData().setSurname(userAddressDto.getSurname());
+		user.getUserData().setName(userAddressDto.getFirstname());
+		if(user.getAddresses().size() > 0){
+			Address address  = user.getAddresses().get(0);
+			address.setCity(userAddressDto.getAddress().getCity());
+			address.setZip(userAddressDto.getAddress().getZip());
+			address.setStreet(userAddressDto.getAddress().getStreet());
+			address.setHomeNr(userAddressDto.getAddress().getHomeNr());
+		}else{
+			user.addAddress(userAddressDto.getAddress());
+		}
+		userDao.update(user);
+		
 	}
 
 }

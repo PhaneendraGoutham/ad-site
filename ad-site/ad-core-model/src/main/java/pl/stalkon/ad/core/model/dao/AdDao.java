@@ -34,43 +34,46 @@ public class AdDao extends AbstractDao<Ad> {
 	@Autowired
 	private TagDao tagDao;
 
-
 	@Autowired
 	private ContestAdDao contestAdDao;
-	
+
 	@Autowired
 	private CriteriaConfigurer criteriaConfigurer;
 
 	@SuppressWarnings("unchecked")
 	public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList,
 			Order order, Integer first, Integer last) {
-		Criteria adCriteria = currentSession().createCriteria(Ad.class);
-		adCriteria.createCriteria("user");
-		adCriteria.createCriteria("brand");
-		addRestrictions(adCriteria, "", queryObjectList);
+		Criteria adCriteria = prepareCriteria(queryObjectList);
 		Long total = (Long) adCriteria.setProjection(Projections.rowCount())
 				.uniqueResult();
-
 		adCriteria.setProjection(null).setResultTransformer(
 				Criteria.ROOT_ENTITY);
-
-		criteriaConfigurer.configureCriteria(adCriteria, order, first, last);
-
-		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		List<Ad> ads = (List<Ad>) adCriteria.list();
+		List<Ad> ads = getAds(adCriteria, order, first, last);
 		return new AdBrowserWrapper(ads, total);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Ad> getList(List<DaoQueryObject> queryObjectList, Order order,
 			Integer first, Integer last) {
+		Criteria adCriteria = prepareCriteria(queryObjectList);
+		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		List<Ad> ads = getAds(adCriteria, order, first, last);
+		return ads;
+	}
+
+	private Criteria prepareCriteria(List<DaoQueryObject> queryObjectList) {
 		Criteria adCriteria = currentSession().createCriteria(Ad.class);
 		adCriteria.createCriteria("user");
+		adCriteria.createCriteria("brand");
 		addRestrictions(adCriteria, "", queryObjectList);
+		return adCriteria;
+	}
+
+	private List<Ad> getAds(Criteria adCriteria, Order order, Integer first,
+			Integer last) {
 		criteriaConfigurer.configureCriteria(adCriteria, order, first, last);
 		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		List<Ad> ads = (List<Ad>) adCriteria.list();
-		return ads;
+		return (List<Ad>) adCriteria.list();
 	}
 
 	public boolean addRestrictions(Criteria criteria, String alias,
@@ -81,13 +84,12 @@ public class AdDao extends AbstractDao<Ad> {
 			if (qo.name.equals("user")) {
 				temp = userDao.addRestrictions(criteria, "user",
 						(List<DaoQueryObject>) qo.value);
-			}else if (qo.name.equals("contestAd")) {
-				criteria.createCriteria("contestAd","contestAd");
+			} else if (qo.name.equals("contestAd")) {
+				criteria.createCriteria("contestAd", "contestAd");
 				temp = contestAdDao.addRestrictions(criteria, "contestAd",
 						(List<DaoQueryObject>) qo.value);
-			}
-			else if (qo.name.equals("brand")) {
-				
+			} else if (qo.name.equals("brand")) {
+
 				temp = brandDao.addRestrictions(criteria, "brand",
 						(List<DaoQueryObject>) qo.value);
 			} else if (qo.name.equals("tags")) {
@@ -137,7 +139,7 @@ public class AdDao extends AbstractDao<Ad> {
 		return resultList;
 	}
 
-	public Ad getRandom(){
+	public Ad getRandom() {
 		Criteria criteria = currentSession().createCriteria(Ad.class);
 		criteria.createCriteria("user");
 		criteria.createCriteria("brand");

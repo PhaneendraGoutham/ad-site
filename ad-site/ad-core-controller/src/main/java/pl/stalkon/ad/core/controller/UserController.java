@@ -2,9 +2,11 @@ package pl.stalkon.ad.core.controller;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -25,17 +27,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sun.mail.imap.protocol.Status;
+
 import pl.stalkon.ad.core.model.User;
+import pl.stalkon.ad.core.model.UserInfo;
 import pl.stalkon.ad.core.model.dto.ChangePasswordDto;
+import pl.stalkon.ad.core.model.dto.UserAddressDto;
 import pl.stalkon.ad.core.model.dto.UserProfileDto;
 import pl.stalkon.ad.core.model.dto.UserRegForm;
+import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.MailService;
+import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.ad.core.model.service.impl.MailServiceImpl;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
+import pl.stalkon.ad.extensions.UploadingFileException;
 import pl.styall.library.core.ext.controller.BaseController;
 import pl.styall.library.core.ext.validation.ValidationException;
 
@@ -47,13 +57,17 @@ public class UserController extends BaseController {
 	private UserService userService;
 
 	@Autowired
-	private FileService fileService;
+	private MailService mailService;
 
 	@Autowired
-	private MailService mailService;
-	
-	@Autowired
 	private MessageSource messageSource;
+
+	@Autowired
+	private UserInfoService userInfoService;
+
+	@Autowired
+	private ContestService contestService;
+
 	@Autowired
 	private ControllerHelperBean controllerHelperBean;
 
@@ -95,39 +109,16 @@ public class UserController extends BaseController {
 		if (userService.chechUsernameExists(userRegForm.getUsername())) {
 			result.addError(new ObjectError("username", "Uzytkownik zajety"));
 		}
-		fileService.validateFile(result, userRegForm.getAvatarFile(),
-				"avatarFile");
 		if (result.hasErrors()) {
-			System.out.println(result.getAllErrors());
 			return controllerHelperBean.invalidPostRequest(redirectAttributes);
-			
+
 		}
 
 		User user = userService.register(userRegForm);
-		String baseUrl = String.format("%s://%s:%d%s/", request.getScheme(),
-				request.getServerName(), request.getServerPort(),
-				request.getContextPath());
-		if (!userRegForm.getAvatarFile().isEmpty()) {
-			String avatarPath = fileService.getPath("users", "avatar", null,
-					user.getId().toString());
-			try {
-				String ext = fileService.saveFile(avatarPath,
-						userRegForm.getAvatarFile(), 43, 43);
-				userService.setUserThumbnail(baseUrl
-						+ "resources/users/avatar-" + user.getId() + "." + ext,
-						user.getId());
-			} catch (IOException e) {
-			}
-		} else {
-			userService.setUserThumbnail(baseUrl + "resources/img/no-user.gif",
-					user.getId());
-		}
 
-//		 mailService.sendUserVerificationEmail(user); TODO:
-		redirectAttributes
-				.addFlashAttribute(
-						"info",
-						messageSource.getMessage("info.user.registered", null, LocaleContextHolder.getLocale()));
+		// mailService.sendUserVerificationEmail(user); TODO:
+		redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
+				"info.user.registered", null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 
@@ -140,6 +131,9 @@ public class UserController extends BaseController {
 				.getName(), user.getUserData().getSurname(), user
 				.getCredentials().getMail(), user.getDisplayName());
 		model.addAttribute("userProfileDto", userProfileDto);
+		model.addAttribute("avatar", user.getUserData().getImageUrl());
+		model.addAttribute("username", user.getCredentials().getUsername());
+		model.addAttribute("mail", user.getCredentials().getMail());
 		return "user/profile";
 	}
 
@@ -176,7 +170,9 @@ public class UserController extends BaseController {
 		userService.changePassword(socialLoggedUser.getId(),
 				changePasswordDto.getOldPassword(),
 				changePasswordDto.getPassword());
-		redirectAttributes.addFlashAttribute("info",messageSource.getMessage("info.user.password.changed", null, LocaleContextHolder.getLocale()));
+		redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
+				"info.user.password.changed", null,
+				LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
 	}
 
@@ -195,15 +191,42 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "/user/activate/{token}", method = RequestMethod.GET)
-	public String activate(@PathVariable("token") String token, RedirectAttributes redirectAttributes) {
+	public String activate(@PathVariable("token") String token,
+			RedirectAttributes redirectAttributes) {
 		boolean activated = userService.activate(token);
 		if (activated) {
-			redirectAttributes
-					.addFlashAttribute("info",messageSource.getMessage("info.user.activated", null, LocaleContextHolder.getLocale()));
+			redirectAttributes.addFlashAttribute("info", messageSource
+					.getMessage("info.user.activated", null,
+							LocaleContextHolder.getLocale()));
 			return "redirect:/info-page";
 		}
 		return "redirect:/";
 	}
 
+	@RequestMapping(value = "/user/message", method = RequestMethod.GET)
+	public String getMessages(Principal principal, Model model) {
+		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
+				.getPrincipal();
+		List<UserInfo> userInfos = userInfoService.getMessages(
+				socialLoggedUser.getId(), null);
+		model.addAttribute("userInfos", userInfos);
+		return "user/info-contest-list";
+	}
+
+	@RequestMapping(value = "/user/address/update", method = RequestMethod.POST)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public UserAddressDto getMessages(
+			Principal principal,
+			@Valid @ModelAttribute("userAddressDto") UserAddressDto userAddressDto,
+			BindingResult result, RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			controllerHelperBean.invalidPostRequest(redirectAttributes);
+		}
+		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
+				.getPrincipal();
+		userService.updateUserAddress(userAddressDto, socialLoggedUser.getId());
+		return userAddressDto;
+	}
 
 }

@@ -53,7 +53,36 @@ function getAllIdsToRankUpdate() {
 	});
 	return ids;
 }
-
+function validateImageFile(data, objectAfter) {
+	if ($("#image-error").length > 0) {
+		$("#image-error").remove();
+	}
+	if (!validateImageExtension(data.files[0].name)) {
+		if (!$("#image-type-error").length > 0) {
+			objectAfter
+					.after('<label id="image-error" class="error" style="clear:both">Tylko pliki w formacie gif, png, jpg, jpeg</label>');
+		}
+	} else if (!validateImageFileSize(data.files[0].size)) {
+		objectAfter
+				.after(
+						'<label id="image-error" class="error" style="clear:both">Plik jest za duży. Maksymalny rozmiar wynosi: 4MB</label>');
+	} else {
+		data.submit();
+	}
+}
+function validateImageExtension(fileName) {
+	var ext = fileName.split('.').pop().toLowerCase();
+	if ($.inArray(ext, [ 'gif', 'png', 'jpg', 'jpeg' ]) == -1) {
+		return false;
+	}
+	return true;
+}
+function validateImageFileSize(size) {
+	if (size > 33554432) {
+		return false;
+	}
+	return true;
+}
 $(function() {
 	var ids = getAllIdsToRankUpdate();
 	if (ids.length > 0)
@@ -68,14 +97,6 @@ $(function() {
 		}
 		return param.test(value);
 	}, "Nieprawidłowe znaki");
-	jQuery.validator.addMethod("image_extensions", function(value, element) {
-		var ext = $(element).val().split('.').pop().toLowerCase();
-		if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
-		    return false;
-		}
-		return true;
-	}, "Tylko pliki z rozszerzeniem: gif, png, jpg, jpeg");
-	
 
 	$(".admin-panel button").click(function() {
 		var $this = $(this);
@@ -102,33 +123,36 @@ $(function() {
 			}
 		});
 	});
-	$(".contest-admin-panel button").click(function() {
-		var $this = $(this);
-		var target = $this.data("target");
-		var id = $this.data("id");
-		var type = $this.data("type");
-		var contestId = $this.data("contest-id");
-		var url = "";
-		if (type == "answer") {
-			url = basePath + "contest/"+contestId+"/answer/" + id + "/state";
-		} else {
-			url = basePath + "contest/"+contestId+"/ad/" + id + "/state";
-		}
-		var data = new Object();
-		if ($this.hasClass("button-blue")) {
-			data[target] = false;
-		} else {
-			data[target] = true;
-		}
-		$.ajax({
-			url : url,
-			data : data,
-			method : "POST",
-			success : function() {
-				toggleAdminButton($this);
-			}
-		});
-	});
+	$(".contest-admin-panel button").click(
+			function() {
+				var $this = $(this);
+				var target = $this.data("target");
+				var id = $this.data("id");
+				var type = $this.data("type");
+				var contestId = $this.data("contest-id");
+				var url = "";
+				if (type == "answer") {
+					url = basePath + "contest/" + contestId + "/answer/" + id
+							+ "/state";
+				} else {
+					url = basePath + "contest/" + contestId + "/ad/" + id
+							+ "/state";
+				}
+				var data = new Object();
+				if ($this.hasClass("button-blue")) {
+					data[target] = false;
+				} else {
+					data[target] = true;
+				}
+				$.ajax({
+					url : url,
+					data : data,
+					method : "POST",
+					success : function() {
+						toggleAdminButton($this);
+					}
+				});
+			});
 	$("#login-dialog").dialog({
 		autoOpen : false,
 		height : 135,
@@ -190,101 +214,102 @@ $(function() {
 			wrapper.addClass("hidden");
 		}
 		wrapper.children(target).removeClass("hidden");
-		if (target == '.comments') {
-			var commentsWrapper = wrapper.children(target);
-			var attr = commentsWrapper.attr('data-loaded');
-			if (typeof attr === 'undefined' || attr === false) {
-				loadComments(commentsWrapper, adId);
-			}
-
-		}
+//		if (target == '.comments') {
+//			var commentsWrapper = wrapper.children(target);
+//			var attr = commentsWrapper.attr('data-loaded');
+//			if (typeof attr === 'undefined' || attr === false) {
+//				loadComments(commentsWrapper, adId);
+//			}
+//
+//		}
 	});
-	$(".comments").on(
-			'click',
-			'.show-answer-box',
-			function(e) {
-				$this = $(this);
-				var postId = $this.data("id");
-				e.preventDefault();
-				var target = $this.data("target");
-				var adId = $this.data("ad-id");
-				var attr = $(this).attr('data-loaded');
-				if (typeof attr === 'undefined' || attr === false) {
-					var box = $(".comments").children(
-							".comment-box-wrapper:first").clone();
-
-					box.prependTo($(target).children(".post-children"));
-					$this.attr("data-loaded", 'true');
-					var commentButton = $(target).children(".post-children")
-							.children(".comment-box-wrapper").find("button");
-					commentButton.attr("data-post-id", postId);
-					commentButton.attr("data-ad-id", adId);
-				} else if (attr == 'true') {
-					$this.attr("data-loaded", 'false');
-					$(target + "> .post-children > .comment-box-wrapper")
-							.addClass("hidden");
-				} else {
-					$this.attr("data-loaded", 'true');
-					$(target + "> .post-children > .comment-box-wrapper")
-							.removeClass("hidden");
-				}
-			});
-	$(".comments").on(
-			'click',
-			'.inform',
-			function(e) {
-				$this = $(this);
-				var postId = $this.data("post-id");
-				e.preventDefault();
-				var target = $this.data("target");
-				var attr = $(this).attr('data-loaded');
-				if (typeof attr === 'undefined' || attr === false) {
-					var box = $(".inform").children(".inform-box-holder:first")
-							.clone();
-
-					box.prependTo($(target).children(".post-children"));
-					$this.attr("data-loaded", 'true');
-					var informButton = $(target).children(".post-children")
-							.children(".inform-box-holder").find("button");
-					informButton.attr("data-post-id", postId);
-					informButton.removeAttr("data-ad-id");
-				} else if (attr == 'true') {
-					$this.attr("data-loaded", 'false');
-					$(target + "> .post-children > .inform-box-holder")
-							.addClass("hidden");
-				} else {
-					$this.attr("data-loaded", 'true');
-					$(target + "> .post-children > .inform-box-holder")
-							.removeClass("hidden");
-				}
-			});
-	$(".comments").on(
-			'click',
-			'.comment-button',
-			function(e) {
-				$this = $(this);
-				var id = $this.data("post-id");
-				var adId = $this.data("ad-id");
-				var dataObject = new Object();
-				dataObject['message'] = $this.parent().children(".comment-box")
-						.val();
-				dataObject['postId'] = id;
-				$.ajax({
-					url : basePath + "ad/" + adId + "/comment",
-					type : "POST",
-					data : dataObject,
-					success : function(html, status, xhr) {
-						var commentsWrapper = $("#ad-wrapper-" + adId
-								+ " > .bottom-video-panel > .comments");
-						commentsWrapper.html(html);
-						commentsWrapper.attr("data-loaded", true);
-					},
-					error : function() {
-						$("#login-dialog").dialog("open");
-					}
-				});
-			});
-	$(".comments,.inform").on(
+//	$(".comments").on(
+//			'click',
+//			'.show-answer-box',
+//			function(e) {
+//				$this = $(this);
+//				var postId = $this.data("id");
+//				e.preventDefault();
+//				var target = $this.data("target");
+//				var adId = $this.data("ad-id");
+//				var attr = $(this).attr('data-loaded');
+//				if (typeof attr === 'undefined' || attr === false) {
+//					var box = $(".comments").children(
+//							".comment-box-wrapper:first").clone();
+//
+//					box.prependTo($(target).children(".post-children"));
+//					$this.attr("data-loaded", 'true');
+//					var commentButton = $(target).children(".post-children")
+//							.children(".comment-box-wrapper").find("button");
+//					commentButton.attr("data-post-id", postId);
+//					commentButton.attr("data-ad-id", adId);
+//				} else if (attr == 'true') {
+//					$this.attr("data-loaded", 'false');
+//					$(target + "> .post-children > .comment-box-wrapper")
+//							.addClass("hidden");
+//				} else {
+//					$this.attr("data-loaded", 'true');
+//					$(target + "> .post-children > .comment-box-wrapper")
+//							.removeClass("hidden");
+//				}
+//			});
+//	$(".comments").on(
+//			'click',
+//			'.inform',
+//			function(e) {
+//				$this = $(this);
+//				var postId = $this.data("post-id");
+//				e.preventDefault();
+//				var target = $this.data("target");
+//				var attr = $(this).attr('data-loaded');
+//				if (typeof attr === 'undefined' || attr === false) {
+//					var box = $(".inform").children(".inform-box-holder:first")
+//							.clone();
+//
+//					box.prependTo($(target).children(".post-children"));
+//					$this.attr("data-loaded", 'true');
+//					var informButton = $(target).children(".post-children")
+//							.children(".inform-box-holder").find("button");
+//					informButton.attr("data-post-id", postId);
+//					informButton.removeAttr("data-ad-id");
+//				} else if (attr == 'true') {
+//					$this.attr("data-loaded", 'false');
+//					$(target + "> .post-children > .inform-box-holder")
+//							.addClass("hidden");
+//				} else {
+//					$this.attr("data-loaded", 'true');
+//					$(target + "> .post-children > .inform-box-holder")
+//							.removeClass("hidden");
+//				}
+//			});
+//	$(".comments").on(
+//			'click',
+//			'.comment-button',
+//			function(e) {
+//				$this = $(this);
+//				var id = $this.data("post-id");
+//				var adId = $this.data("ad-id");
+//				var dataObject = new Object();
+//				dataObject['message'] = $this.parent().children(".comment-box")
+//						.val();
+//				dataObject['postId'] = id;
+//				$.ajax({
+//					url : basePath + "ad/" + adId + "/comment",
+//					type : "POST",
+//					data : dataObject,
+//					success : function(html, status, xhr) {
+//						var commentsWrapper = $("#ad-wrapper-" + adId
+//								+ " > .bottom-video-panel > .comments");
+//						commentsWrapper.html(html);
+//						commentsWrapper.attr("data-loaded", true);
+//					},
+//					error : function() {
+//						$("#login-dialog").dialog("open");
+//					}
+//				});
+//			});
+//	$(".comments,.inform").on(
+				$(".inform").on(
 			'click',
 			'.inform-button',
 			function(e) {
@@ -330,16 +355,16 @@ $(function() {
 		hideFilter(target, id);
 	});
 });
-function loadComments(commentsWrapper, adId) {
-	$.ajax({
-		url : basePath + "ad/" + adId + "/comment",
-		type : "GET",
-		success : function(html) {
-			commentsWrapper.html(html);
-			commentsWrapper.attr("data-loaded", true);
-		}
-	});
-}
+//function loadComments(commentsWrapper, adId) {
+//	$.ajax({
+//		url : basePath + "ad/" + adId + "/comment",
+//		type : "GET",
+//		success : function(html) {
+//			commentsWrapper.html(html);
+//			commentsWrapper.attr("data-loaded", true);
+//		}
+//	});
+//}
 function toggleFilters(target) {
 	var li = $("#" + target + "-menu-filter");
 	if (li.hasClass("on")) {
@@ -374,7 +399,7 @@ function displayFilter(target, id, uiName) {
 		fil.children("ul").append(li);
 	} else {
 		var text = "-";
-		if (target == 'place' || target == 'year') {
+		if (target == 'place' || target == 'year' || target == 'winner') {
 			var select = $("#" + target + "-select");
 			text = select.find(":selected").text();
 		} else if (target == 'rank') {
@@ -425,6 +450,7 @@ function showSelectedFilters() {
 	displayFilter('place');
 	displayFilter('rank');
 	displayFilter('vote');
+	displayFilter('winner');
 	// setSortUi($("#order-by-input").val(),$("#order-input").val());
 }
 function hideFilter(target, id, uiName) {
@@ -442,7 +468,7 @@ function setSelectDefault(select) {
 function removeItemChecked(target, id) {
 	if (target == 'tag' || target == 'brand') {
 		$("#" + target + "-" + id).attr("checked", false);
-	} else if (target == 'place' || target == 'year') {
+	} else if (target == 'place' || target == 'year' || target=='winner') {
 		setSelectDefault($("#" + target + "-select"));
 	} else if (target == 'rank') {
 		setSelectDefault($("#" + target + "-select-from"));

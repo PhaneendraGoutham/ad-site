@@ -60,7 +60,7 @@ $(function(){
 			"address.homeNr":{
 				required:true,
 				minlength:1,
-				maxLength:20,
+				maxlength:20,
 			}
 		},
 	messages:{

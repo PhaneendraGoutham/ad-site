@@ -20,12 +20,12 @@
 		<form:label for="birthdate" path="birthdate"><spring:message code="label.birth.date"></spring:message></form:label>
 		<form:input id="birthdate" path="birthdate" class="ui-corner-all"
 			placeholder="Kliknij aby wybrać datę..." />
-		<form:label for="avatarFile" path="avatarFile">Avatar</form:label>
-		<input type="text" id="avatar-chooser"
-			placeholder="Kliknij aby wybrać avatara..." class="ui-corner-all image_extensions"
-			readonly="readonly" />
-		<form:input id="avatar" path="avatarFile" type="file" class="hidden"
-			accept="image/png, image/jpeg, image/gif" />
+<%-- 		<form:label for="avatarFile" path="avatarFile">Avatar</form:label> --%>
+<!-- 		<input type="text" id="avatar-chooser" -->
+<!-- 			placeholder="Kliknij aby wybrać avatara..." class="ui-corner-all image_extensions" -->
+<!-- 			readonly="readonly" /> -->
+<%-- 		<form:input id="avatar" path="avatarFile" type="file" class="hidden" --%>
+<%-- 			accept="image/png, image/jpeg, image/gif" /> --%>
 		<div class="checkbox-radio-wrapper">
 			<form:radiobutton path="sex" value="FEMALE" />
 			<form:label for="sex" class="inline-separator" path="sex"><spring:message code="label.female"></spring:message></form:label>
