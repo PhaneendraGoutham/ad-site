@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -36,6 +37,15 @@ public class BrandDao extends AbstractDao<Brand> {
 //		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		List<Brand> brands = (List<Brand>)brandCriteria.list();
 		return brands;
+	}
+	
+	public Double getBrandCurrentCost(Long brandId){
+		Criteria criteria = currentSession().createCriteria(Brand.class);
+		criteria.createCriteria("costs","cost");
+		criteria.add(Restrictions.eq("cost.current", true));
+		criteria.setProjection(Projections.property("cost.costPerSecondPer1000"));
+		Double cost = (Double) criteria.uniqueResult();
+		return cost;
 	}
 	
 //	public void addRestrictions(Criteria criteria, String alias,

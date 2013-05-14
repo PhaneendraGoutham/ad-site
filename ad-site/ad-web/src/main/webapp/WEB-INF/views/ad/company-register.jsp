@@ -15,7 +15,8 @@
 				data-project-id="${brand.wistiaProjectData.hashedId }" />
 			<label for="title"><spring:message code="label.title"></spring:message></label>
 			<form:input path="title" class="ui-corner-all" />
-			<label for="year"><spring:message code="label.production.year"></spring:message></label>
+			<label for="year"><spring:message
+					code="label.production.year"></spring:message></label>
 			<form:input path="year" class="ui-corner-all" />
 			<div>
 				<label for="tags-selector"><spring:message code="label.tags"></spring:message></label>
@@ -26,7 +27,8 @@
 				<label><spring:message code="label.for.adults"></spring:message></label>
 			</div>
 
-			<label for="description"><spring:message code="label.description"></spring:message></label>
+			<label for="description"><spring:message
+					code="label.description"></spring:message></label>
 			<form:textarea path="description" class="ui-corner-all" />
 			<form:hidden path="type" />
 			<%-- 			<form:hidden path="url" id="dailymotion-url" /> --%>
@@ -38,7 +40,8 @@
 			<div id="wistia-upload-widget"
 				class="wistia-upload-widget button-green disabled">
 				<div>
-					<span class="upload-media" style="color: #ffffff"><spring:message code="label.choose.and.add.file"></spring:message></span>
+					<span class="upload-media" style="color: #ffffff"><spring:message
+							code="label.choose.and.add.file"></spring:message></span>
 				</div>
 			</div>
 		</form:form>
@@ -66,6 +69,20 @@
 					max : loaded + left
 				});
 			},
+			'fileQueued' : function(file) {
+				if (!validateVideoExtension(file.name)) {
+					this.cancelUpload();
+					this.reset();
+					if (!$("#video-error").length > 0)
+						$("#wistia-upload-widget")
+								.parent()
+								.append(
+										"<label class='error' id='video-error'>Tylko pliki wideo</label>");
+				} else if ($("#video-error").length > 0) {
+					$("#video-error").remove();
+				}
+
+			},
 		};
 		var wistia_upload = new wistia.UploadWidget({
 			divId : "wistia-upload-widget",
@@ -81,10 +98,10 @@
 			if (!$(".tagit").hasClass("error") && showError) {
 				$(".tagit").addClass("error");
 			}
-			if(showError)
+			if (showError)
 				$(".tagit").parent().append(
 						"<label class='error'>To pole jest wymagane</label>");
-		
+
 			return false;
 		} else {
 			$(".tagit").removeClass("error");
@@ -99,6 +116,8 @@
 		});
 		$("#tags-selector").tagit({
 			autocomplete : {
+				minLength : 2,
+				delay : 500,
 				source : '<c:url value="/ad/tag"/>'
 			}
 		});

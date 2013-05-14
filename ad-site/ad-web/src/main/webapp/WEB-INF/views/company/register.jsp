@@ -41,7 +41,7 @@ $(function(){
 			},
 			nip:{
 				required:true,
-				pattern:"[0-9]{10}$",
+				pattern:"^[0-9]{10}$",
 			},
 			"address.city":{
 				required:true,

@@ -26,7 +26,6 @@
 		<module>dailymotion-api-module</module>
 		<module>ad-core-security</module>
 		<module>ad-social</module>
-		<module>ad-core</module>
 		<module>video-api-module</module>
 	</modules>
 	<properties>

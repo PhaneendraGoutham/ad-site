@@ -1,8 +1,10 @@
 package pl.stalkon.ad.core.model;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -10,6 +12,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import pl.styall.library.core.model.AbstractCompany;
 import pl.styall.library.core.model.CommonEntity;
@@ -22,8 +25,13 @@ public class Company extends AbstractCompany<Address> {
 
 	private static final long serialVersionUID = -3276193432406949362L;
 
+	
 	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, mappedBy="company")
 	private List<Brand> brands;
+	
+	@Column(nullable=false)
+	private boolean approved;
+	
 
 	public List<Brand> getBrands() {
 		return brands;
@@ -36,13 +44,21 @@ public class Company extends AbstractCompany<Address> {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional=false)
 	@JoinColumn(name="user_id")
 	private User user;
-
+	
 	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public boolean isApproved() {
+		return approved;
+	}
+
+	public void setApproved(boolean approved) {
+		this.approved = approved;
 	}
 
 

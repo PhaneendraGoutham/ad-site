@@ -17,6 +17,7 @@ import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.ContestAd;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.styall.library.core.model.dao.AbstractDao;
 import pl.styall.library.core.model.dao.DaoQueryObject;
 
@@ -53,7 +54,7 @@ public class ContestDao extends AbstractDao<Contest> {
 //	}	
 	@SuppressWarnings("unchecked")
 	public ContestBrowserWrapper get(List<DaoQueryObject> queryObjectList,
-			Order order, Integer first, Integer last) {
+			Order order, Paging paging) {
 		Criteria contestCriteria = currentSession().createCriteria(
 				Contest.class);
 		addRestrictions(contestCriteria, "", queryObjectList);
@@ -65,8 +66,8 @@ public class ContestDao extends AbstractDao<Contest> {
 
 		contestCriteria.addOrder(Order.asc("state"));
 		contestCriteria.addOrder(Order.desc("creationDate"));
-		contestCriteria.setFirstResult(first);
-		contestCriteria.setMaxResults(last);
+		contestCriteria.setFirstResult(paging.from);
+		contestCriteria.setMaxResults(paging.perPage);
 
 		contestCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		List<Contest> contests = (List<Contest>) contestCriteria.list();

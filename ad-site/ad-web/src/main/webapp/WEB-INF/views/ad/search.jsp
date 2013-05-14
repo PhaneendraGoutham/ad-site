@@ -46,34 +46,47 @@
 			</ul>
 			<div id="filters">
 				<c:if test="${yearFilter != false }">
-					<div id="year-filters" class="hidden">
-						<span class="color-imp"><spring:message code="label.years"></spring:message>:</span>
-						<form:select id="year-select" path="year"
-							onchange="displayFilter('year', null, null);" data-target="year">
-							<fmt:formatDate value='${date }' pattern='yyyy' var="yearNow" />
-							<form:option value="1">-</form:option>
-							<c:forEach var="i" begin="2001" end="${yearNow }">
-								<c:choose>
-									<c:when test="${adSearchDto.year eq yearNow - i + 2000}">
-										<form:option value="${yearNow - i + 2000}" selected="true">${yearNow - i + 2000}</form:option>
-									</c:when>
-									<c:otherwise>
-										<form:option value="${yearNow - i + 2000}">${yearNow - i + 2000}</form:option>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-							<c:forEach var="i" begin="1900" end="1990" step="10">
-								<c:choose>
-									<c:when test="${adSearchDto.year eq 1990 - i + 1900}">
-										<form:option value="${1990 - i + 1900}" selected="true">${1990 - i + 1900}</form:option>
-									</c:when>
-									<c:otherwise>
-										<form:option value="${1990 - i + 1900}">${1990 - i + 1900}</form:option>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-						</form:select>
-					</div>
+										<div id="year-filters" class="hidden">
+					<%-- 						<span class="color-imp"><spring:message code="label.years"></spring:message>:</span> --%>
+					<%-- 						<form:select id="year-select" path="year" --%>
+					<%-- 							onchange="displayFilter('year', null, null);" data-target="year"> --%>
+					<%-- 							<fmt:formatDate value='${date }' pattern='yyyy' var="yearNow" /> --%>
+					<%-- 							<form:option value="1">-</form:option> --%>
+					<%-- 							<c:forEach var="i" begin="2001" end="${yearNow }"> --%>
+					<%-- 								<c:choose> --%>
+					<%-- 									<c:when test="${adSearchDto.year eq yearNow - i + 2000}"> --%>
+					<%-- 										<form:option value="${yearNow - i + 2000}" selected="true">${yearNow - i + 2000}</form:option> --%>
+					<%-- 									</c:when> --%>
+					<%-- 									<c:otherwise> --%>
+					<%-- 										<form:option value="${yearNow - i + 2000}">${yearNow - i + 2000}</form:option> --%>
+					<%-- 									</c:otherwise> --%>
+					<%-- 								</c:choose> --%>
+					<%-- 							</c:forEach> --%>
+					<%-- 							<c:forEach var="i" begin="1900" end="1990" step="10"> --%>
+					<%-- 								<c:choose> --%>
+					<%-- 									<c:when test="${adSearchDto.year eq 1990 - i + 1900}"> --%>
+					<%-- 										<form:option value="${1990 - i + 1900}" selected="true">${1990 - i + 1900}</form:option> --%>
+					<%-- 									</c:when> --%>
+					<%-- 									<c:otherwise> --%>
+					<%-- 										<form:option value="${1990 - i + 1900}">${1990 - i + 1900}</form:option> --%>
+					<%-- 									</c:otherwise> --%>
+					<%-- 								</c:choose> --%>
+					<%-- 							</c:forEach> --%>
+					<%-- 						</form:select> --%>
+										<span class="color-imp"><spring:message
+							code="label.years"></spring:message>:</span>
+					<span class="smaller-font"> <spring:message
+							code="label.from"></spring:message>
+					</span>
+					<form:input type="text" path="yearFrom" id="year-input-from"
+						onkeyup="displayFilter('year', null, null);"
+						onkeypress="validateNumbers(event)" maxlength="4" />
+					<span class="smaller-font"> <spring:message code="label.to"></spring:message></span>
+					<form:input type="text" id="year-input-to" path="yearTo"
+						onkeypress="validateNumbers(event)" maxlength="4"
+						onkeyup="displayFilter('year', null, null);" />
+										</div>
+
 				</c:if>
 
 				<div id="rank-vote-filters" class="hidden">
@@ -116,9 +129,11 @@
 						class="smaller-font"> <spring:message code="label.from"></spring:message>
 					</span>
 					<form:input type="text" path="votesFrom" id="vote-input-from"
-						onkeyup="displayFilter('vote', null, null);" />
+						onkeyup="displayFilter('vote', null, null);"
+						onkeypress="validateNumbers(event)" maxlength="10" />
 					<span class="smaller-font"> <spring:message code="label.to"></spring:message></span>
 					<form:input type="text" id="vote-input-to" path="votesTo"
+						onkeypress="validateNumbers(event)" maxlength="10"
 						onkeyup="displayFilter('vote', null, null);" />
 				</div>
 				<c:if test="${placeFilter != false }">
@@ -212,30 +227,12 @@
 				<li id="tag-selected-filters" class="hover-opacity-none"><span><spring:message
 							code="label.tags"></spring:message>:</span>
 					<ul class="styled">
-						<%-- 				<c:forEach items="${ tags}" var="tag"> --%>
-						<%-- 				<c:if test="${tag.checked }"> --%>
-						<%-- 					<li id="tag-selected-filter-item-${tag.object.id}" class="on"> --%>
-						<%-- 						<span>${tag.object.name}</span> --%>
-						<!-- 						<div class="close" data-target="tag" -->
-						<%-- 							data-id="${tag.object.id}">x</div> --%>
-						<!-- 					</li> -->
-						<%-- 					</c:if> --%>
-						<%-- 				</c:forEach> --%>
 					</ul></li>
 			</c:if>
 			<c:if test="${brandFilter != false }">
 				<li id="brand-selected-filters" class="hover-opacity-none"><span><spring:message
 							code="label.brands"></spring:message>:</span>
 					<ul class="styled">
-						<%-- 				<c:forEach items="${ brands}" var="brand"> --%>
-						<%-- 					<c:if test="${brand.checked }"> --%>
-						<%-- 						<li id="brand-selected-filter-item-${brand.object.id}" class="on"> --%>
-						<%-- 							<span>${brand.object.name}</span> --%>
-						<!-- 							<div class="close" data-target="brand" -->
-						<%-- 								data-id="${brand.object.id}">x</div> --%>
-						<!-- 						</li> -->
-						<%-- 					</c:if> --%>
-						<%-- 				</c:forEach> --%>
 					</ul></li>
 			</c:if>
 		</ul>

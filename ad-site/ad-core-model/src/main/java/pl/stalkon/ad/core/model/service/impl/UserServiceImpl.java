@@ -1,5 +1,8 @@
 package pl.stalkon.ad.core.model.service.impl;
 
+import java.security.SecureRandom;
+
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +36,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 				credentials.getSalt()));
 		credentials.setMail(userRegForm.getMail());
 		credentials.setUsername(userRegForm.getUsername());
-		credentials.setActive(true);// TODO:
+		credentials.setActive(false);// TODO:
 		UserData userData = new UserData();
 		userData.setBirthDate(userRegForm.getBirthdate());
 		userData.setSex(userRegForm.getSex());
@@ -83,17 +86,33 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		User user = userDao.get(userId);
 		user.getUserData().setSurname(userAddressDto.getSurname());
 		user.getUserData().setName(userAddressDto.getFirstname());
-		if(user.getAddresses().size() > 0){
-			Address address  = user.getAddresses().get(0);
+		if (user.getAddresses().size() > 0) {
+			Address address = user.getAddresses().get(0);
 			address.setCity(userAddressDto.getAddress().getCity());
 			address.setZip(userAddressDto.getAddress().getZip());
 			address.setStreet(userAddressDto.getAddress().getStreet());
 			address.setHomeNr(userAddressDto.getAddress().getHomeNr());
-		}else{
+		} else {
 			user.addAddress(userAddressDto.getAddress());
 		}
 		userDao.update(user);
-		
+
+	}
+
+	@Override
+	@Transactional
+	public String generateAndSetNewPassword(String mail) {
+		User user = getUserByMailOrUsername(mail);
+		if (user != null) {
+			String newPassword = RandomStringUtils.random(12, 0, 0, true, true,
+					null, new SecureRandom());
+			user.getCredentials().setPassword(
+					passwordEncoder.encodePassword(newPassword, user
+							.getCredentials().getSalt()));
+			userDao.save(user);
+			return newPassword;
+		}
+		return null;
 	}
 
 }

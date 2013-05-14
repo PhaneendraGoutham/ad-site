@@ -19,7 +19,8 @@ import pl.stalkon.ad.core.model.Tag;
 
 public class AdSearchDto {
 	
-	private Integer year;
+	private Integer yearFrom;
+	private Integer yearTo;
 	private Double rankFrom;
 	private Double rankTo;
 	private Long votesFrom;
@@ -67,31 +68,28 @@ public class AdSearchDto {
 		this.tagList = tagList;
 	}
 
-	public Integer getYear() {
-		return year;
-	}
-
-	public Integer getYearFrom() {
-		if (year == null ||year == 1) {
-			return null;
-		}
-		return year;
-	}
-
-	public Integer getYearTo() {
-		if (year == null || year == 1) {
-			return null;
-		}
-		if (year < 2000) {
-			return year + 10;
-		} else {
-			return year;
-		}
-	}
-
-	public void setYear(Integer year) {
-		this.year = year;
-	}
+//	public Integer getYearFrom() {
+////		if (year == null ||year == 1) {
+////			return null;
+////		}
+//		return yearFrom;
+//	}
+//
+//	public Integer getYearTo() {
+////		if (year == null || year == 1) {
+////			return null;
+////		}
+////		if (year < 2000) {
+////			return year + 10;
+////		} else {
+////			return year;
+////		}
+//		return yearTo;
+//	}
+//
+//	public void setYear(Integer year) {
+//		this.year = year;
+//	}
 
 	public Double getRankFrom() {
 		return rankFrom;
@@ -146,6 +144,10 @@ public class AdSearchDto {
 	public void setPlace(Short place) {
 		this.place = place;
 	}
+	
+	public void setPlace(Place place){
+		this.place = (short) place.ordinal();
+	}
 
 	public Long getContestId() {
 		return contestId;
@@ -169,6 +171,22 @@ public class AdSearchDto {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public Integer getYearFrom() {
+		return yearFrom;
+	}
+
+	public void setYearFrom(Integer yearFrom) {
+		this.yearFrom = yearFrom;
+	}
+
+	public Integer getYearTo() {
+		return yearTo;
+	}
+
+	public void setYearTo(Integer yearTo) {
+		this.yearTo = yearTo;
 	}
 
 

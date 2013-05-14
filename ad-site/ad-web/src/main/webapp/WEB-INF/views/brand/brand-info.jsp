@@ -7,15 +7,15 @@
 
 <c:if test="${brandAdmin }">
 	<div class="center-article-wrapper ui-corner-all">
-		<ul  class="styled center center-panel-menu">
-			<li><a
-				href="<c:url value="/brand/${brand.id}/edit"/>"><spring:message code="label.brand.edit"></spring:message></a></li>
-			<li><a
-				href="<c:url value="/brand/${brand.id}/ad/register"/>"><spring:message code="label.ad.add"></spring:message></a></li>
-			<li><a
-				href="<c:url value="/brand/${brand.id}/contest"/>"><spring:message code="label.contests"></spring:message></a></li>
-			<li><a
-				href="<c:url value="/brand/${brand.id}/edit"/>"><spring:message code="label.stats.and.costs"></spring:message></a></li>
+		<ul class="styled center center-panel-menu">
+			<li><a href="<c:url value="/brand/${brand.id}/edit"/>"><spring:message
+						code="label.brand.edit"></spring:message></a></li>
+			<li><a href="<c:url value="/brand/${brand.id}/ad/register"/>"><spring:message
+						code="label.ad.add"></spring:message></a></li>
+			<li><a href="<c:url value="/brand/${brand.id}/contest"/>"><spring:message
+						code="label.contests"></spring:message></a></li>
+			<li><a href="<c:url value="/brand/${brand.id}/stats"/>"><spring:message
+						code="label.stats.and.costs"></spring:message></a></li>
 		</ul>
 	</div>
 
@@ -36,8 +36,10 @@
 						pattern="yyyy.MM.dd" /></td>
 			</tr>
 			<tr>
-				<td class="first"><spring:message code="label.ads.added"></spring:message></td>
-				<td class="last">${adBrowserWrapper.total}</td>
+				<td class="first">Reklamy</td>
+				<td class="last"><a
+					href="<c:url value="/brand/${brand.id}/ad"/>" class="color-imp"><spring:message
+							code="label.show"></spring:message></a></td>
 			</tr>
 			<tr>
 				<td class="first"><spring:message code="label.contests"></spring:message></td>
@@ -49,7 +51,8 @@
 				<td class="first">Opis</td>
 				<td class="last"><c:choose>
 						<c:when test="${empty brand.description }">
-							<p><spring:message code="label.no.description"></spring:message>
+							<p>
+								<spring:message code="label.no.description"></spring:message>
 							<p>
 						</c:when>
 						<c:otherwise>
@@ -63,4 +66,4 @@
 	</table>
 </article>
 
-<tiles:insertAttribute name="simple-browser" />
+<%-- <tiles:insertAttribute name="simple-browser" /> --%>

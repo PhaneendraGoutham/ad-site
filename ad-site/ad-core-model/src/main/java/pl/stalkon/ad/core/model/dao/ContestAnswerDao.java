@@ -12,6 +12,7 @@ import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.ContestAnswer;
 import pl.stalkon.ad.core.model.dto.ContestAnswerBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.styall.library.core.model.dao.AbstractDao;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
 import pl.styall.library.core.model.dao.DaoQueryObject;
@@ -39,8 +40,7 @@ public class ContestAnswerDao extends AbstractDao<ContestAnswer> {
 
 	@SuppressWarnings("unchecked")
 	public ContestAnswerBrowserWrapper get(
-			List<DaoQueryObject> queryObjectList, Order order, Integer first,
-			Integer last) {
+			List<DaoQueryObject> queryObjectList, Order order, Paging paging) {
 		Criteria criteria = currentSession()
 				.createCriteria(ContestAnswer.class);
 		addRestrictions(criteria, "", queryObjectList);
@@ -49,7 +49,7 @@ public class ContestAnswerDao extends AbstractDao<ContestAnswer> {
 
 		criteria.setProjection(null).setResultTransformer(Criteria.ROOT_ENTITY);
 
-		criteriaConfigurer.configureCriteria(criteria, order, first, last);
+		criteriaConfigurer.configureCriteria(criteria, order, paging.from, paging.perPage);
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		List<ContestAnswer> contestAnswers = (List<ContestAnswer>) criteria
 				.list();

@@ -3,12 +3,16 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <article class="center-article-wrapper ui-corner-all"
 	id="ad-wrapper-${ad.id}">
-	<sec:authorize var="isAdmin" access="hasRole('ROLE_ADMIN')"></sec:authorize>
+	<sec:authorize var="isAdmin" access="hasRole('ROLE_AD_ADMIN')"></sec:authorize>
+	<sec:authorize var="loggedIn" access="hasRole('ROLE_USER')">
+	</sec:authorize>
 	<sec:authorize var="adult" access="hasRole('ROLE_USER')">
 		<sec:authentication property="principal.adult" var="adult" />
 	</sec:authorize>
@@ -16,17 +20,28 @@
 		<c:when test="${!ad.approved and !isAdmin}">
 
 			<h2 class="video-header color-imp bigger-font wrap-text">
-				<spring:message code="info.ad.banned"></spring:message></h2>
+				<spring:message code="info.ad.banned"></spring:message>
+			</h2>
 			<img class="video"
 				src="${pageContext.request.contextPath}/resources/img/red-cross.png" />
 		</c:when>
 		<c:when test="${!adult and ad.ageProtected}">
-			<a href="<c:url value="/user/login"/>">
-				<h2 class="video-header color-imp bigger-font wrap-text">
+			<c:choose>
+				<c:when test="${loggedIn}">
+					<h2 class="video-header color-imp bigger-font wrap-text">
+						<a href="<c:url value="/ad/${ad.id }"/>">Nie możesz zobaczyć
+							tej reklamy</a>
+					</h2>
+				</c:when>
+				<c:otherwise>
+					<h2 class="video-header color-imp bigger-font wrap-text">
+						<a href="<c:url value="/user/login"/>"> <spring:message
+								code="info.log.in.to.see"></spring:message></a>
+					</h2>
+				</c:otherwise>
+			</c:choose>
+			<img class="video" src="<c:url value="/resources/img/18.png"/>" />
 
-					<spring:message code="info.log.in.to.see"></spring:message></h2> <img class="video"
-				src="<c:url value="/resources/img/18.png"/>" />
-			</a>
 		</c:when>
 		<c:otherwise>
 			<c:if test="${ad.official and not empty ad.brand.smallLogoUrl}">
@@ -46,6 +61,7 @@
 	<div class="social-plugin-holder">
 		<div class="fb-like" data-send="true" data-layout="button_count"
 			data-width="450" data-show-faces="true" data-font="arial"
+			data-href="${baseURL }<c:url  value="ad/${ad.id }"/>"
 			data-colorscheme="dark"></div>
 	</div>
 	<div class="video-footer clearfix">
@@ -53,8 +69,8 @@
 			<img src="${ad.user.userData.imageUrl}" class="left avatar" />
 			<div class="video-user-date-wrapper ">
 				<a href="<c:url value="/user/${ad.user.id}"/>"
-					class="color-imp sp-user-name">${ad.user.displayName}</a> <br />
-				<span class="smaller-font"><fmt:formatDate
+					class="color-imp sp-user-name">${ad.user.displayName}</a> <br /> <span
+					class="smaller-font"><fmt:formatDate
 						value="${ad.creationDate }" pattern="MM.dd.yyyy" /> o <fmt:formatDate
 						value="${ad.creationDate }" pattern="HH:mm" /></span>
 			</div>
@@ -68,11 +84,13 @@
 					<div class="arrow-down-white"></div></li>
 
 
-				<li><a href="#" data-target=".comments" data-id="${ad.id}"><spring:message code="label.comment"></spring:message></a>
+				<li><a href="#" data-target=".comments" data-id="${ad.id}"><spring:message
+							code="label.comment"></spring:message></a>
 					<div class="arrow-down-white"></div></li>
 
 
-				<li><a href="#" data-target=".inform" data-id="${ad.id}"><spring:message code="label.inform"></spring:message></a>
+				<li><a href="#" data-target=".inform" data-id="${ad.id}"><spring:message
+							code="label.inform"></spring:message></a>
 					<div class="arrow-down-white"></div></li>
 
 			</ul>
@@ -87,50 +105,67 @@
 		</div>
 	</div>
 
-	<sec:authorize access="hasRole('ROLE_ADMIN')">
+	<c:if test="${isAdmin }">
 		<div class="admin-panel">
 			<c:if test="${ad.place eq 'MAIN'}">
 				<button class="button-blue button-main" data-target="place"
-					data-id="${ad.id }"><spring:message code="label.main"></spring:message></button>
+					data-id="${ad.id }">
+					<spring:message code="label.main"></spring:message>
+				</button>
 			</c:if>
 			<c:if test="${ad.place eq 'WAITING'}">
 				<button class="button-green button-main" data-target="place"
-					data-id="${ad.id }"><spring:message code="label.main"></spring:message></button>
+					data-id="${ad.id }">
+					<spring:message code="label.main"></spring:message>
+				</button>
 			</c:if>
 			<c:if test="${ad.approved}">
 				<button class="button-blue" data-target="approved"
-					data-id="${ad.id }"><spring:message code="label.active"></spring:message></button>
+					data-id="${ad.id }">
+					<spring:message code="label.active"></spring:message>
+				</button>
 			</c:if>
 			<c:if test="${!ad.approved}">
 				<button class="button-green" data-target="approved"
-					data-id="${ad.id }"><spring:message code="label.active"></spring:message></button>
+					data-id="${ad.id }">
+					<spring:message code="label.active"></spring:message>
+				</button>
 			</c:if>
 			<c:if test="${ad.ageProtected}">
 				<button class="button-blue" data-target="ageProtected"
-					data-id="${ad.id }"><spring:message code="label.for.adults"></spring:message></button>
+					data-id="${ad.id }">
+					<spring:message code="label.for.adults"></spring:message>
+				</button>
 			</c:if>
 			<c:if test="${!ad.ageProtected}">
 				<button class="button-green" data-target="ageProtected"
-					data-id="${ad.id }"><spring:message code="label.for.adults"></spring:message></button>
+					data-id="${ad.id }">
+					<spring:message code="label.for.adults"></spring:message>
+				</button>
 			</c:if>
 		</div>
-	</sec:authorize>
-
+	</c:if>
+	|
 	<c:if test="${contestAdmin }">
 		<div class="contest-admin-panel">
 			<c:choose>
 				<c:when test="${ad.contestAd.winner}">
-					<button class="button-blue button-winner" data-target="winner" data-contest-id="${contestId }"
-						data-type="ad" data-id="${ad.contestAd.id }"><spring:message code="label.winner"></spring:message></button>
+					<button class="button-blue button-winner" data-target="winner"
+						data-contest-id="${contestId }" data-type="ad"
+						data-id="${ad.contestAd.id }">
+						<spring:message code="label.winner"></spring:message>
+					</button>
 				</c:when>
 				<c:otherwise>
-					<button class="button-green button-winner"  data-target="winner"
-						data-type="ad" data-contest-id="${contestId }" data-id="${ad.contestAd.id }"><spring:message code="label.winner"></spring:message></button>
+					<button class="button-green button-winner" data-target="winner"
+						data-type="ad" data-contest-id="${contestId }"
+						data-id="${ad.contestAd.id }">
+						<spring:message code="label.winner"></spring:message>
+					</button>
 				</c:otherwise>
 			</c:choose>
 		</div>
 	</c:if>
-
 
 	<!-- 	<hr class="ad-separator" /> -->
 	<div class="bottom-video-panel clearfix hidden">
@@ -138,14 +173,18 @@
 			<p>${ad.description}</p>
 		</div>
 		<div class="comments hidden">
-		<div class="fb-comments" data-href="http://localhost:8080<c:url value="/ad/${ad.id }"/>" data-width="590" data-num-posts="20" data-colorscheme="dark"></div>
-<%-- 			<tiles:insertAttribute name="comments" ignore="true" /> --%>
+			<div class="fb-comments"
+				data-href="${baseURL }<c:url  value="ad/${ad.id }" />"
+				data-width="590" data-num-posts="20" data-colorscheme="dark"></div>
+			<%-- 			<tiles:insertAttribute name="comments" ignore="true" /> --%>
 		</div>
 		<div class="inform">
 			<div class="inform-box-holder">
 				<textarea class="comment-box"
 					placeholder="Podaj jak najdokładniejszy powód zgłoszenia..."></textarea>
-				<button class="button-blue inform-button" data-ad-id="${ad.id}"><spring:message code="label.inform"></spring:message></button>
+				<button class="button-blue inform-button" data-ad-id="${ad.id}">
+					<spring:message code="label.inform"></spring:message>
+				</button>
 			</div>
 		</div>
 	</div>

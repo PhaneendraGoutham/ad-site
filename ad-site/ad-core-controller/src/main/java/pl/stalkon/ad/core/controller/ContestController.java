@@ -49,13 +49,14 @@ import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.core.model.service.UserService;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.styall.library.core.security.filter.UserMessageSessionAttribute;
 
 @Controller
 public class ContestController {
-
-	private static final int PER_PAGE = 5;
+	public final int CONTESTS_PER_PAGE = 5;
+	public final int CONTESTS_ANSWERS_PER_PAGE = 10;
 
 	@Autowired
 	private CompanyService companyService;
@@ -81,10 +82,7 @@ public class ContestController {
 	@RequestMapping(value = "brand/{brandId}/contest/register", method = RequestMethod.GET)
 	public String getRegistrationPage(@PathVariable("brandId") Long brandId,
 			Model model, Principal principal, HttpServletRequest request) {
-		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-				.getPrincipal();
-		if (!controllerHelperBean.isUserBrandOwner(socialLoggedUser.getId(),
-				brandId)) {
+		if (!controllerHelperBean.isUserBrandOwner(request, principal, brandId)) {
 			controllerHelperBean.throwAccessDeniedException(request);
 		}
 		ContestPostDto contestPostDto = new ContestPostDto();
@@ -165,10 +163,8 @@ public class ContestController {
 			Model model,
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page) {
 		ContestBrowserWrapper contestBrowserWrapper = contestService
-				.get(controllerHelperBean.getFrom(
-						ControllerHelperBean.CONTESTS_PER_PAGE, page), PER_PAGE);
-		controllerHelperBean.preparePagination(
-				ControllerHelperBean.CONTESTS_PER_PAGE, model,
+				.get(new Paging(page, CONTESTS_PER_PAGE));
+		controllerHelperBean.preparePagination(CONTESTS_PER_PAGE, model,
 				contestBrowserWrapper.getTotal(), page);
 		model.addAttribute("contests", contestBrowserWrapper.getContests());
 		model.addAttribute("path", "contest/contests-list");
@@ -183,10 +179,8 @@ public class ContestController {
 			Principal principal,
 			@RequestParam(required = false, value = "page", defaultValue = "1") int page) {
 		ContestBrowserWrapper contestBrowserWrapper = contestService
-				.getByBrand(brandId, controllerHelperBean.getFrom(
-						ControllerHelperBean.CONTESTS_PER_PAGE, page), PER_PAGE);
-		controllerHelperBean.preparePagination(
-				ControllerHelperBean.CONTESTS_PER_PAGE, model,
+				.getByBrand(brandId, new Paging(page, CONTESTS_PER_PAGE));
+		controllerHelperBean.preparePagination(CONTESTS_PER_PAGE, model,
 				contestBrowserWrapper.getTotal(), page);
 		model.addAttribute("contests", contestBrowserWrapper.getContests());
 		model.addAttribute(
@@ -243,11 +237,9 @@ public class ContestController {
 			controllerHelperBean.throwAccessDeniedException(request);
 		}
 		ContestAnswerBrowserWrapper answerBrowserWrapper = contestService
-				.getContestAnswers(contestId, controllerHelperBean.getFrom(
-						ControllerHelperBean.CONTESTS_ANSWERS_PER_PAGE, page),
-						PER_PAGE);
-		controllerHelperBean.preparePagination(
-				ControllerHelperBean.CONTESTS_PER_PAGE, model,
+				.getContestAnswers(contestId, new Paging(page,
+						CONTESTS_ANSWERS_PER_PAGE));
+		controllerHelperBean.preparePagination(CONTESTS_PER_PAGE, model,
 				answerBrowserWrapper.getTotal(), page);
 		model.addAttribute("answers", answerBrowserWrapper.getAnswers());
 		model.addAttribute("contestId", contestId);
@@ -321,9 +313,9 @@ public class ContestController {
 		AdSearchDto adSearchDto = new AdSearchDto();
 		adSearchDto.setContestId(contestId);
 		adSearchDto.setWinner(true);
-		List<Ad> ads = adService.getList(adSearchDto, null, null, true);
+		List<Ad> ads = adService.getList(adSearchDto, new Paging(), true);
 		contestService.setWinnerUserInfo(ads, contestId);
-		return "redirect:/contest/"+contestId;
+		return "redirect:/contest/" + contestId;
 	}
 
 	@RequestMapping(value = "contest/message/{userInfoId}", method = RequestMethod.GET)

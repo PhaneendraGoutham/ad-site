@@ -13,6 +13,7 @@ import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.dto.ContestAnswerBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestPostDto;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 
 @Service
 public interface ContestService {
@@ -21,7 +22,7 @@ public interface ContestService {
 
 	public void setContestImage(String imageUrl, Long contestId);
 
-	public ContestBrowserWrapper get(int first, int last);
+	public ContestBrowserWrapper get(Paging paging);
 
 	public Contest get(Long contestId);
 
@@ -45,14 +46,13 @@ public interface ContestService {
 
 	public Contest getWithBrand(Long contestId);
 
-	public ContestBrowserWrapper getByBrand(Long brandId, int first, int last);
+	public ContestBrowserWrapper getByBrand(Long brandId, Paging paging);
 
 	public void changeAdWinnerState(Long contestAdId, boolean winner);
 
 	public void changeAnswerWinnerState(Long contestAnswerId, boolean winner);
 
-	public ContestAnswerBrowserWrapper getContestAnswers(Long contestId,
-			int first, int last);
+	public ContestAnswerBrowserWrapper getContestAnswers(Long contestId,Paging paging);
 	public Contest upadate(Long contestId, ContestPostDto contestPostDto);
 	
 	public void score(Long contestId);

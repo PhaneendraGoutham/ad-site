@@ -349,9 +349,11 @@ a {
 	left: 10px;
 	top: 120px;
 }
-#top-bar-menu li.font-red, .font-red{
+
+#top-bar-menu li.font-red,.font-red {
 	color: #c80f0f;
 }
+
 .logged-user-wrapper {
 	bottom: -15px;
 }
@@ -365,8 +367,8 @@ a {
 #user-dropdown-menu li {
 	float: none;
 	text-align: center;
-	padding: 5px 5px 5px 5px;
 	margin-right: 0px;
+	padding: 5px 5px 5px 5px;
 }
 
 #top-bar-menu .last-right {
@@ -415,9 +417,10 @@ a {
 	width: 100%;
 	margin-top: 10px;
 }
-.video-description, .inform{
-		border-top: 1px solid #666;
-		padding-top: 9px;
+
+.video-description,.inform {
+	border-top: 1px solid #666;
+	padding-top: 9px;
 }
 
 .post-footer {
@@ -450,7 +453,7 @@ a {
 	background-color: #151515;
 }
 
-#vote-input-from,#vote-input-to {
+#vote-input-from,#vote-input-to,#year-input-from,#year-input-to {
 	border: none;
 	height: 20px;
 	width: 75px;
@@ -496,6 +499,7 @@ a {
 
 .left-article-wrapper:hover {
 	opacity: 0.8;
+	cursor: pointer;
 }
 
 .left-list-item-photo {
@@ -513,9 +517,9 @@ a {
 	text-overflow: ellipsis;
 }
 
-.admin-panel, .contest-admin-panel {
+.admin-panel,.contest-admin-panel {
 	margin: 20px 0 10px 0;
-	text-align:center;
+	text-align: center;
 }
 
 #pagination {
@@ -533,7 +537,7 @@ a {
 	margin-bottom: 15px;
 }
 
-label.error, label.error-2 {
+label.error,label.error-2 {
 	margin: 5px 10px 10px 0;
 	color: #c80f0f;
 	width: 100%;
@@ -613,13 +617,12 @@ ul.styled li {
 	margin-right: 15px;
 }
 
-ul.styled li.on,ul.styled li.on:hover,ul.styled li:hover,#selected-filters li>ul.styled li.on>.close,#selected-filters-2 li>span.value:hover
+ul.styled li.on,ul.styled li.on:hover,ul.styled li:hover,#selected-filters li>ul.styled li.on>.close
 	{
 	color: #ffffff;
 }
 
-ul.styled li:hover,ul.styled li.on:hover,#selected-filters-2 li>div.close:hover
-	{
+ul.styled li:hover,ul.styled li.on:hover {
 	opacity: .8
 }
 
@@ -694,6 +697,7 @@ ul.column {
 	max-width: 250px;
 	max-height: 90px;
 }
+
 .company-brand-img-wrapper {
 	width: 250px;
 	height: 90px;
@@ -745,10 +749,12 @@ ul.column {
 .center-panel-menu {
 	margin-bottom: 15px;
 }
-.ad-brand-logo-wrapper{
-		width: 120px;
+
+.ad-brand-logo-wrapper {
+	width: 120px;
 	height: 40px;
 }
+
 .ad-brand-logo {
 	max-width: 120px;
 	max-height: 40px;
@@ -768,28 +774,47 @@ ul.column {
 	margin-left: 15px;
 	float: right;
 }
-.register-contest-image,.contest-image{
-	max-width:120px;
-	max-height:120px;
+
+.register-contest-image,.contest-image {
+	max-width: 120px;
+	max-height: 120px;
 }
 
 .mini-contest-wrapper:hover {
-	opacity:.8;
+	opacity: .8;
 }
 
 .mini-contest-wrapper {
 	margin-bottom: 15px;
-	cursor:pointer;
+	cursor: pointer;
 }
-.contest-description{
-	margin-top:10px;
+
+.contest-description {
+	margin-top: 10px;
 }
-.contest-info{
-	margin-top:20px;
+
+.contest-info {
+	margin-top: 20px;
 }
-.contest-info > span{
+
+.contest-info>span {
 	margin-bottom: 10px;
 }
-.cursor{
-	cursor:pointer;
+
+.cursor {
+	cursor: pointer;
+}
+
+.hidden-image-input {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+}
+.file-input-image-wrapper{
+	display:inline-block;
+	position:relative;
 }

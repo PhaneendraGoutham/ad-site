@@ -58,82 +58,118 @@
 			return true;
 		}
 	}
-	function checkTagsValidity() {
-		$(".tagit").removeClass("error");
+	function checkTagsValidity(showError) {
+		$(".tagit").parent().children("label.error").remove();
 		if ($("#tags-selector").val() == "") {
-			if (!$(".tagit").hasClass("error")) {
+			if (!$(".tagit").hasClass("error") && showError) {
 				$(".tagit").addClass("error");
 			}
-			$(".tagit").parent().append(
-					"<label class='error'>To pole jest wymagane</label>");
+			if (showError)
+				$(".tagit").parent().append(
+						"<label class='error'>To pole jest wymagane</label>");
+
 			return false;
 		} else {
-			$(".tagit").parent().children("label.error").remove();
+			$(".tagit").removeClass("error");
+
 			return true;
 		}
 	}
 	$(function() {
-		$("#ad-form").validate({
-			submitHandler : function(form) {
-				if (checkTagsValidity() && checkBrandsValidity()) {
-					form.submit();
-				}
-			},
-			validEvent : function() {
-				checkTagsValidity();
-				checkBrandsValidity();
-			},
-			rules : {
-				title : {
-					required : true,
-					maxlength : 128,
-					minlength : 3,
-				},
-				description : {
-					maxlength : 512,
-					minlength : 3,
-				},
-				year : {
-					required : true,
-					min : 1900,
-					max : new Date().getFullYear(),
-					number : true,
-				},
-				url : {
-					required : true,
-					url : true,
-					pattern: "(^http://youtu.be/)|(^http://www.youtube.com/watch?v=)",
-				}
-			},
-			messages:{
-				url:{
-					pattern: "Akceptowalne adresy: <br/> http://www.youtube.com/watch?v= <br/> http://youtu.be/",
-				}
-			}
-		});
+		$("#ad-form")
+				.validate(
+						{
+							submitHandler : function(form) {
+								if (checkTagsValidity(true)
+										&& checkBrandsValidity()) {
+									form.submit();
+								}
+							},
+							validEvent : function() {
+								checkTagsValidity();
+								checkBrandsValidity();
+							},
+							rules : {
+								title : {
+									required : true,
+									maxlength : 128,
+									minlength : 3,
+								},
+								description : {
+									maxlength : 512,
+									minlength : 3,
+								},
+								year : {
+									required : true,
+									min : 1900,
+									max : new Date().getFullYear(),
+									number : true,
+								},
+								url : {
+									required : true,
+// 									url : true,
+									pattern : "((^http:\/\/youtu\\.be\/(.*)$)|(^http:\/\/www\\.youtube\\.com\/watch\\?v=(.*)$))",
+								}
+							},
+							messages : {
+								url : {
+									pattern : "Akceptowalne adresy: <br/> http://www.youtube.com/watch?v= <br/> http://youtu.be/",
+								}
+							}
+						});
 		$("#tags-selector").change(function() {
-			checkTagsValidity();
+			checkTagsValidity(true);
 		});
-		$("#tags-selector").tagit({
-			autocomplete : {
-				source : '<c:url value="/ad/tag"/>'
-			}
-		});
-		$("#brand-selector").autocomplete({
-			change : function(event, ui) {
-				if (ui.item == null) {
-					$("#brand-selector").val("");
-					$("#brand-value").val("");
-				}
-			},
-			source : '<c:url value="/brand"/>',
-			select : function(event, ui) {
-				event.preventDefault();
-				$("#brand-selector").val(ui.item.label);
-				$("#brand-value").val(ui.item.value);
-				$("#brand-value").attr("data-project-id", ui.item.projectId);
-			}
-		});
+		$("#tags-selector")
+				.tagit(
+						{
+							autocomplete : {
+								minLength : 2,
+								delay : 500,
+								source : '<c:url value="/ad/tag"/>',
+								response : function(event, ui) {
+									if (!ui.content.length > 0) {
+										var defaultText = new Object();
+										defaultText["value"] = "";
+										defaultText["label"] = "Nie znaleziono takiego tagu...";
+										ui.content.push(defaultText);
+									}
+								},
+							},
+
+						});
+		$("#brand-selector")
+				.autocomplete(
+						{
+							change : function(event, ui) {
+								if (ui.item == null) {
+									$("#brand-selector").val("");
+									$("#brand-value").val("");
+								}
+							},
+							source : '<c:url value="/brand"/>',
+							response : function(event, ui) {
+								if (!ui.content.length > 0) {
+									var defaultText = new Object();
+									defaultText["value"] = "";
+									defaultText["label"] = "Nie znaleziono takiej marki...";
+									ui.content.push(defaultText);
+								}
+							},
+							minLength : 3,
+							delay : 500,
+							select : function(event, ui) {
+								event.preventDefault();
+								if (ui.item.value != "") {
+									$("#brand-selector").val(ui.item.label);
+									$("#brand-value").val(ui.item.value);
+									$("#brand-value").attr("data-project-id",
+											ui.item.projectId);
+								} else {
+									$("#brand-selector").val("");
+								}
+							}
+						});
 
 	});
 </script>

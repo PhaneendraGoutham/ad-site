@@ -33,7 +33,7 @@
 			<form:label id="sex-last" for="sex" path="sex"><spring:message code="label.male"></spring:message></form:label>
 			<br />
 			<form:checkbox id="terms" path="terms" />
-			<form:label id="terms-label" for="terms" path="terms"><spring:message code="label.terms.accept"></spring:message></form:label>
+			<form:label id="terms-label" for="terms" path="terms">Akceptuje <a href="<c:url value="/user/terms"/>" target="_blank" class="color-imp">regulamin</a></form:label>
 			<br />
 		</div>
 

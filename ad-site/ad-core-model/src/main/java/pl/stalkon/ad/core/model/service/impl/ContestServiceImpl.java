@@ -30,6 +30,7 @@ import pl.stalkon.ad.core.model.dto.ContestAnswerBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestPostDto;
 import pl.stalkon.ad.core.model.service.ContestService;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.styall.library.core.ext.QueryObject;
 import pl.styall.library.core.ext.QueryObjectWrapper;
 import pl.styall.library.core.model.dao.DaoQueryObject;
@@ -61,7 +62,8 @@ public class ContestServiceImpl implements ContestService{
 	public Contest register(Long userId, ContestPostDto contestPostDto) {
 		Contest contest = new Contest();
 		User user = userDao.get(userId);
-		user.addUserRole(userDao.loadUserRoleByName(UserRoleDef.ROLE_CONTEST));
+		if(!user.getUserRoles().contains(UserRoleDef.ROLE_CONTEST))
+			user.addUserRole(userDao.loadUserRoleByName(UserRoleDef.ROLE_CONTEST));
 		contest.setUser(user);
 		Brand brand = brandDao.get(contestPostDto.getBrandId());
 		contest.setBrand(brand);
@@ -99,21 +101,21 @@ public class ContestServiceImpl implements ContestService{
 
 	@Override
 	@Transactional
-	public ContestBrowserWrapper get(int first, int last) {
+	public ContestBrowserWrapper get(Paging paging) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
 		queryObjectList.add(new DaoQueryObject("active", true));
-		return contestDao.get(queryObjectList, null, first, last);
+		return contestDao.get(queryObjectList, null, paging);
 	}
 	
 	@Override
 	@Transactional
-	public ContestBrowserWrapper getByBrand(Long brandId, int first, int last) {
+	public ContestBrowserWrapper getByBrand(Long brandId, Paging paging) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
 		queryObjectList.add(new DaoQueryObject("active", true));
 		List<DaoQueryObject> brandQueryObjectList = new ArrayList<DaoQueryObject>();
 		brandQueryObjectList.add(new DaoQueryObject("id",brandId));
 		queryObjectList.add(new DaoQueryObject("brand", brandQueryObjectList));
-		return contestDao.get(queryObjectList, null, first, last);
+		return contestDao.get(queryObjectList, null, paging);
 	}
 
 	@Override
@@ -207,12 +209,12 @@ public class ContestServiceImpl implements ContestService{
 
 	@Override
 	@Transactional
-	public ContestAnswerBrowserWrapper getContestAnswers(Long contestId, int first, int last) {
+	public ContestAnswerBrowserWrapper getContestAnswers(Long contestId, Paging paging) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
 		List<DaoQueryObject> contestQueryObjectList = new ArrayList<DaoQueryObject>();
 		contestQueryObjectList.add(new DaoQueryObject("id", contestId));
 		queryObjectList.add(new DaoQueryObject("contest", contestQueryObjectList));
-		return contestAnswerDao.get(queryObjectList, Order.desc("creationDate"), first, last);
+		return contestAnswerDao.get(queryObjectList, Order.desc("creationDate"), paging);
 		
 	}
 

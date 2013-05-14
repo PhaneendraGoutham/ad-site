@@ -16,5 +16,7 @@ public interface UserService extends AbstractUserService<User> {
 	public User getWithAddresses(Long userId);
 	
 	public void updateUserAddress(UserAddressDto userAddressDto, Long userId);
+	
+	public String generateAndSetNewPassword(String mail);
 
 }

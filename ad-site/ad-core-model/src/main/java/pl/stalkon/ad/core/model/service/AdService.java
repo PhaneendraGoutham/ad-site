@@ -16,17 +16,19 @@ import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.AutocompleteDto;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.styall.library.core.model.dao.DaoQueryObject;
 
 public interface AdService {
 	public Ad register(AdPostDto adPostDto, Ad ad, Long userId,
 			boolean official);
 
-	public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList,
-			Order order, Integer first, Integer last);
+//	public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList,
+//			Order order, Integer first, Integer last);
 
-	public AdBrowserWrapper get(AdSearchDto adSearchDto, Integer first,
-			Integer last, boolean approved);
+	public AdBrowserWrapper get(AdSearchDto adSearchDto, Paging paging, boolean approved);
+	public AdBrowserWrapper getWaiting(AdSearchDto adSearchDto, Paging paging, boolean approved);
+	public AdBrowserWrapper getMain(AdSearchDto adSearchDto, Paging paging, boolean approved);
 
 	public Ad get(Long id, boolean approved);
 
@@ -36,12 +38,12 @@ public interface AdService {
 			String message);
 
 	public List<AdComment> getComments(Long adId);
-
-	public AdBrowserWrapper getMain(Integer pageFrom, Integer pageCount,
-			boolean approved);
-
-	public AdBrowserWrapper getWaiting(Integer pageFrom, Integer pageCount,
-			boolean approved);
+//
+//	public AdBrowserWrapper getMain(Integer pageFrom, Integer pageCount,
+//			boolean approved);
+//
+//	public AdBrowserWrapper getWaiting(Integer pageFrom, Integer pageCount,
+//			boolean approved);
 
 //	public AdBrowserWrapper getUserAds(Long userId, Integer pageFrom,
 //			Integer pageCount, boolean approved);
@@ -52,9 +54,8 @@ public interface AdService {
 //	public AdBrowserWrapper getContestAds(Long contestId, Integer pageFrom,
 //			Integer pageCount, boolean approved);
 
-	public List<Ad> getTop(Integer pageFrom, Integer pageCount, Date date);
-	public List<Ad> getList(AdSearchDto adSearchDto, Integer first,
-			Integer last, boolean approved);
+	public List<Ad> getTop(Paging paging, Date date);
+	public List<Ad> getList(AdSearchDto adSearchDto, Paging paging, boolean approved);
 
 	public boolean isOwner(Long adId, Long userId);
 

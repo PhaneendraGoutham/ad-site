@@ -49,22 +49,29 @@ public class Brand extends CommonEntity {
 
 	@Column(name = "logo_url")
 	private String logoUrl;
-	
+
 	@Column(name = "small_logo_url")
 	private String smallLogoUrl;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional=false)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "wistia_project_data_id")
 	private WistiaProjectData wistiaProjectData;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-//	@JoinTable(name = "company_brand", inverseJoinColumns = { @JoinColumn(updatable = false, name = "company_id", referencedColumnName = "id") }, joinColumns = { @JoinColumn(updatable = false, name = "brand_id", referencedColumnName = "id") })
-	@JoinColumn(name="company_id")
+	// @JoinTable(name = "company_brand", inverseJoinColumns = {
+	// @JoinColumn(updatable = false, name = "company_id", referencedColumnName
+	// = "id") }, joinColumns = { @JoinColumn(updatable = false, name =
+	// "brand_id", referencedColumnName = "id") })
+	@JoinColumn(name = "company_id")
 	private Company company;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name="creation_date")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name = "creation_date")
 	private Date creationDate;
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "brand_cost_map", inverseJoinColumns = { @JoinColumn(updatable = false, name = "cost_id", referencedColumnName = "id") }, joinColumns = { @JoinColumn(updatable = false, name = "brand_id", referencedColumnName = "id") })
+	private List<Cost> costs;
 
 	public List<Ad> getAds() {
 		return ads;
@@ -74,10 +81,10 @@ public class Brand extends CommonEntity {
 		this.ads = ads;
 	}
 
-//	public void addAdd(Ad ad) {
-//		ads.add(ad);
-//		ad.setBrand(this);
-//	}
+	// public void addAdd(Ad ad) {
+	// ads.add(ad);
+	// ad.setBrand(this);
+	// }
 
 	public String getDescription() {
 		return description;
@@ -133,6 +140,14 @@ public class Brand extends CommonEntity {
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public List<Cost> getCosts() {
+		return costs;
+	}
+
+	public void setCosts(List<Cost> costs) {
+		this.costs = costs;
 	}
 
 }

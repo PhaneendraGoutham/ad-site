@@ -28,4 +28,5 @@ public class CompanyDao extends AbstractDao<Company> {
 		return company;
 	}
 	
+	
 }

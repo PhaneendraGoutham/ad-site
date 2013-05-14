@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.imgscalr.Scalr.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -48,15 +51,13 @@ public class FileController {
 	@Autowired
 	private ContestService contestService;
 
-
-
 	public FileController() {
 	}
 
 	@RequestMapping(value = "user/upload/image", method = RequestMethod.POST)
-	@ResponseBody
-	@ResponseStatus(HttpStatus.OK)
-	public String uploadAvatar(
+//	@ResponseBody
+//	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<String> uploadAvatar(
 			@RequestParam("file") CommonsMultipartFile commonsMultipartFile,
 			Principal principal) throws UploadingFileException {
 		if (fileService.validateFile(commonsMultipartFile)) {
@@ -68,8 +69,12 @@ public class FileController {
 							.getPrincipal();
 					userService.setUserThumbnail(relativePath,
 							socialLoggedUser.getId());
-					controllerHelperBean.reathenticateUser(socialLoggedUser.getUsername());
-					return relativePath;
+					controllerHelperBean.reathenticateUser(socialLoggedUser
+							.getUsername());
+					HttpHeaders responseHeaders = new HttpHeaders();
+					responseHeaders.setContentType(MediaType.TEXT_PLAIN);
+					return new ResponseEntity<String>(relativePath,
+							responseHeaders, HttpStatus.OK);
 				}
 			}
 		}
@@ -77,15 +82,14 @@ public class FileController {
 	}
 
 	@RequestMapping(value = "brand/{brandId}/upload/image", method = RequestMethod.POST)
-	@ResponseBody
-	@ResponseStatus(HttpStatus.OK)
-	public Map<String, String> uploadBrandLogo(
+	// @ResponseBody
+//	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<String> uploadBrandLogo(
 			@RequestParam("file") CommonsMultipartFile commonsMultipartFile,
 			Principal principal, @PathVariable("brandId") Long brandId,
-			HttpServletRequest request) throws UploadingFileException {
-		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-				.getPrincipal();
-		if (!controllerHelperBean.isUserBrandOwner(socialLoggedUser.getId(),
+			HttpServletRequest request, HttpServletResponse res)
+			throws UploadingFileException {
+		if (!controllerHelperBean.isUserBrandOwner(request, principal,
 				brandId)) {
 			controllerHelperBean.throwAccessDeniedException(request);
 		}
@@ -94,14 +98,17 @@ public class FileController {
 				String relativePathBig = fileService.saveImageFile(
 						commonsMultipartFile, 250, 90, Mode.FIT_TO_HEIGHT);
 				String relativePathSmall = fileService.saveImageFile(
-						commonsMultipartFile, 120, 40,Mode.FIT_TO_HEIGHT);
+						commonsMultipartFile, 120, 40, Mode.FIT_TO_HEIGHT);
 				if (relativePathBig != null && relativePathSmall != null) {
 					brandService.setBrandLogo(relativePathBig,
 							relativePathSmall, brandId);
 					Map<String, String> map = new HashMap<String, String>(2);
 					map.put("big", relativePathBig);
-					map.put("small",relativePathSmall);
-					return map;
+					map.put("small", relativePathSmall);
+					HttpHeaders responseHeaders = new HttpHeaders();
+					responseHeaders.setContentType(MediaType.TEXT_PLAIN);
+					return new ResponseEntity<String>(map.toString(),
+							responseHeaders, HttpStatus.OK);
 				}
 			}
 		}
@@ -109,9 +116,9 @@ public class FileController {
 	}
 
 	@RequestMapping(value = "contest/{contestId}/upload/image", method = RequestMethod.POST)
-	@ResponseBody
-	@ResponseStatus(HttpStatus.OK)
-	public String uploadContestImage(
+//	@ResponseBody
+//	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<String> uploadContestImage(
 			@RequestParam("file") CommonsMultipartFile commonsMultipartFile,
 			Principal principal, @PathVariable("contestId") Long contestId,
 			HttpServletRequest request) throws UploadingFileException {
@@ -124,7 +131,10 @@ public class FileController {
 						commonsMultipartFile, 120, 120, Mode.FIT_TO_HEIGHT);
 				if (relativePath != null) {
 					contestService.setContestImage(relativePath, contestId);
-					return relativePath;
+					HttpHeaders responseHeaders = new HttpHeaders();
+					responseHeaders.setContentType(MediaType.TEXT_PLAIN);
+					return new ResponseEntity<String>(relativePath,
+							responseHeaders, HttpStatus.OK);
 				}
 			}
 		}
@@ -132,11 +142,12 @@ public class FileController {
 	}
 
 	@ExceptionHandler(UploadingFileException.class)
-	@ResponseBody
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	private String sendAjaxErrorResponse() {
-		return "error uploading file";
+//	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	private ResponseEntity<String> sendAjaxErrorResponse() {
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.setContentType(MediaType.TEXT_PLAIN);
+		return new ResponseEntity<String>("error uploading file",
+				responseHeaders, HttpStatus.BAD_REQUEST);
 	}
-
 
 }

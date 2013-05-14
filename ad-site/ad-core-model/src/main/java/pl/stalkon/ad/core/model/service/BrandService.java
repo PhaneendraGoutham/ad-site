@@ -24,4 +24,6 @@ public interface BrandService  {
 	public List<Brand> get();
 	
 	public void setBrandLogo(String logo,String smallLogo, Long brandId);
+	
+	public Double getBrandCurrentCost(Long brandId);
 }

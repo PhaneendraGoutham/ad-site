@@ -6,8 +6,11 @@
 <tiles-definitions>
 	<definition name="base.layout" template="/WEB-INF/views/layouts/layout.jsp">
 		<put-attribute name="header" value="/WEB-INF/views/header.jsp" />
-
 		<!-- <put-attribute name="footer" value="/WEB-INF/views/footer.jsp" /> -->
+		<put-list-attribute name="cssLinks">
+		</put-list-attribute>
+		<put-list-attribute name="jsLinks">
+		</put-list-attribute>
 	</definition>
 	<definition name="base.bare" template="/WEB-INF/views/layouts/bare.jsp">
 	</definition>
@@ -40,7 +43,7 @@
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/user/info-contest-list.jsp" />
 	</definition>
-		<definition name="contest/contest-winner-info" extends="base.leftminibrowser">
+	<definition name="contest/contest-winner-info" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/contest/contest-winner-info.jsp" />
 	</definition>
@@ -64,10 +67,17 @@
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/brand/brand-info.jsp" />
 	</definition>
+	
+		<definition name="brand/stats" extends="ad/browser">
+		<put-attribute name="center-panel-content"
+			value="/WEB-INF/views/brand/stats.jsp" />
+	</definition>
+
 	<definition name="ad" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/ad/ad.jsp" />
 		<put-attribute name="comments" value="/WEB-INF/views/ad/comments.jsp"
 			cascade="true" />
+		<put-attribute name="facebook/metatags" value="/WEB-INF/views/ad/fb-metatags.jsp"></put-attribute>
 	</definition>
 
 	<definition name="contest" extends="base.leftminibrowser">
@@ -76,16 +86,42 @@
 
 	<definition name="ad/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/ad/register.jsp" />
+		<put-list-attribute name="cssLinks">
+			<add-attribute value="resources/css/jquery/jquery.tagit.css"></add-attribute>
+		</put-list-attribute>
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+			<add-attribute value="resources/js/lib/tagme.js"></add-attribute>
+		</put-list-attribute>
 	</definition>
 	<definition name="contest/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/contest/register.jsp" />
 		<put-attribute name="info" value="/WEB-INF/views/info-page.jsp"
 			cascade="true" />
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+			<add-attribute value="resources/js/lib/jquery.fileupload.js"></add-attribute>
+			<add-attribute value="resources/js/lib/jquery.iframe-transport.js"></add-attribute>
+			<add-attribute value="resources/js/lib/nicEdit.js"></add-attribute>
+			<add-attribute value="resources/js/lib/timepicker.js"></add-attribute>
+		</put-list-attribute>
 	</definition>
 	<definition name="ad/company-register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/ad/company-register.jsp" />
+		<put-list-attribute name="cssLinks">
+			<add-attribute value="resources/css/jquery/jquery.tagit.css"></add-attribute>
+		</put-list-attribute>
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+			<add-attribute value="resources/js/lib/tagme.js"></add-attribute>
+			<add-attribute value="resources/js/lib/jsonp.js"></add-attribute>
+			<add-attribute value="resources/js/lib/wistia-upload-widget.js"></add-attribute>
+		</put-list-attribute>
 	</definition>
 	<definition name="info-page" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/info-page.jsp" />
@@ -99,25 +135,60 @@
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/brand/register.jsp" />
 		<put-attribute name="info" value="/WEB-INF/views/info-page.jsp"
 			cascade="true" />
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+			<add-attribute value="resources/js/lib/jquery.fileupload.js"></add-attribute>
+			<add-attribute value="resources/js/lib/jquery.iframe-transport.js"></add-attribute>
+		</put-list-attribute>
 	</definition>
 	<definition name="company/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content"
 			value="/WEB-INF/views/company/register.jsp" />
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+		</put-list-attribute>
 	</definition>
 	<definition name="user/password" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/password.jsp" />
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+		</put-list-attribute>
 	</definition>
 	<definition name="user/profile" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/profile.jsp" />
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+			<add-attribute value="resources/js/lib/jquery.fileupload.js"></add-attribute>
+			<add-attribute value="resources/js/lib/jquery.iframe-transport.js"></add-attribute>
+		</put-list-attribute>
 
 	</definition>
 	<definition name="user/login" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/login.jsp" />
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+		</put-list-attribute>
 	</definition>
 
 	<definition name="user/register" extends="base.leftminibrowser">
 		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/register.jsp" />
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+			<add-attribute value="resources/js/lib/timepicker.js"></add-attribute>
+		</put-list-attribute>
 	</definition>
-
+	<definition name="user/password/recall" extends="base.leftminibrowser">
+		<put-attribute name="center-panel-content" value="/WEB-INF/views/user/password-recall.jsp" />
+		<put-list-attribute name="jsLinks">
+			<add-attribute value="resources/js/lib/jquery.validate.js" />
+			<add-attribute value="resources/js/lib/messages_pl.js"></add-attribute>
+		</put-list-attribute>
+	</definition>
 
 </tiles-definitions>

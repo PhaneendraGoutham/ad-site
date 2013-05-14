@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.mvc.WebContentInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 
 import pl.stalkon.ad.core.controller.FileController;
@@ -101,7 +102,13 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	public void addInterceptors(InterceptorRegistry registry) {
 		MiniBrowserInterceptor	miniBrowserInterceptor = new MiniBrowserInterceptor();
 		miniBrowserInterceptor.setAdService(adService);
-		registry.addInterceptor(miniBrowserInterceptor).addPathPatterns("/**", "/**");
+		WebContentInterceptor webContentInterceptor = new WebContentInterceptor();
+		webContentInterceptor.setCacheSeconds(862340);
+		webContentInterceptor.setUseExpiresHeader(true);
+		webContentInterceptor.setUseCacheControlHeader(true);
+		webContentInterceptor.setUseCacheControlNoStore(true);
+//		registry.addInterceptor(webContentInterceptor).addPathPatterns("/resources/**");
+		registry.addInterceptor(miniBrowserInterceptor).addPathPatterns("/**");
 	}
 
 	@Override
@@ -121,7 +128,9 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/resources/**").addResourceLocations(
 				"/resources/**");
 		registry.addResourceHandler("/favicon.ico").addResourceLocations("/favicon.ico");
-		registry.addResourceHandler("/uploads/**").addResourceLocations("file:/"+env.getProperty("upload.root.directory")+env.getProperty("upload.folder")+"/**");
+		String rootPath = env.getProperty("upload.root.directory");
+		rootPath = rootPath.startsWith("/") ? rootPath.substring(1) : rootPath;
+		registry.addResourceHandler("/uploads/**").addResourceLocations("file:/"+rootPath+env.getProperty("upload.folder")+"/**");
 	}
 	
 

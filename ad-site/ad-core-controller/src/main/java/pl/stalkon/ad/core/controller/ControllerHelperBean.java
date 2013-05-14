@@ -23,18 +23,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.UserRoleDef;
+import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
+import pl.stalkon.ad.core.model.dto.AdSearchDto;
+import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.model.service.UserInfoService;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.styall.library.core.security.filter.UserMessageSessionAttribute;
 
 @Component
 public class ControllerHelperBean {
 
-	public static final int AD_PER_PAGE = 5;
-	public static final int CONTESTS_PER_PAGE = 5;
-	public static final int CONTESTS_ANSWERS_PER_PAGE = 10;
+//	public final int AD_PER_PAGE = 5;
+//	public final int CONTESTS_PER_PAGE = 5;
+//	public final int CONTESTS_ANSWERS_PER_PAGE = 10;
 
 	@Autowired
 	private CompanyService companyService;
@@ -44,19 +48,22 @@ public class ControllerHelperBean {
 
 	@Autowired
 	private MessageSource messageSource;
-
+	
+	
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
 	@Autowired
 	private UserInfoService userInfoService;
 
+	
+	
 	public boolean getActive(Principal principal) {
 		if (principal != null) {
 			SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 					.getPrincipal();
 			for (GrantedAuthority ga : socialLoggedUser.getAuthorities()) {
-				if (ga.getAuthority().equals(UserRoleDef.ROLE_ADMIN))
+				if (ga.getAuthority().equals(UserRoleDef.ROLE_AD_ADMIN))
 					return true;
 			}
 		}
@@ -69,10 +76,10 @@ public class ControllerHelperBean {
 		model.addAttribute("currentPage", page);
 	}
 
-	public int getFrom(int perPage, int page) {
-		page--;
-		return page * perPage;
-	}
+//	public int getFrom(int perPage, int page) {
+//		page--;
+//		return page * perPage;
+//	}
 
 	public void reathenticateUser(String username) {
 		SocialLoggedUser userDetails = (SocialLoggedUser) userDetailsService

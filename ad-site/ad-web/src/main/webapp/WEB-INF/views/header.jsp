@@ -65,20 +65,20 @@
 								<sec:authentication property="principal.displayName" />
 						</span> <img id="logged-user-photo" src="${loggedUserPhotoUrl }" />
 							<ul id="user-dropdown-menu" class="hidden">
-								<li><a href="<c:url value="/user/profile"/>"><spring:message
-											code="label.profile"></spring:message></a></li>
-								<li><a href="<c:url value="/user/password"/>"><spring:message
-											code="label.password.change"></spring:message></a></li>
-								<li><sec:authentication property="principal.id"
-										var="principalId"></sec:authentication> <a
-									href="<c:url value="/user/${principalId }"/>"><spring:message
-											code="label.my.ads"></spring:message></a></li>
+								<li onclick="location.href='<c:url value="/user/profile"/>';"><spring:message
+											code="label.profile"></spring:message></li>
+								<li onclick="location.href='<c:url value="/user/password"/>';"><spring:message
+											code="label.password.change"></spring:message></li>
+								<sec:authentication property="principal.id"
+										var="principalId"></sec:authentication>
+								<li onclick="location.href='<c:url value="/user/${principalId }"/>';"><spring:message
+											code="label.my.ads"></spring:message></li>
 								<sec:authorize access="!hasRole('ROLE_COMPANY')">
-									<li><a href="<c:url value="/user/company"/>"><spring:message
+									<li><a href="<c:url value="/company/register"/>"><spring:message
 												code="label.cooperation"></spring:message></a></li>
 								</sec:authorize>
-								<li><a href="<c:url value="/user/logout"/>"><spring:message
-											code="label.logout"></spring:message></a></li>
+								<li onclick="location.href='<c:url value="/user/logout"/>';"><spring:message
+											code="label.logout"></spring:message></li>
 							</ul></li>
 					</sec:authorize>
 					<sec:authorize access="!isAuthenticated()">

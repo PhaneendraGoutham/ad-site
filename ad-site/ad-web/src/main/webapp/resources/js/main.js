@@ -18,6 +18,17 @@ function toggleAdminButton(target) {
 		target.addClass("button-green");
 	}
 }
+function validateNumbers(evt) {
+	var theEvent = evt || window.event;
+	var key = theEvent.keyCode || theEvent.which;
+	key = String.fromCharCode(key);
+	var regex = /[0-9]|\./;
+	if (!regex.test(key)) {
+		theEvent.returnValue = false;
+		if (theEvent.preventDefault)
+			theEvent.preventDefault();
+	}
+}
 function updateRating(ids) {
 	$.ajax({
 		url : basePath + "ad/rating",
@@ -64,8 +75,7 @@ function validateImageFile(data, objectAfter) {
 		}
 	} else if (!validateImageFileSize(data.files[0].size)) {
 		objectAfter
-				.after(
-						'<label id="image-error" class="error" style="clear:both">Plik jest za duży. Maksymalny rozmiar wynosi: 4MB</label>');
+				.after('<label id="image-error" class="error" style="clear:both">Plik jest za duży. Maksymalny rozmiar wynosi: 4MB</label>');
 	} else {
 		data.submit();
 	}
@@ -73,6 +83,13 @@ function validateImageFile(data, objectAfter) {
 function validateImageExtension(fileName) {
 	var ext = fileName.split('.').pop().toLowerCase();
 	if ($.inArray(ext, [ 'gif', 'png', 'jpg', 'jpeg' ]) == -1) {
+		return false;
+	}
+	return true;
+}
+function validateVideoExtension(fileName){
+	var ext = fileName.split('.').pop().toLowerCase();
+	if ($.inArray(ext, [ 'mov', 'mpg', 'avi', 'flv', 'f4v', 'mp4', 'm4v', 'asf', 'wmv', 'vob', 'mod', '3gp', 'mkv', 'divx', 'xvid' ]) == -1) {
 		return false;
 	}
 	return true;
@@ -88,16 +105,17 @@ $(function() {
 	if (ids.length > 0)
 		updateRating(ids);
 
-	jQuery.validator.addMethod("pattern", function(value, element, param) {
-		if (this.optional(element)) {
-			return true;
-		}
-		if (typeof param === 'string') {
-			param = new RegExp('^(?:' + param + ')$');
-		}
-		return param.test(value);
-	}, "Nieprawidłowe znaki");
-
+	if (jQuery.validator !== undefined) {
+		jQuery.validator.addMethod("pattern", function(value, element, param) {
+			if (this.optional(element)) {
+				return true;
+			}
+			if (typeof param === 'string') {
+				param = new RegExp(param);
+			}
+			return param.test(value);
+		}, "Nieprawidłowe znaki");
+	}
 	$(".admin-panel button").click(function() {
 		var $this = $(this);
 		var target = $this.data("target");
@@ -214,102 +232,102 @@ $(function() {
 			wrapper.addClass("hidden");
 		}
 		wrapper.children(target).removeClass("hidden");
-//		if (target == '.comments') {
-//			var commentsWrapper = wrapper.children(target);
-//			var attr = commentsWrapper.attr('data-loaded');
-//			if (typeof attr === 'undefined' || attr === false) {
-//				loadComments(commentsWrapper, adId);
-//			}
-//
-//		}
+		// if (target == '.comments') {
+		// var commentsWrapper = wrapper.children(target);
+		// var attr = commentsWrapper.attr('data-loaded');
+		// if (typeof attr === 'undefined' || attr === false) {
+		// loadComments(commentsWrapper, adId);
+		// }
+		//
+		// }
 	});
-//	$(".comments").on(
-//			'click',
-//			'.show-answer-box',
-//			function(e) {
-//				$this = $(this);
-//				var postId = $this.data("id");
-//				e.preventDefault();
-//				var target = $this.data("target");
-//				var adId = $this.data("ad-id");
-//				var attr = $(this).attr('data-loaded');
-//				if (typeof attr === 'undefined' || attr === false) {
-//					var box = $(".comments").children(
-//							".comment-box-wrapper:first").clone();
-//
-//					box.prependTo($(target).children(".post-children"));
-//					$this.attr("data-loaded", 'true');
-//					var commentButton = $(target).children(".post-children")
-//							.children(".comment-box-wrapper").find("button");
-//					commentButton.attr("data-post-id", postId);
-//					commentButton.attr("data-ad-id", adId);
-//				} else if (attr == 'true') {
-//					$this.attr("data-loaded", 'false');
-//					$(target + "> .post-children > .comment-box-wrapper")
-//							.addClass("hidden");
-//				} else {
-//					$this.attr("data-loaded", 'true');
-//					$(target + "> .post-children > .comment-box-wrapper")
-//							.removeClass("hidden");
-//				}
-//			});
-//	$(".comments").on(
-//			'click',
-//			'.inform',
-//			function(e) {
-//				$this = $(this);
-//				var postId = $this.data("post-id");
-//				e.preventDefault();
-//				var target = $this.data("target");
-//				var attr = $(this).attr('data-loaded');
-//				if (typeof attr === 'undefined' || attr === false) {
-//					var box = $(".inform").children(".inform-box-holder:first")
-//							.clone();
-//
-//					box.prependTo($(target).children(".post-children"));
-//					$this.attr("data-loaded", 'true');
-//					var informButton = $(target).children(".post-children")
-//							.children(".inform-box-holder").find("button");
-//					informButton.attr("data-post-id", postId);
-//					informButton.removeAttr("data-ad-id");
-//				} else if (attr == 'true') {
-//					$this.attr("data-loaded", 'false');
-//					$(target + "> .post-children > .inform-box-holder")
-//							.addClass("hidden");
-//				} else {
-//					$this.attr("data-loaded", 'true');
-//					$(target + "> .post-children > .inform-box-holder")
-//							.removeClass("hidden");
-//				}
-//			});
-//	$(".comments").on(
-//			'click',
-//			'.comment-button',
-//			function(e) {
-//				$this = $(this);
-//				var id = $this.data("post-id");
-//				var adId = $this.data("ad-id");
-//				var dataObject = new Object();
-//				dataObject['message'] = $this.parent().children(".comment-box")
-//						.val();
-//				dataObject['postId'] = id;
-//				$.ajax({
-//					url : basePath + "ad/" + adId + "/comment",
-//					type : "POST",
-//					data : dataObject,
-//					success : function(html, status, xhr) {
-//						var commentsWrapper = $("#ad-wrapper-" + adId
-//								+ " > .bottom-video-panel > .comments");
-//						commentsWrapper.html(html);
-//						commentsWrapper.attr("data-loaded", true);
-//					},
-//					error : function() {
-//						$("#login-dialog").dialog("open");
-//					}
-//				});
-//			});
-//	$(".comments,.inform").on(
-				$(".inform").on(
+	// $(".comments").on(
+	// 'click',
+	// '.show-answer-box',
+	// function(e) {
+	// $this = $(this);
+	// var postId = $this.data("id");
+	// e.preventDefault();
+	// var target = $this.data("target");
+	// var adId = $this.data("ad-id");
+	// var attr = $(this).attr('data-loaded');
+	// if (typeof attr === 'undefined' || attr === false) {
+	// var box = $(".comments").children(
+	// ".comment-box-wrapper:first").clone();
+	//
+	// box.prependTo($(target).children(".post-children"));
+	// $this.attr("data-loaded", 'true');
+	// var commentButton = $(target).children(".post-children")
+	// .children(".comment-box-wrapper").find("button");
+	// commentButton.attr("data-post-id", postId);
+	// commentButton.attr("data-ad-id", adId);
+	// } else if (attr == 'true') {
+	// $this.attr("data-loaded", 'false');
+	// $(target + "> .post-children > .comment-box-wrapper")
+	// .addClass("hidden");
+	// } else {
+	// $this.attr("data-loaded", 'true');
+	// $(target + "> .post-children > .comment-box-wrapper")
+	// .removeClass("hidden");
+	// }
+	// });
+	// $(".comments").on(
+	// 'click',
+	// '.inform',
+	// function(e) {
+	// $this = $(this);
+	// var postId = $this.data("post-id");
+	// e.preventDefault();
+	// var target = $this.data("target");
+	// var attr = $(this).attr('data-loaded');
+	// if (typeof attr === 'undefined' || attr === false) {
+	// var box = $(".inform").children(".inform-box-holder:first")
+	// .clone();
+	//
+	// box.prependTo($(target).children(".post-children"));
+	// $this.attr("data-loaded", 'true');
+	// var informButton = $(target).children(".post-children")
+	// .children(".inform-box-holder").find("button");
+	// informButton.attr("data-post-id", postId);
+	// informButton.removeAttr("data-ad-id");
+	// } else if (attr == 'true') {
+	// $this.attr("data-loaded", 'false');
+	// $(target + "> .post-children > .inform-box-holder")
+	// .addClass("hidden");
+	// } else {
+	// $this.attr("data-loaded", 'true');
+	// $(target + "> .post-children > .inform-box-holder")
+	// .removeClass("hidden");
+	// }
+	// });
+	// $(".comments").on(
+	// 'click',
+	// '.comment-button',
+	// function(e) {
+	// $this = $(this);
+	// var id = $this.data("post-id");
+	// var adId = $this.data("ad-id");
+	// var dataObject = new Object();
+	// dataObject['message'] = $this.parent().children(".comment-box")
+	// .val();
+	// dataObject['postId'] = id;
+	// $.ajax({
+	// url : basePath + "ad/" + adId + "/comment",
+	// type : "POST",
+	// data : dataObject,
+	// success : function(html, status, xhr) {
+	// var commentsWrapper = $("#ad-wrapper-" + adId
+	// + " > .bottom-video-panel > .comments");
+	// commentsWrapper.html(html);
+	// commentsWrapper.attr("data-loaded", true);
+	// },
+	// error : function() {
+	// $("#login-dialog").dialog("open");
+	// }
+	// });
+	// });
+	// $(".comments,.inform").on(
+	$(".inform").on(
 			'click',
 			'.inform-button',
 			function(e) {
@@ -355,16 +373,16 @@ $(function() {
 		hideFilter(target, id);
 	});
 });
-//function loadComments(commentsWrapper, adId) {
-//	$.ajax({
-//		url : basePath + "ad/" + adId + "/comment",
-//		type : "GET",
-//		success : function(html) {
-//			commentsWrapper.html(html);
-//			commentsWrapper.attr("data-loaded", true);
-//		}
-//	});
-//}
+// function loadComments(commentsWrapper, adId) {
+// $.ajax({
+// url : basePath + "ad/" + adId + "/comment",
+// type : "GET",
+// success : function(html) {
+// commentsWrapper.html(html);
+// commentsWrapper.attr("data-loaded", true);
+// }
+// });
+// }
 function toggleFilters(target) {
 	var li = $("#" + target + "-menu-filter");
 	if (li.hasClass("on")) {
@@ -395,11 +413,12 @@ function displayFilter(target, id, uiName) {
 		close.append("x");
 		li.attr("id", target + "-selected-filter-item-" + id);
 		li.addClass("on");
+		li.addClass("hover-opacity-none");
 		li.append('<span>' + uiName + '</span>').append(close);
 		fil.children("ul").append(li);
 	} else {
 		var text = "-";
-		if (target == 'place' || target == 'year' || target == 'winner') {
+		if (target == 'place' || target == 'winner') {
 			var select = $("#" + target + "-select");
 			text = select.find(":selected").text();
 		} else if (target == 'rank') {
@@ -468,7 +487,7 @@ function setSelectDefault(select) {
 function removeItemChecked(target, id) {
 	if (target == 'tag' || target == 'brand') {
 		$("#" + target + "-" + id).attr("checked", false);
-	} else if (target == 'place' || target == 'year' || target=='winner') {
+	} else if (target == 'place' || target == 'winner') {
 		setSelectDefault($("#" + target + "-select"));
 	} else if (target == 'rank') {
 		setSelectDefault($("#" + target + "-select-from"));

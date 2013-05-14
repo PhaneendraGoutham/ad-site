@@ -1,7 +1,11 @@
 package pl.stalkon.video.api.service.impl;
 
+import java.awt.Label;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +27,7 @@ import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.WistiaVideoData;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
+import pl.stalkon.video.api.wistia.WistiaStats;
 
 @Component
 public class WistiaApiService implements InitializingBean {
@@ -34,28 +39,6 @@ public class WistiaApiService implements InitializingBean {
 	private Environment env;
 
 	private void configureRestTemplate() {
-		// DefaultHttpClient client = new DefaultHttpClient();
-		// BasicCredentialsProvider credentialsProvider = new
-		// BasicCredentialsProvider();
-		// String username = env.getProperty("wistia.username");
-		// credentialsProvider.setCredentials(AuthScope.ANY, new
-		// UsernamePasswordCredentials(username,
-		// env.getProperty("wistia.password")));
-		// client.setCredentialsProvider(credentialsProvider);
-		// ClientHttpRequestFactory rf = new
-		// HttpComponentsClientHttpRequestFactory(client);
-		// HttpHost wistiaHost = new HttpHost(env.getProperty("wistia.host"));
-		// HttpComponentsClientHttpRequestFactoryBasicAuth requestFactory = new
-		// HttpComponentsClientHttpRequestFactoryBasicAuth(
-		// wistiaHost);
-		// restTemplate = new RestTemplate();
-		// restTemplate.setRequestFactory(requestFactory);
-		// DefaultHttpClient httpClient = (DefaultHttpClient) requestFactory
-		// .getHttpClient();
-		// httpClient.getCredentialsProvider().setCredentials(
-		// new AuthScope(wistiaHost,AuthScope.ANY_REALM,"https"),
-		// new UsernamePasswordCredentials(env.getProperty("wistia.username"),
-		// env.getProperty("wistia.password")));
 		restTemplate = new RestTemplate(
 				new HttpComponentsClientHttpRequestFactory());
 		headers = getAuthHeaders();
@@ -124,6 +107,30 @@ public class WistiaApiService implements InitializingBean {
 				new HttpEntity<Map<String, String>>(null, headers), Map.class,
 				vars);
 		return response.getStatusCode().equals(HttpStatus.OK);
+	}
+
+	public WistiaStats getProjectStats(String hashedId, Date startDate,
+			Date endDate) {
+		Map<String, String> vars = Collections.singletonMap("projectId",
+				hashedId);
+		Map<String, String> map = new HashMap<String, String>();
+		SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd");
+		map.put("start_date", sm.format(startDate));
+		map.put("end_date", sm.format(endDate));
+		ResponseEntity<Map> response = restTemplate.exchange(env
+				.getProperty("wistia.statsProjectJsonUrl.by.date"),
+				HttpMethod.GET, new HttpEntity<Map<String, String>>(map,
+						headers), Map.class, vars);
+		Date date = null;
+		try {
+			date = sm.parse((String)response.getBody().get("date"));
+		} catch (ParseException e) {
+			//ignore;
+		}
+		return new WistiaStats(date, new Long((String)
+				response.getBody().get("load_count")), new Long((String)response.getBody().get(
+				"play_count")), new Double((String)response.getBody().get(
+				"hours_watched")));
 	}
 
 	@Override

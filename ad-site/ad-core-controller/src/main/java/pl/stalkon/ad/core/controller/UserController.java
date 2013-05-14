@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -116,7 +117,7 @@ public class UserController extends BaseController {
 
 		User user = userService.register(userRegForm);
 
-		// mailService.sendUserVerificationEmail(user); TODO:
+		mailService.sendUserVerificationEmail(user); 
 		redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
 				"info.user.registered", null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
@@ -228,5 +229,32 @@ public class UserController extends BaseController {
 		userService.updateUserAddress(userAddressDto, socialLoggedUser.getId());
 		return userAddressDto;
 	}
+	
+	@RequestMapping(value = "/user/password/recall", method = RequestMethod.GET)
+	public String getRecallPassword(Model model) {
+		return "user/password/recall";
+	}
+	
+	@RequestMapping(value = "/user/terms", method = RequestMethod.GET)
+	public String getTerms(Model model) {
+		model.addAttribute("info", "Jeszcze nie wymyśliłem regulaminu");
+		return "info-page";
+	}
+	
+	@RequestMapping(value = "/user/password/recall", method = RequestMethod.POST)
+	public String recallPassword(@RequestParam("mail") String mail, RedirectAttributes redirectAttributes) {
+		if(mail == null){
+			controllerHelperBean.invalidPostRequest(redirectAttributes);
+		}
+		String newPassword = userService.generateAndSetNewPassword(mail);
+		mailService.sendNewPassword(mail, newPassword);
+		redirectAttributes.addFlashAttribute("info", messageSource
+				.getMessage("info.user.newpassword", null,
+						LocaleContextHolder.getLocale()));
+		return "user/password/recall";
+	}
+	
+	
+	
 
 }

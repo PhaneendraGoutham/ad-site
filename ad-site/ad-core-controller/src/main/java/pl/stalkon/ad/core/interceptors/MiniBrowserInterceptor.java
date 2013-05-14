@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.service.AdService;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 
 public class MiniBrowserInterceptor implements HandlerInterceptor {
 
@@ -34,7 +35,7 @@ public class MiniBrowserInterceptor implements HandlerInterceptor {
 			HttpServletResponse response, Object arg2, ModelAndView model)
 			throws Exception {
 		if (model != null) {
-			List<Ad> ads = adService.getTop(0, 10, null);
+			List<Ad> ads = adService.getTop(new Paging(10), null);
 			model.addObject("leftTopAds", ads);
 		}
 	}

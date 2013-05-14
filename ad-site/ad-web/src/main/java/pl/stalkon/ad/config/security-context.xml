@@ -17,11 +17,13 @@
 	<security:http pattern="/resources/**" security="none" />
 	<security:http pattern="/favicon.ico" security="none" />
 	<security:http pattern="/WEB-INF/**" security="none" />
+	<security:http pattern="/uploads/**" security="none" />
+	
+	
 	<security:http use-expressions="true" access-denied-page="/user/login">
 		<security:anonymous enabled="true" />
 		<security:remember-me key="asdf"
-			services-ref="persistentTokenBasedRememberMeServices"
-			/>
+			services-ref="persistentTokenBasedRememberMeServices" />
 		<security:custom-filter ref="socialAuthenticationFilter"
 			before="PRE_AUTH_FILTER" />
 		<security:custom-filter ref="userMessageFilter"
@@ -31,20 +33,92 @@
 			username-parameter="username" authentication-failure-url="/user/login?login_error=1" />
 		<security:logout invalidate-session="true" logout-url="/user/logout"
 			logout-success-url="/" />
+
 		<security:intercept-url pattern="/ad/register"
-			access="hasRole('ROLE_USER') and !hasRole('ROLE_COMPANY')" />
+			access="hasRole('ROLE_USER')" />
+
+		<!-- <security:intercept-url pattern="/brand/*/ad/register" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+
+		<security:intercept-url pattern="/contest/*/ad/register"
+			access="hasRole('ROLE_USER')" />
+
+		<security:intercept-url pattern="/contest/*/ad"
+			method="POST" access="hasRole('ROLE_USER')" />
+
+		<security:intercept-url pattern="/ad" method="POST"
+			access="hasRole('ROLE_USER')" />
+
+		<security:intercept-url pattern="/ad/update/*"
+			method="POST" access="hasRole('ROLE_USER')" />
+
+		<security:intercept-url pattern="/ad/*/state"
+			method="POST" access="hasRole('ROLE_AD_ADMIN')" />
+
+		<security:intercept-url pattern="/brand/register"
+			access="hasRole('ROLE_ADMIN')" />
+
+		<security:intercept-url pattern="/brand"
+			method="POST" access="hasRole('ROLE_ADMIN')" />
+
+
+		<security:intercept-url pattern="/company/*/brand/register"
+			access="hasRole('ROLE_COMPANY')" />
+
+		<security:intercept-url pattern="/company/*/brand"
+			method="POST" access="hasRole('ROLE_USER')" />
+
 		<security:intercept-url pattern="/company/register"
 			access="hasRole('ROLE_USER')" />
+
+		<security:intercept-url pattern="/company"
+			method="POST" access="hasRole('ROLE_USER')" />
+
 		<security:intercept-url pattern="/user/company"
-			access="hasRole('ROLE_USER')" />
-		<security:intercept-url pattern="/brand/*/ad/register"
 			access="hasRole('ROLE_COMPANY')" />
-		<security:intercept-url pattern="/brand/*/contest/register"
-			access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" />
-		<security:intercept-url pattern="/contest/register"
-			method="POST" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" />
-		<security:intercept-url pattern="/contest/*/answer"
+
+		<security:intercept-url pattern="/user/upload/image"
+			method="POST" access="hasRole('ROLE_USER')" />
+
+		<security:intercept-url pattern="/user/profile"
 			access="hasRole('ROLE_USER')" />
+		<security:intercept-url pattern="/user/password"
+			access="hasRole('ROLE_USER')" />
+		<security:intercept-url pattern="/user/message"
+			access="hasRole('ROLE_USER')" />
+
+		<security:intercept-url pattern="/user/upload/image"
+			method="POST" access="hasRole('ROLE_USER')" />
+
+
+		<!-- <security:intercept-url pattern="/brand/*/contest/register" -->
+		<!-- access="hasRole('ROLE_COMPANY')" /> -->
+
+		<!-- <security:intercept-url pattern="/contest/*/edit" -->
+		<!-- access="hasRole('ROLE_CONTEST')" /> -->
+
+		<!-- <security:intercept-url pattern="/contest/*" -->
+		<!-- access="hasRole('ROLE_CONTEST')" method="POST"/> -->
+
+
+
+
+<!-- 		<security:intercept-url pattern="/company/register" -->
+<!-- 			access="hasRole('ROLE_USER')" /> -->
+<!-- 		<security:intercept-url pattern="/user/company" -->
+<!-- 			access="hasRole('ROLE_USER')" /> -->
+
+<!-- 		<security:intercept-url pattern="/brand/*/contest/register" -->
+<!-- 			access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" /> -->
+<!-- 		<security:intercept-url pattern="/contest/register" -->
+<!-- 			method="POST" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" /> -->
+<!-- 		<security:intercept-url pattern="/brand/*/edit" -->
+<!-- 			access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" /> -->
+<!-- 		<security:intercept-url pattern="/brand/*" -->
+<!-- 			method="POST" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" /> -->
+<!-- 		<security:intercept-url pattern="/contest/*/answer" -->
+<!-- 			access="hasRole('ROLE_USER')" /> -->
+
 	</security:http>
 	<!-- <security:global-method-security -->
 	<!-- secured-annotations="enabled" /> -->

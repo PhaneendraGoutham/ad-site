@@ -1,6 +1,7 @@
 package pl.stalkon.ad.core.controller;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +60,7 @@ import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.BrandService;
 import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.model.service.ContestService;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.core.security.SocialLoggedUser.LoggedType;
 import pl.stalkon.ad.extensions.AjaxNotLoggedInException;
@@ -72,6 +75,8 @@ import pl.stalkon.video.api.service.impl.WistiaApiService;
 @Controller
 public class AdController {
 
+	public final int AD_PER_PAGE = 5;
+
 	@Autowired
 	private AdService adService;
 
@@ -80,9 +85,6 @@ public class AdController {
 
 	@Autowired
 	private VideoApiService videoApiService;
-
-	// @Autowired
-	// private SiteFacebookIntegrator siteFacebookIntegrator;
 
 	@Autowired
 	private CompanyService companyService;
@@ -99,6 +101,159 @@ public class AdController {
 	@Autowired
 	private MessageSource messageSource;
 
+	@RequestMapping(value = { "ad/main", "/" }, method = RequestMethod.GET)
+	public String getMainSite(
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal) {
+		AdSearchDto adSearchDto = new AdSearchDto();
+		adSearchDto.setPlace(Place.MAIN);
+		// AdBrowserWrapper adBrowserWrapper = adService.getMain(
+		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+		// page), ControllerHelperBean.AD_PER_PAGE,
+		// controllerHelperBean.getActive(principal));
+		// controllerHelperBean.preparePagination(
+		// ControllerHelperBean.AD_PER_PAGE, model,
+		// adBrowserWrapper.getTotal(), page);
+		AdBrowserWrapper adBrowserWrapper = adService.getMain(adSearchDto,
+				new Paging(page, AD_PER_PAGE),
+				controllerHelperBean.getActive(principal));
+		preparePagination(page, adBrowserWrapper.getTotal(), model);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute("path", "ad/main");
+		return "browser";
+	}
+
+	@RequestMapping(value = { "ad/waiting" }, method = RequestMethod.GET)
+	public String getWaitingSite(
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal) {
+		// AdBrowserWrapper adBrowserWrapper = adService.getWaiting(
+		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+		// page), ControllerHelperBean.AD_PER_PAGE,
+		// controllerHelperBean.getActive(principal));
+		AdSearchDto adSearchDto = new AdSearchDto();
+		adSearchDto.setPlace(Place.WAITING);
+		AdBrowserWrapper adBrowserWrapper = adService.getWaiting(adSearchDto,
+				new Paging(page, AD_PER_PAGE),
+				controllerHelperBean.getActive(principal));
+		preparePagination(page, adBrowserWrapper.getTotal(), model);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute("path", "ad/waiting");
+		return "browser";
+	}
+
+	@RequestMapping(value = "contest/{contestId}/ad", method = RequestMethod.GET)
+	public String getContestAds(
+			@PathVariable("contestId") Long contestId,
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal, HttpServletRequest request,
+			@ModelAttribute("adSearchDto") AdSearchDto adSearchDto) {
+		// AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
+		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+		// page), ControllerHelperBean.AD_PER_PAGE,
+		// controllerHelperBean.getActive(principal));
+		// controllerHelperBean.preparePagination(
+		// ControllerHelperBean.AD_PER_PAGE, model,
+		// adBrowserWrapper.getTotal(), page);
+		AdBrowserWrapper adBrowserWrapper = getAds(adSearchDto, page, principal);
+		preparePagination(page, adBrowserWrapper.getTotal(), model);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		boolean contestAdmin = controllerHelperBean.isContestAdmin(request,
+				principal, contestId);
+		model.addAttribute("contestAdmin", contestAdmin);
+		Contest contest = contestService.get(contestId);
+		model.addAttribute("contestId", contestId);
+		model.addAttribute("tagFilter", false);
+		model.addAttribute("brandFilter", false);
+		model.addAttribute("yearFilter", false);
+		if (contest.getState() == State.SCORED || contestAdmin)
+			model.addAttribute("winnerFilter", true);
+		return "ad/browser";
+	}
+
+	@RequestMapping(value = "brand/{brandId}/ad", method = RequestMethod.GET)
+	public String getBrandAds(
+			@PathVariable("brandId") Long brandId,
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal, HttpServletRequest request,
+			@ModelAttribute("adSearchDto") AdSearchDto adSearchDto) {
+		// AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
+		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+		// page), ControllerHelperBean.AD_PER_PAGE,
+		// controllerHelperBean.getActive(principal));
+		// controllerHelperBean.preparePagination(
+		// ControllerHelperBean.AD_PER_PAGE, model,
+		// adBrowserWrapper.getTotal(), page);
+		adSearchDto.setBrandList(Arrays.asList(brandId));
+		AdBrowserWrapper adBrowserWrapper = getAds(adSearchDto, page, principal);
+		preparePagination(page, adBrowserWrapper.getTotal(), model);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute("tagFilter", false);
+		model.addAttribute("brandFilter", false);
+		return "ad/browser";
+	}
+
+	@RequestMapping(value = { "user/{userId}" }, method = RequestMethod.GET)
+	public String getUserAds(
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal,
+			@ModelAttribute("adSearchDto") AdSearchDto adSearchDto) {
+		// AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
+		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+		// page), ControllerHelperBean.AD_PER_PAGE,
+		// controllerHelperBean.getActive(principal));
+		// controllerHelperBean.preparePagination(
+		// ControllerHelperBean.AD_PER_PAGE, model,
+		// adBrowserWrapper.getTotal(), page);
+		AdBrowserWrapper adBrowserWrapper = getAds(adSearchDto, page, principal);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute("tagFilter", false);
+		model.addAttribute("brandFilter", false);
+		model.addAttribute("yearFilter", false);
+		return "ad/browser";
+	}
+
+	@RequestMapping(value = { "ad/search" }, method = RequestMethod.GET)
+	public String search(
+			@ModelAttribute("adSearchDto") AdSearchDto adSearchDto,
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal) {
+		// AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
+		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+		// page), ControllerHelperBean.AD_PER_PAGE,
+		// controllerHelperBean.getActive(principal));
+		// controllerHelperBean.preparePagination(
+		// ControllerHelperBean.AD_PER_PAGE, model,
+		// adBrowserWrapper.getTotal(), page);
+		AdBrowserWrapper adBrowserWrapper = getAds(adSearchDto, page, principal);
+		List<Tag> tags = adService.getTags();
+		List<Brand> brands = brandService.get();
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute("tagsPerColumn", (int) Math.ceil(tags.size() / 3.0));
+		model.addAttribute("brandsPerColumn",
+				(int) Math.ceil(brands.size() / 3.0));
+		model.addAttribute("tags",
+				CheckboxListWrapper.getList(tags, adSearchDto.getTagList()));
+		model.addAttribute("brands",
+				CheckboxListWrapper.getList(brands, adSearchDto.getBrandList()));
+		model.addAttribute("path", "ad/search");
+		return "ad/browser";
+	}
+
+	@RequestMapping(value = "ad/{id}", method = RequestMethod.GET)
+	public String get(@PathVariable("id") Long id, Model model,
+			Principal principal) {
+		Ad ad = adService.get(id, controllerHelperBean.getActive(principal));
+		model.addAttribute("ad", ad);
+		return "ad";
+	}
+
 	@RequestMapping(value = "ad/register")
 	public String getAddPage(Model model) {
 		AdPostDto adDto = new AdPostDto();
@@ -110,16 +265,12 @@ public class AdController {
 	@RequestMapping(value = "brand/{brandId}/ad/register")
 	public String getAddByBrandPage(Model model, HttpServletRequest request,
 			Principal principal, @PathVariable("brandId") Long brandId) {
-		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-				.getPrincipal();
 		Brand brand = brandService.get(brandId);
-		Company company = companyService
-				.getCompanyWithBrandsByUser(socialLoggedUser.getId());
-		if (brand == null || company.getBrands() == null
-				|| !company.getBrands().contains(brand)) {
+		if (!controllerHelperBean.isUserBrandOwner(request, principal, brandId)) {
 			controllerHelperBean.throwAccessDeniedException(request);
 		}
 		AdPostDto adDto = new AdPostDto();
+		adDto.setBrandId(brandId);
 		model.addAttribute("adPostDto", adDto);
 		model.addAttribute("path", "ad/register");
 		model.addAttribute("postPath", "/ad");
@@ -144,8 +295,7 @@ public class AdController {
 	public String add(@PathVariable("contestId") Long contestId,
 			@Valid @ModelAttribute("adPostDto") AdPostDto adPostDto,
 			BindingResult result, Principal principal,
-			RedirectAttributes redirectAttributes) {
-
+			HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
@@ -176,35 +326,6 @@ public class AdController {
 		return "redirect:/info-page";
 	}
 
-	@RequestMapping(value = "contest/{contestId}/ad", method = RequestMethod.GET)
-	public String getContestAds(
-			@PathVariable("contestId") Long contestId,
-			Model model,
-			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal, HttpServletRequest request,
-			@ModelAttribute("adSearchDto") AdSearchDto adSearchDto) {
-		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
-				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
-						page), ControllerHelperBean.AD_PER_PAGE,
-				controllerHelperBean.getActive(principal));
-		controllerHelperBean.preparePagination(
-				ControllerHelperBean.AD_PER_PAGE, model,
-				adBrowserWrapper.getTotal(), page);
-		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-		boolean contestAdmin = controllerHelperBean.isContestAdmin(
-				request, principal, contestId);
-		model.addAttribute("contestAdmin", contestAdmin);
-		Contest contest = contestService.get(contestId);
-		model.addAttribute("adSearchDto", adSearchDto);
-		model.addAttribute("contestId", contestId);
-		model.addAttribute("tagFilter", false);
-		model.addAttribute("brandFilter", false);
-		model.addAttribute("yearFilter", false);
-		if(contest.getState() == State.SCORED || contestAdmin)
-			model.addAttribute("winnerFilter", true);
-		return "ad/browser";
-	}
-
 	@RequestMapping(value = "/ad", method = RequestMethod.POST)
 	public String add(@Valid @ModelAttribute("adPostDto") AdPostDto adPostDto,
 			BindingResult result, Principal principal,
@@ -218,16 +339,14 @@ public class AdController {
 		// adPostDto.getUrl(), adPostDto.getTitle());
 		boolean official = false;
 		if (request.isUserInRole(UserRoleDef.ROLE_COMPANY)) {
-			Company company = companyService
-					.getCompanyWithBrandsByUser(socialLoggedUser.getId());
-			Brand mockBrand = new Brand();
-			mockBrand.setId(adPostDto.getBrandId());
-			if (company.getBrands().contains(mockBrand)) {
+			if (controllerHelperBean.isUserBrandOwner(request, principal,
+					adPostDto.getBrandId())) {
 				official = true;
 			} else {
 				controllerHelperBean.throwAccessDeniedException(request);
 			}
 		}
+
 		Ad ad = null;
 		try {
 			ad = videoApiService.setVideoDetails(adPostDto);
@@ -248,60 +367,6 @@ public class AdController {
 		return "redirect:/info-page";
 	}
 
-	@RequestMapping(value = { "ad/main", "/" }, method = RequestMethod.GET)
-	public String mainSite(
-			Model model,
-			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal) {
-		AdBrowserWrapper adBrowserWrapper = adService.getMain(
-				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
-						page), ControllerHelperBean.AD_PER_PAGE,
-				controllerHelperBean.getActive(principal));
-		controllerHelperBean.preparePagination(
-				ControllerHelperBean.AD_PER_PAGE, model,
-				adBrowserWrapper.getTotal(), page);
-		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-		model.addAttribute("path", "ad/main");
-		return "browser";
-	}
-
-	@RequestMapping(value = { "ad/waiting" }, method = RequestMethod.GET)
-	public String waitingSite(
-			Model model,
-			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal) {
-		AdBrowserWrapper adBrowserWrapper = adService.getWaiting(
-				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
-						page), ControllerHelperBean.AD_PER_PAGE,
-				controllerHelperBean.getActive(principal));
-		controllerHelperBean.preparePagination(
-				ControllerHelperBean.AD_PER_PAGE, model,
-				adBrowserWrapper.getTotal(), page);
-		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-		model.addAttribute("path", "ad/waiting");
-
-		return "browser";
-	}
-
-	@RequestMapping(value = { "user/{userId}" }, method = RequestMethod.GET)
-	public String getUserAds(
-			Model model,
-			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal,@ModelAttribute("adSearchDto") AdSearchDto adSearchDto) {
-		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
-				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
-						page), ControllerHelperBean.AD_PER_PAGE,
-				controllerHelperBean.getActive(principal));
-		controllerHelperBean.preparePagination(
-				ControllerHelperBean.AD_PER_PAGE, model,
-				adBrowserWrapper.getTotal(), page);
-		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-		model.addAttribute("tagFilter", false);
-		model.addAttribute("brandFilter", false);
-		model.addAttribute("yearFilter", false);
-		return "ad/browser";
-	}
-
 	// @RequestMapping(value = { "ad/search"}, method = RequestMethod.GET)
 	// public String browserSite(Model model) {
 	// AdBrowserWrapper adBrowserWrapper = adService.getWaiting(0, 20);
@@ -310,33 +375,6 @@ public class AdController {
 	// model.addAttribute("path", "ad/browser");
 	// return "ad/browser";
 	// }
-
-	@RequestMapping(value = { "ad/search" }, method = RequestMethod.GET)
-	public String search(
-			@ModelAttribute("adSearchDto") AdSearchDto adSearchDto,
-			Model model,
-			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-			Principal principal) {
-		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
-				controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
-						page), ControllerHelperBean.AD_PER_PAGE,
-				controllerHelperBean.getActive(principal));
-		controllerHelperBean.preparePagination(
-				ControllerHelperBean.AD_PER_PAGE, model,
-				adBrowserWrapper.getTotal(), page);
-		List<Tag> tags = adService.getTags();
-		List<Brand> brands = brandService.get();
-		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-		model.addAttribute("tagsPerColumn", (int) Math.ceil(tags.size() / 3.0));
-		model.addAttribute("brandsPerColumn",
-				(int) Math.ceil(brands.size() / 3.0));
-		model.addAttribute("tags",
-				CheckboxListWrapper.getList(tags, adSearchDto.getTagList()));
-		model.addAttribute("brands",
-				CheckboxListWrapper.getList(brands, adSearchDto.getBrandList()));
-		model.addAttribute("path", "ad/search");
-		return "ad/browser";
-	}
 
 	@RequestMapping(value = "ad/tag", method = RequestMethod.GET)
 	@ResponseBody
@@ -347,23 +385,15 @@ public class AdController {
 
 	@RequestMapping(value = "ad/update/{id}", method = RequestMethod.GET)
 	public String getUpdatePage(Model model, Principal principal,
-			@PathVariable("id") Long adId) {
+			HttpServletRequest request, @PathVariable("id") Long adId) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		if (!adService.isOwner(adId, socialLoggedUser.getId())) {
-			return "/denied";
+			controllerHelperBean.throwAccessDeniedException(request);
 		}
 		AdPostDto adDto = new AdPostDto();
 		model.addAttribute("adPostDto", adDto);
 		return "ad/update";
-	}
-
-	@RequestMapping(value = "ad/{id}", method = RequestMethod.GET)
-	public String get(@PathVariable("id") Long id, Model model,
-			Principal principal) {
-		Ad ad = adService.get(id, controllerHelperBean.getActive(principal));
-		model.addAttribute("ad", ad);
-		return "ad";
 	}
 
 	@RequestMapping(value = "ad/rand", method = RequestMethod.GET)
@@ -422,9 +452,13 @@ public class AdController {
 	@RequestMapping(value = "ad/{id}", method = RequestMethod.PUT)
 	public String update(
 			@Valid @ModelAttribute("adPostDto") AdPostDto adPostDto,
-			Principal principal, @PathVariable("id") Long adId) {
+			HttpServletRequest request, Principal principal,
+			@PathVariable("id") Long adId) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
+		if (!adService.isOwner(adId, socialLoggedUser.getId())) {
+			controllerHelperBean.throwAccessDeniedException(request);
+		}
 		Ad ad = adService.update(adPostDto, adId, socialLoggedUser.getId());
 		if (ad == null) {
 			return "/denied";
@@ -440,7 +474,6 @@ public class AdController {
 			@RequestParam(value = "place", required = false) Short place,
 			@RequestParam(value = "approved", required = false) Boolean approved,
 			@RequestParam(value = "ageProtected", required = false) Boolean ageProtected) {
-		System.out.println(place);
 		if (place != null) {
 			adService.changePlace(adId, Place.values()[place]);
 		}
@@ -478,4 +511,15 @@ public class AdController {
 		return "login";
 	}
 
+	private AdBrowserWrapper getAds(AdSearchDto adSearchDto, Integer page,
+			Principal principal) {
+		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
+				new Paging(page, AD_PER_PAGE),
+				controllerHelperBean.getActive(principal));
+		return adBrowserWrapper;
+	}
+
+	private void preparePagination(int page, Long total, Model model) {
+		controllerHelperBean.preparePagination(AD_PER_PAGE, model, total, page);
+	}
 }

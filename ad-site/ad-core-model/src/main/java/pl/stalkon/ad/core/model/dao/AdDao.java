@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.styall.library.core.model.dao.AbstractDao;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
 import pl.styall.library.core.model.dao.DaoQueryObject;
@@ -42,22 +43,22 @@ public class AdDao extends AbstractDao<Ad> {
 
 	@SuppressWarnings("unchecked")
 	public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList,
-			Order order, Integer first, Integer last) {
+			Order order, Paging paging) {
 		Criteria adCriteria = prepareCriteria(queryObjectList);
 		Long total = (Long) adCriteria.setProjection(Projections.rowCount())
 				.uniqueResult();
 		adCriteria.setProjection(null).setResultTransformer(
 				Criteria.ROOT_ENTITY);
-		List<Ad> ads = getAds(adCriteria, order, first, last);
+		List<Ad> ads = getAds(adCriteria, order, paging);
 		return new AdBrowserWrapper(ads, total);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Ad> getList(List<DaoQueryObject> queryObjectList, Order order,
-			Integer first, Integer last) {
+			Paging paging) {
 		Criteria adCriteria = prepareCriteria(queryObjectList);
 		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		List<Ad> ads = getAds(adCriteria, order, first, last);
+		List<Ad> ads = getAds(adCriteria, order, paging);
 		return ads;
 	}
 
@@ -69,9 +70,8 @@ public class AdDao extends AbstractDao<Ad> {
 		return adCriteria;
 	}
 
-	private List<Ad> getAds(Criteria adCriteria, Order order, Integer first,
-			Integer last) {
-		criteriaConfigurer.configureCriteria(adCriteria, order, first, last);
+	private List<Ad> getAds(Criteria adCriteria, Order order, Paging paging) {
+		criteriaConfigurer.configureCriteria(adCriteria, order, paging.from, paging.perPage);
 		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return (List<Ad>) adCriteria.list();
 	}
