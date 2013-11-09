@@ -30,7 +30,8 @@
 	</modules>
 	<properties>
 		<java-version>1.6</java-version>
-		<org.springframework-version>3.1.2.RELEASE</org.springframework-version>
+		<org.springframework-version>3.2.5.RELEASE</org.springframework-version>
+		<org.springframework-security-version>3.1.4.RELEASE</org.springframework-security-version>
 		<org.aspectj-version>1.6.9</org.aspectj-version>
 		<org.slf4j-version>1.5.10</org.slf4j-version>
 		<org.springframework.social-version>1.1.0.BUILD-SNAPSHOT</org.springframework.social-version>
@@ -112,12 +113,12 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>3.1.2.RELEASE</version>
+			<version>${org.springframework-security-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>3.1.2.RELEASE</version>
+			<version>${org.springframework-security-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -127,7 +128,7 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>3.1.2.RELEASE</version>
+			<version>${org.springframework-security-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -207,7 +208,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>3.1.2.RELEASE</version>
+			<version>${org.springframework-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -227,7 +228,7 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-acl</artifactId>
-			<version>3.1.2.RELEASE</version>
+			<version>${org.springframework-security-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>
@@ -346,7 +347,7 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
-			<version>3.1.2.RELEASE</version>
+			<version>${org.springframework-security-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
