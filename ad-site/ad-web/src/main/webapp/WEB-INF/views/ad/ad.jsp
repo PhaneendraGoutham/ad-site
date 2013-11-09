@@ -145,7 +145,6 @@
 			</c:if>
 		</div>
 	</c:if>
-	|
 	<c:if test="${contestAdmin }">
 		<div class="contest-admin-panel">
 			<c:choose>

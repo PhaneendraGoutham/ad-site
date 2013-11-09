@@ -1,5 +1,6 @@
 package pl.stalkon.ad.core.model.dao;
 
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;

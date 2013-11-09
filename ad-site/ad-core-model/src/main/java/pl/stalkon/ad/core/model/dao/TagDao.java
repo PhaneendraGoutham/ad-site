@@ -16,34 +16,43 @@ import pl.styall.library.core.model.dao.DaoQueryObject;
 
 @Repository
 public class TagDao extends AbstractDao<Tag> {
-	
+
 	@Autowired
 	private CriteriaConfigurer criteriaConfigurer;
-	
-	public List<Tag> get(){
-		return (List<Tag>)currentSession().createQuery("from Tag order by name").list();
+
+	public List<Tag> get() {
+		return (List<Tag>) currentSession().createQuery(
+				"from Tag order by name").list();
 	}
-	
 
 	@SuppressWarnings("unchecked")
-	public List<Tag> get(List<DaoQueryObject> queryObjectList, Order order, Integer first, Integer last ) {
+	public List<Tag> get(List<DaoQueryObject> queryObjectList, Order order,
+			Integer first, Integer last) {
 		Criteria tagCriteria = currentSession().createCriteria(Tag.class);
-		tagCriteria.setFetchMode("user", FetchMode.SELECT);
 		addRestrictions(tagCriteria, "", queryObjectList);
 		criteriaConfigurer.configureCriteria(tagCriteria, order, first, last);
-//		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		List<Tag> tags = (List<Tag>)tagCriteria.list();
+		// adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		List<Tag> tags = (List<Tag>) tagCriteria.list();
 		return tags;
 	}
-//	public boolean addRestrictions(Criteria criteria, String alias,
-//			List<DaoQueryObject> queryObjectList) {
-//		boolean added = false;
-//		for (DaoQueryObject qo : queryObjectList) {
-//			boolean temp = qo.addCriteria(criteria, alias, Tag.class);
-//			if(!added){
-//				added = temp;
-//			}
-//		}
-//		return added;
-//	}
+
+	public List<Long> getAdIds(List<Long> tagIds) {
+		List<Long> adIds = (List<Long>)currentSession()
+				.createSQLQuery(
+						"select ad_id from ad_tag_maps where tag_id in(:tagIds) group by ad_id having count(*) =:size")
+				.setParameterList("tagIds", tagIds)
+				.setInteger("size", tagIds.size()).list();
+		return adIds;
+	}
+	// public boolean addRestrictions(Criteria criteria, String alias,
+	// List<DaoQueryObject> queryObjectList) {
+	// boolean added = false;
+	// for (DaoQueryObject qo : queryObjectList) {
+	// boolean temp = qo.addCriteria(criteria, alias, Tag.class);
+	// if(!added){
+	// added = temp;
+	// }
+	// }
+	// return added;
+	// }
 }

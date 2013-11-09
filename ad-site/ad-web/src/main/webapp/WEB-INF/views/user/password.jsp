@@ -6,9 +6,9 @@
 <article class="center-article-wrapper ui-corner-all">
 <c:url value="/user/password" var="actionUrl"/>
 <form:form class="form" commandName="changePasswordDto"
-	action="actionUrl" method="POST">
+	action="${actionUrl}" method="POST" id="change-password-form">
 		<form:label for="oldPassword" path="password"><spring:message code="label.old.password"></spring:message></form:label>
-	<form:password id="oldPassword" path="oldPassword" />
+	<form:password id="oldPassword" path="oldPassword"/>
 	<form:label for="password" path="password"><spring:message code="label.new.password"></spring:message></form:label>
 	<form:password   id="password" path="password" class="ui-corner-all"/>
 	<form:label for="confirm-password" path="confirmPassword"><spring:message code="label.password.confirm"></spring:message></form:label>
@@ -18,3 +18,27 @@
 			class="button-green ui-corner-all" />
 </form:form>
 </article>
+<script>
+	$(function(){
+		$("#change-password-form").validate({
+			rules:{
+				password : {
+					required : true,
+					maxlength : 20,
+					minlength : 6,
+					pattern : "^[0-9a-zA-Z,.-=;'!@#$%^&*()_]+$",
+				},
+				oldPassword : {
+					required : true,
+					maxlength : 20,
+					minlength : 6,
+					pattern : "^[0-9a-zA-Z,.-=;'!@#$%^&*()_]+$",
+				},
+				confirmPassword : {
+					required : true,
+					equalTo : "#password",
+				},
+			}
+		});
+	});
+</script>

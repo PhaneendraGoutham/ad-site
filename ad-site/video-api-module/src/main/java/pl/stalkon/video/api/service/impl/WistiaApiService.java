@@ -65,8 +65,9 @@ public class WistiaApiService implements InitializingBean {
 	}
 
 	public void setApiData(Ad ad) {
-		Map<String, String> map = Collections.singletonMap("name",
-				ad.getTitle());
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("name", ad.getTitle());
+		map.put("description", ad.getDescription());
 		Map<String, String> vars = Collections.singletonMap("videoId", ad
 				.getWistiaVideoData().getVideoId());
 		restTemplate.exchange(env.getProperty("wistia.mediaJsonUrl"),
@@ -123,13 +124,13 @@ public class WistiaApiService implements InitializingBean {
 						headers), Map.class, vars);
 		Date date = null;
 		try {
-			date = sm.parse((String)response.getBody().get("date"));
+			date = sm.parse((String) response.getBody().get("date"));
 		} catch (ParseException e) {
-			//ignore;
+			// ignore;
 		}
-		return new WistiaStats(date, new Long((String)
-				response.getBody().get("load_count")), new Long((String)response.getBody().get(
-				"play_count")), new Double((String)response.getBody().get(
+		return new WistiaStats(date, new Long((String) response.getBody().get(
+				"load_count")), new Long((String) response.getBody().get(
+				"play_count")), new Double((String) response.getBody().get(
 				"hours_watched")));
 	}
 

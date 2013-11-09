@@ -14,7 +14,6 @@ import org.apache.avro.Schema.Field.Order;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import pl.stalkon.ad.core.model.Ad.Place;
-import pl.stalkon.ad.core.model.dto.validation.groups.AdMainField;
 import pl.stalkon.ad.core.model.Tag;
 
 public class AdSearchDto {

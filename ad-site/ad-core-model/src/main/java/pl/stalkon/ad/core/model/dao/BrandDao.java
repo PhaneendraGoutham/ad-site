@@ -25,7 +25,11 @@ public class BrandDao extends AbstractDao<Brand> {
 	private CriteriaConfigurer criteriaConfigurer;
 	
 	public List<Brand> get(){
-		return (List<Brand>) currentSession().createQuery("from Brand").list();
+		Criteria brandCriteria = currentSession().createCriteria(Brand.class);
+		brandCriteria.createCriteria("wistiaProjectData");
+		brandCriteria.addOrder(Order.asc("name"));
+		return (List<Brand>) brandCriteria.list();
+//		return (List<Brand>) currentSession().createQuery("from Brand as brand  order by name").list();
 	}
 	
 	@SuppressWarnings("unchecked")

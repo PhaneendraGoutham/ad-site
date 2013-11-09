@@ -3,10 +3,15 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <article class="center-article-wrapper ui-corner-all">
 
-	<form class="form" action="/user/password/recall" method="POST">
+	<form class="form" action="/user/password/recall" method="POST" id="recall-password-form">
 	<p class="color-imp">Na podany adres email wyślemy nowe hasło.<p>
 	<br/>
 			<label><spring:message code="label.email"></spring:message></label>
-			<input class="ui-corner-all" type="text" name="mail"/> <input type="submit"
+			<input class="ui-corner-all required email" type="text" name="mail"/> <input type="submit"
 				class="ui-corner-all button-green" value="Wyślij" /></form>
 </article>
+<script>
+	$(function(){
+		$("#recall-password-form").validate();
+	});
+</script>

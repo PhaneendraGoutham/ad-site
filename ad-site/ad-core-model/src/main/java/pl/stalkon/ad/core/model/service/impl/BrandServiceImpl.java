@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,10 +78,10 @@ public class BrandServiceImpl implements BrandService {
 
 	@Override
 	@Transactional
+	@CacheEvict(value="brands", allEntries=true)
 	public Brand register(BrandPostDto brandPostDto,
 			WistiaProjectData wistiaProjectData, Long companyId) {
 		Brand brand = createBrand(brandPostDto, wistiaProjectData);
-		System.out.println(companyId);
 		if (companyId != null) {
 			System.out.println("adfasdfsdfasdf");
 			Company company = companyDao.get(companyId);

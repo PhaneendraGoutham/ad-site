@@ -175,6 +175,7 @@ $(function() {
 		autoOpen : false,
 		height : 135,
 		width : 180,
+		resizable: false,
 		buttons : [ {
 			text : "OK",
 			click : function() {

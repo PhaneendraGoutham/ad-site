@@ -1,6 +1,7 @@
 package pl.stalkon.ad.core.model.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -192,6 +193,7 @@ public class AdServiceImpl implements AdService {
 			queryObjectList.add(new DaoQueryObject("creationDate", date, CompareType.MORE));
 		}
 		queryObjectList.add(new DaoQueryObject("approved", true));
+		queryObjectList.add(new DaoQueryObject("place", Place.MAIN));
 		return adDao.getList(queryObjectList, Order.desc("rank"), paging);
 	}
 
@@ -284,6 +286,7 @@ public class AdServiceImpl implements AdService {
 
 	@Override
 	@Transactional
+	@Cacheable("tags")
 	public List<Tag> getTags() {
 		return tagDao.get();
 	}
@@ -293,6 +296,8 @@ public class AdServiceImpl implements AdService {
 	@Cacheable(value= "waiting", key="#paging.from + '-' + #paging.perPage + '-' + #approved")
 	public AdBrowserWrapper getWaiting(AdSearchDto adSearchDto, Paging paging,
 			boolean approved) {
+		adSearchDto.setOrder("desc");
+		adSearchDto.setOrderBy("creationDate");
 		return get(adSearchDto, paging, approved);
 	}
 
@@ -301,6 +306,8 @@ public class AdServiceImpl implements AdService {
 	@Cacheable(value="main", key="#paging.from + '-' + #paging.perPage + '-' + #approved")
 	public AdBrowserWrapper getMain(AdSearchDto adSearchDto, Paging paging,
 			boolean approved) {
+		adSearchDto.setOrder("desc");
+		adSearchDto.setOrderBy("creationDate");
 		return get(adSearchDto, paging, approved);
 	}
 	
@@ -386,6 +393,11 @@ public class AdServiceImpl implements AdService {
 			tagList.add(new DaoQueryObject("id", adSearchDto.getTagList(),
 					CompareType.IN_DISJUNCTION));
 			queryObjectList.add(new DaoQueryObject("tags", tagList));
+//			List<Long> adIds = tagDao.getAdIds(adSearchDto.getTagList());
+//			if(adIds != null && adIds.size() > 0){
+//				queryObjectList.add(new DaoQueryObject("id", adIds, CompareType.IN));
+//			}
+			
 		}
 	}
 

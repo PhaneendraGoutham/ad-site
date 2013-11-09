@@ -12,7 +12,7 @@
 			<img src="${avatar }" id="avatar" class="left avatar cursor" />
 		</div>
 		<div class="left left-user-name-date-wrapper">
-			<span class="color-imp">${username}</span> <br /> <span
+			<span class="color-imp">${displayName}</span> <br /> <span
 				class="color-imp">${mail}</span> <input id="fileupload" type="file"
 				name="file" data-url="/user/upload/image" class="hidden">
 		</div>

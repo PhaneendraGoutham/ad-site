@@ -117,7 +117,7 @@ public class UserController extends BaseController {
 
 		User user = userService.register(userRegForm);
 
-		mailService.sendUserVerificationEmail(user); 
+		mailService.sendUserVerificationEmail(user);
 		redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
 				"info.user.registered", null, LocaleContextHolder.getLocale()));
 		return "redirect:/info-page";
@@ -133,7 +133,7 @@ public class UserController extends BaseController {
 				.getCredentials().getMail(), user.getDisplayName());
 		model.addAttribute("userProfileDto", userProfileDto);
 		model.addAttribute("avatar", user.getUserData().getImageUrl());
-		model.addAttribute("username", user.getCredentials().getUsername());
+		model.addAttribute("displayName", user.getDisplayName());
 		model.addAttribute("mail", user.getCredentials().getMail());
 		return "user/profile";
 	}
@@ -168,12 +168,16 @@ public class UserController extends BaseController {
 		if (result.hasErrors()) {
 			return controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
-		userService.changePassword(socialLoggedUser.getId(),
+		boolean changed = userService.changePassword(socialLoggedUser.getId(),
 				changePasswordDto.getOldPassword(),
 				changePasswordDto.getPassword());
-		redirectAttributes.addFlashAttribute("info", messageSource.getMessage(
-				"info.user.password.changed", null,
-				LocaleContextHolder.getLocale()));
+		if (changed) {
+			redirectAttributes.addFlashAttribute("info", messageSource
+					.getMessage("info.user.password.changed", null,
+							LocaleContextHolder.getLocale()));
+		}else{
+			redirectAttributes.addFlashAttribute("info", "Stare hasło jest nieprawidłowe");
+		}
 		return "redirect:/info-page";
 	}
 
@@ -229,32 +233,35 @@ public class UserController extends BaseController {
 		userService.updateUserAddress(userAddressDto, socialLoggedUser.getId());
 		return userAddressDto;
 	}
-	
+
 	@RequestMapping(value = "/user/password/recall", method = RequestMethod.GET)
 	public String getRecallPassword(Model model) {
 		return "user/password/recall";
 	}
-	
+
 	@RequestMapping(value = "/user/terms", method = RequestMethod.GET)
 	public String getTerms(Model model) {
 		model.addAttribute("info", "Jeszcze nie wymyśliłem regulaminu");
 		return "info-page";
 	}
-	
+
 	@RequestMapping(value = "/user/password/recall", method = RequestMethod.POST)
-	public String recallPassword(@RequestParam("mail") String mail, RedirectAttributes redirectAttributes) {
-		if(mail == null){
+	public String recallPassword(@RequestParam("mail") String mail,
+			RedirectAttributes redirectAttributes) {
+		if (mail == null) {
 			controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
 		String newPassword = userService.generateAndSetNewPassword(mail);
-		mailService.sendNewPassword(mail, newPassword);
-		redirectAttributes.addFlashAttribute("info", messageSource
-				.getMessage("info.user.newpassword", null,
-						LocaleContextHolder.getLocale()));
-		return "user/password/recall";
+		if (newPassword != null) {
+			mailService.sendNewPassword(mail, newPassword);
+			redirectAttributes.addFlashAttribute("info", messageSource
+					.getMessage("info.user.newpassword", null,
+							LocaleContextHolder.getLocale()));
+			return "redirect:/info-page";
+		}
+		redirectAttributes.addFlashAttribute("info",
+				"Taki adres email nie jest zarejestrowany w naszym portalu");
+		return "redirect:/info-page";
 	}
-	
-	
-	
 
 }

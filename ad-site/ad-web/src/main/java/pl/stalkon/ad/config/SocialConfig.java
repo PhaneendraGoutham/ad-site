@@ -78,8 +78,7 @@ public class SocialConfig {
 				env.getProperty("facebook.appSecret"));
 		OAuth2AuthenticationService<Facebook> facebookAuthenticationService = new OAuth2AuthenticationService<Facebook>(
 				facebookConnectionFactory);
-		facebookAuthenticationService
-				.setScope("email,user_birthday");
+		facebookAuthenticationService.setDefaultScope("email,user_birthday");
 		registry.addAuthenticationService(facebookAuthenticationService);
 
 		return registry;

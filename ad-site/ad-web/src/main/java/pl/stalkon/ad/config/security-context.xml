@@ -35,7 +35,7 @@
 			logout-success-url="/" />
 
 		<security:intercept-url pattern="/ad/register"
-			access="hasRole('ROLE_USER')" />
+			access="hasRole('ROLE_USER') and !hasRole('ROLE_COMPANY')" />
 
 		<!-- <security:intercept-url pattern="/brand/*/ad/register" -->
 		<!-- access="hasRole('ROLE_USER')" /> -->

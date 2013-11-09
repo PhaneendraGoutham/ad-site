@@ -62,7 +62,8 @@ public class CompanyController {
 		if (result.hasErrors()) {
 			controllerHelperBean.invalidPostRequest(redirectAttributes);
 		}
-		companyService.register(company, socialLoggedUser.getId());
+		Company resultCompany = companyService.register(company, socialLoggedUser.getId());
+		mailService.sendCompanyVerificationEmail(resultCompany);
 //		controllerHelperBean.reathenticateUser(socialLoggedUser.getUsername());
 		redirectAttributes.addFlashAttribute("info", "Przyjeliśmy Twoje zgłoszenie. Poinformujemy Cię o aktywacji firmy na podany przez Ciebie adres email.");
 		return "redirect:/info-page";
