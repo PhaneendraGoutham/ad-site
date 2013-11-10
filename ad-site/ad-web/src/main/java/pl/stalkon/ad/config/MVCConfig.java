@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.Assert;
@@ -26,7 +27,6 @@ import org.springframework.web.servlet.mvc.WebContentInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 
 import pl.stalkon.ad.core.controller.FileController;
-import pl.stalkon.ad.core.interceptors.MiniBrowserInterceptor;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.impl.FileServiceImpl;
@@ -56,6 +56,8 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		localeResolver.setDefaultLocale(new Locale("pl"));
 		return localeResolver;
 	}
+	
+
 	
 	
 	@Bean
@@ -100,15 +102,15 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	// }
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		MiniBrowserInterceptor	miniBrowserInterceptor = new MiniBrowserInterceptor();
-		miniBrowserInterceptor.setAdService(adService);
+	//	MiniBrowserInterceptor	miniBrowserInterceptor = new MiniBrowserInterceptor();
+	//	miniBrowserInterceptor.setAdService(adService);
 		WebContentInterceptor webContentInterceptor = new WebContentInterceptor();
 		webContentInterceptor.setCacheSeconds(862340);
 		webContentInterceptor.setUseExpiresHeader(true);
 		webContentInterceptor.setUseCacheControlHeader(true);
 		webContentInterceptor.setUseCacheControlNoStore(true);
 //		registry.addInterceptor(webContentInterceptor).addPathPatterns("/resources/**");
-		registry.addInterceptor(miniBrowserInterceptor).addPathPatterns("/**");
+//		registry.addInterceptor(miniBrowserInterceptor).addPathPatterns("/**");
 	}
 
 	@Override
