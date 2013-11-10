@@ -1,8 +1,5 @@
 package pl.stalkon.ad.core.model.service;
 
-import java.util.List;
-
-import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
 
 

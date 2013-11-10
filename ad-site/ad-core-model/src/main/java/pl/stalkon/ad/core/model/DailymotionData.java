@@ -1,7 +1,5 @@
 package pl.stalkon.ad.core.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import pl.styall.library.core.model.CommonEntity;

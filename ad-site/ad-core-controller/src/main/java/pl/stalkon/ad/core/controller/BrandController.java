@@ -1,9 +1,6 @@
 package pl.stalkon.ad.core.controller;
 
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -28,10 +25,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.stalkon.ad.core.model.Brand;
-import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.WistiaProjectData;
-import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.BrandPostDto;
 import pl.stalkon.ad.core.model.dto.BrandSearchDto;

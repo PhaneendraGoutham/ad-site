@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import EDU.oswego.cs.dl.util.concurrent.CopyOnWriteArrayList;
-
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.ContestAnswer;

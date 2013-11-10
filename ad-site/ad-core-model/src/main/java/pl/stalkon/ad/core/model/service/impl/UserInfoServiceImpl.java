@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.UserInfo;
 import pl.stalkon.ad.core.model.UserInfo.Type;
 import pl.stalkon.ad.core.model.dao.UserDao;

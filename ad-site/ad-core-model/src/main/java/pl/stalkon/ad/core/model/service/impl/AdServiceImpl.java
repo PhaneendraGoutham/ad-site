@@ -1,29 +1,23 @@
 package pl.stalkon.ad.core.model.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cache;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Place;
 import pl.stalkon.ad.core.model.AdComment;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.ContestAd;
-import pl.stalkon.ad.core.model.DailymotionData;
 import pl.stalkon.ad.core.model.Inform;
 import pl.stalkon.ad.core.model.Rank;
 import pl.stalkon.ad.core.model.Tag;
@@ -40,7 +34,6 @@ import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.AutocompleteDto;
-import pl.stalkon.ad.core.model.dto.BrandSearchDto;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.styall.library.core.model.dao.DaoQueryObject;

@@ -1,11 +1,6 @@
 package pl.stalkon.video.api.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import pl.stalkon.ad.core.model.Ad;
-import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 
 

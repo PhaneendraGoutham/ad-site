@@ -1,7 +1,7 @@
 package pl.stalkon.ad.config;
 
-import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -23,10 +23,10 @@ import pl.stalkon.social.singleconnection.interfaces.UsersConnectionRepository;
 @Configuration
 public class SocialSecurityConfig {
 
-	@Inject
+	@Autowired
 	private Environment environment;
 
-	@Inject
+	@Autowired
 	private UsersConnectionRepository usersConnectionRepository;
 
 	@Bean 

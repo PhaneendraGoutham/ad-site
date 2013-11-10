@@ -4,18 +4,11 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.search.query.hibernate.impl.ProjectionLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Contest;
-import pl.stalkon.ad.core.model.ContestAd;
-import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.styall.library.core.model.dao.AbstractDao;

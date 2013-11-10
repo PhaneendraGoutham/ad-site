@@ -3,21 +3,11 @@ package pl.stalkon.ad.core.model.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import pl.stalkon.ad.core.model.Ad;
-import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.ContestAd;
-import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
-import pl.styall.library.core.model.CommonEntity;
 import pl.styall.library.core.model.dao.AbstractDao;
-import pl.styall.library.core.model.dao.CriteriaConfigurer;
-import pl.styall.library.core.model.dao.DaoQueryObject;
 
 @Repository
 public class ContestAdDao extends AbstractDao<ContestAd> {

@@ -2,10 +2,11 @@ package pl.stalkon.ad.config;
 
 import java.util.Properties;
 
-import javax.inject.Inject;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -18,14 +19,13 @@ import pl.stalkon.ad.core.model.SocialUser;
 import pl.styall.library.core.model.UserRole;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
 import pl.styall.library.core.model.defaultimpl.Address;
-import pl.styall.library.core.model.defaultimpl.Company;
 import pl.styall.library.core.model.defaultimpl.UserData;
 
 @Configuration
 @EnableTransactionManagement(order = 2)
 public class HibernateConfig {
 
-	@Inject
+	@Autowired
 	private Environment env;
 
 	@Bean(destroyMethod = "close")

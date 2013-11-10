@@ -1,6 +1,6 @@
 package pl.stalkon.ad.core.model.service;
 
-import java.io.IOException;
+
 
 import org.imgscalr.Scalr.Mode;
 import org.springframework.validation.BindingResult;

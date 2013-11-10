@@ -4,8 +4,8 @@ import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -18,8 +18,6 @@ import pl.stalkon.ad.core.model.dto.UserRegForm;
 import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.social.ext.SocialUserDataFetcher;
 import pl.styall.library.core.model.AbstractUserData.Sex;
-import pl.styall.library.core.model.Credentials;
-import pl.styall.library.core.model.defaultimpl.UserData;
 
 public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 

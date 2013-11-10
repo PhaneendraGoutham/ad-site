@@ -2,16 +2,12 @@ package pl.stalkon.ad.core.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.UserProfile;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.stalkon.ad.core.model.SocialUser;
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.dao.UserDao;
-import pl.stalkon.social.ext.SocialUserDataFetcher;
-import pl.stalkon.social.ext.SocialServiceHelper;
-import pl.stalkon.social.singleconnection.interfaces.ConnectionSignup;
 import pl.stalkon.social.singleconnection.interfaces.RemoteUser;
 import pl.stalkon.social.singleconnection.interfaces.SocialUserService;
 

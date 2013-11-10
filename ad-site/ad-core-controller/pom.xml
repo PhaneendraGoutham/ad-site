@@ -25,11 +25,7 @@
 			<artifactId>ad-core-model</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>pl.stalkon</groupId>
-			<artifactId>dailymotion-api-module</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>pl.stalkon</groupId>
 			<artifactId>ad-core-security</artifactId>

@@ -2,9 +2,10 @@ package pl.stalkon.ad.config;
 
 import java.awt.Color;
 
-import javax.inject.Inject;
+
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -25,7 +26,6 @@ import com.octo.captcha.component.word.FileDictionary;
 import com.octo.captcha.component.word.wordgenerator.DictionaryWordGenerator;
 import com.octo.captcha.engine.GenericCaptchaEngine;
 import com.octo.captcha.image.gimpy.GimpyFactory;
-import com.octo.captcha.service.CaptchaService;
 import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
 
 import pl.stalkon.ad.core.model.service.UserInfoService;
@@ -37,16 +37,16 @@ import pl.styall.library.core.security.filter.UserMessageFilter;
 @ImportResource("classpath:pl/stalkon/ad/config/security-context.xml")
 public class SecurityConfig {
 
-	@Inject
+	@Autowired
 	private DataSource dataSource;
 
-	@Inject
+	@Autowired
 	private Environment env;
 	
-	@Inject
+	@Autowired
 	private UserDetailsService userDetailsService;
 	
-	@Inject
+	@Autowired
 	private UserInfoService userInfoService;
 
 	@Bean

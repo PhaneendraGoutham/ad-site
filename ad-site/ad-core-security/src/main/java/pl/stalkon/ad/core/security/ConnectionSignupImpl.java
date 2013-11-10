@@ -1,13 +1,10 @@
 package pl.stalkon.ad.core.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.transaction.annotation.Transactional;
 
-import pl.stalkon.ad.core.model.SocialUser;
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.dao.UserDao;
 import pl.stalkon.social.ext.SocialServiceHelper;

@@ -7,8 +7,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
 import pl.stalkon.ad.core.model.Contest;
 
 public class ContestPostDto {

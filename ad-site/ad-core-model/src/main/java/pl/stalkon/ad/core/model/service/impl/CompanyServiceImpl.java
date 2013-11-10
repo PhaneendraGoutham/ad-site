@@ -1,19 +1,15 @@
 package pl.stalkon.ad.core.model.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.dao.CompanyDao;
 import pl.stalkon.ad.core.model.dao.UserDao;
 import pl.stalkon.ad.core.model.service.CompanyService;
-import pl.styall.library.core.model.UserRole;
 
 @Service("companyService")
 public class CompanyServiceImpl implements CompanyService {

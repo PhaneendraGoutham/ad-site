@@ -2,7 +2,7 @@ package pl.stalkon.ad.social.facebook;
 
 import java.util.Locale;
 
-import org.apache.tiles.locale.LocaleResolver;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
@@ -12,8 +12,6 @@ import org.springframework.social.OperationNotPermittedException;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookLink;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
 import pl.stalkon.social.singleconnection.interfaces.AddConnectionHandler;
 
 public class FacebookServiceImpl implements AddConnectionHandler,

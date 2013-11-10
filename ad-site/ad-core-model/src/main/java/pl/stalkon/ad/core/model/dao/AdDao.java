@@ -1,7 +1,5 @@
 package pl.stalkon.ad.core.model.dao;
 
-import java.math.BigInteger;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,11 +7,9 @@ import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.ScrollableResults;
-import org.hibernate.annotations.Formula;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

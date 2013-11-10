@@ -1,16 +1,12 @@
 package pl.stalkon.ad.core.controller;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -22,16 +18,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sun.mail.imap.protocol.Status;
+
 
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.UserInfo;
@@ -40,15 +34,11 @@ import pl.stalkon.ad.core.model.dto.UserAddressDto;
 import pl.stalkon.ad.core.model.dto.UserProfileDto;
 import pl.stalkon.ad.core.model.dto.UserRegForm;
 import pl.stalkon.ad.core.model.service.ContestService;
-import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.MailService;
 import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.core.model.service.UserService;
-import pl.stalkon.ad.core.model.service.impl.MailServiceImpl;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
-import pl.stalkon.ad.extensions.UploadingFileException;
 import pl.styall.library.core.ext.controller.BaseController;
-import pl.styall.library.core.ext.validation.ValidationException;
 
 @Controller
 public class UserController extends BaseController {

@@ -1,7 +1,6 @@
 package pl.stalkon.ad.core.model.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Hibernate;
@@ -31,10 +30,7 @@ import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestPostDto;
 import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.model.service.impl.helper.Paging;
-import pl.styall.library.core.ext.QueryObject;
-import pl.styall.library.core.ext.QueryObjectWrapper;
 import pl.styall.library.core.model.dao.DaoQueryObject;
-import pl.styall.library.core.model.dao.DaoQueryObject.CompareType;
 
 @Service
 public class ContestServiceImpl implements ContestService{

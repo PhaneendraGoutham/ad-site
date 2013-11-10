@@ -8,8 +8,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
-
 import pl.styall.library.core.model.AbstractUser;
 import pl.styall.library.core.model.defaultimpl.Address;
 import pl.styall.library.core.model.defaultimpl.UserData;

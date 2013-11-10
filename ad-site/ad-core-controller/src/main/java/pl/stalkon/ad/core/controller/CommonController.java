@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import pl.stalkon.ad.core.model.dao.AdDao;
 import pl.stalkon.ad.core.model.service.AdService;
 
 @Controller

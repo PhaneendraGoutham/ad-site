@@ -2,13 +2,9 @@ package pl.stalkon.ad.core.model.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +13,11 @@ import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.dao.BrandDao;
 import pl.stalkon.ad.core.model.dao.CompanyDao;
-import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.BrandPostDto;
 import pl.stalkon.ad.core.model.dto.BrandSearchDto;
 import pl.stalkon.ad.core.model.service.BrandService;
 import pl.styall.library.core.model.dao.DaoQueryObject;
 import pl.styall.library.core.model.dao.DaoQueryObject.CompareType;
-import pl.styall.library.core.model.defaultimpl.UserDao;
 
 @Service("brandService")
 public class BrandServiceImpl implements BrandService {

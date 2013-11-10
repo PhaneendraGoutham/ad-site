@@ -5,14 +5,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pl.stalkon.ad.core.model.SocialUser;
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.dao.UserDao;
 import pl.stalkon.ad.core.security.SocialLoggedUser.LoggedType;

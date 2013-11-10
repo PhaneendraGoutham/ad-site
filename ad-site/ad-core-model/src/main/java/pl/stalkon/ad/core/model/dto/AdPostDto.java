@@ -3,13 +3,11 @@ package pl.stalkon.ad.core.model.dto;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
 
-import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Type;
 
 public class AdPostDto {

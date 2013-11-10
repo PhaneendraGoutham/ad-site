@@ -1,15 +1,11 @@
 package pl.stalkon.video.api.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import pl.stalkon.ad.core.model.Ad;
-import pl.stalkon.ad.core.model.Brand;
-import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.video.api.service.VideoApiException;
 import pl.stalkon.video.api.service.VideoApiService;

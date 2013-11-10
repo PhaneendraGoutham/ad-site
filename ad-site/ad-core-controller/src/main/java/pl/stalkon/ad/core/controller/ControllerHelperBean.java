@@ -5,7 +5,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tiles.locale.LocaleResolver;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -23,13 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.UserRoleDef;
-import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
-import pl.stalkon.ad.core.model.dto.AdSearchDto;
-import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.model.service.UserInfoService;
-import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.styall.library.core.security.filter.UserMessageSessionAttribute;
 

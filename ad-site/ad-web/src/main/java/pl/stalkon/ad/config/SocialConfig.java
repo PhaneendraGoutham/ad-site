@@ -3,8 +3,9 @@ package pl.stalkon.ad.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -25,12 +26,10 @@ import pl.stalkon.ad.core.security.ConnectionSignupImpl;
 import pl.stalkon.ad.core.security.FacebookFetcher;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.core.security.SocialUserServiceImpl;
-import pl.stalkon.ad.social.facebook.FacebookServiceImpl;
 import pl.stalkon.social.ext.SocialServiceHelper;
 import pl.stalkon.social.ext.SocialUserDataFetcher;
 import pl.stalkon.social.facebook.CustomFacebookConnectionFactory;
 import pl.stalkon.social.singleconnection.impl.UsersConnectionRepositoryImpl;
-import pl.stalkon.social.singleconnection.interfaces.AddConnectionHandler;
 import pl.stalkon.social.singleconnection.interfaces.ConnectionRepository;
 import pl.stalkon.social.singleconnection.interfaces.ConnectionSignup;
 import pl.stalkon.social.singleconnection.interfaces.SocialUserService;
@@ -39,10 +38,10 @@ import pl.stalkon.social.singleconnection.interfaces.UsersConnectionRepository;
 @Configuration
 public class SocialConfig {
 
-	@Inject
+	@Autowired
 	private Environment env;
 
-	@Inject
+	@Autowired
 	private TextEncryptor textEncryptor;
 
 	@Bean

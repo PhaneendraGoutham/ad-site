@@ -1,8 +1,5 @@
 package pl.stalkon.ad.core.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;

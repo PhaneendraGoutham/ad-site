@@ -1,6 +1,5 @@
 package pl.stalkon.video.api.service.impl;
 
-import java.awt.Label;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,7 +22,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import pl.stalkon.ad.core.model.Ad;
-import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.WistiaVideoData;
 import pl.stalkon.ad.core.model.dto.AdPostDto;

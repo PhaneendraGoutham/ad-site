@@ -1,20 +1,8 @@
 package pl.stalkon.ad.core.model.dto;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.OrderBy;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
-
-import org.apache.avro.Schema.Field.Order;
-import org.hibernate.validator.constraints.NotEmpty;
-
 import pl.stalkon.ad.core.model.Ad.Place;
-import pl.stalkon.ad.core.model.Tag;
 
 public class AdSearchDto {
 	

@@ -3,21 +3,15 @@ package pl.stalkon.ad.core.model.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
-import org.hibernate.criterion.Order;
-
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Place;
 import pl.stalkon.ad.core.model.AdComment;
-import pl.stalkon.ad.core.model.DailymotionData;
 import pl.stalkon.ad.core.model.Tag;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.AutocompleteDto;
 import pl.stalkon.ad.core.model.service.impl.helper.Paging;
-import pl.styall.library.core.model.dao.DaoQueryObject;
 
 public interface AdService {
 	public Ad register(AdPostDto adPostDto, Ad ad, Long userId,

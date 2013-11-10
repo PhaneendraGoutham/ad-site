@@ -1,19 +1,16 @@
 package pl.stalkon.ad.core.controller;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.http.HttpRequest;
-import org.junit.runner.Request;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,14 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
 import pl.stalkon.ad.core.model.Ad;
-import pl.stalkon.ad.core.model.Brand;
-import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.User;
-import pl.stalkon.ad.core.model.Ad.Place;
 import pl.stalkon.ad.core.model.Contest.State;
 import pl.stalkon.ad.core.model.Contest.Type;
 import pl.stalkon.ad.core.model.UserInfo;
@@ -46,12 +38,10 @@ import pl.stalkon.ad.core.model.dto.UserAddressDto;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.model.service.ContestService;
-import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
-import pl.styall.library.core.security.filter.UserMessageSessionAttribute;
 
 @Controller
 public class ContestController {

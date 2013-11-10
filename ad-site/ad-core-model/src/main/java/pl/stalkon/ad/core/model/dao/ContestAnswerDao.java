@@ -8,10 +8,8 @@ import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.ContestAnswer;
 import pl.stalkon.ad.core.model.dto.ContestAnswerBrowserWrapper;
-import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.styall.library.core.model.dao.AbstractDao;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;

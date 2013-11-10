@@ -2,7 +2,7 @@ package pl.stalkon.ad.core.model.service.impl;
 
 import java.security.SecureRandom;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

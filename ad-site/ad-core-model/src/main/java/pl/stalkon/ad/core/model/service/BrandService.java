@@ -1,16 +1,12 @@
 package pl.stalkon.ad.core.model.service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.hibernate.criterion.Order;
 
 import pl.stalkon.ad.core.model.Brand;
 import pl.stalkon.ad.core.model.WistiaProjectData;
 import pl.stalkon.ad.core.model.dto.BrandPostDto;
 import pl.stalkon.ad.core.model.dto.BrandSearchDto;
-import pl.styall.library.core.ext.QueryObject;
 import pl.styall.library.core.model.dao.DaoQueryObject;
 
 public interface BrandService  {

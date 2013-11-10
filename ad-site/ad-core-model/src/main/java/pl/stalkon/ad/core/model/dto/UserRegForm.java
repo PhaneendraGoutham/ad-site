@@ -8,8 +8,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
 import pl.stalkon.ad.core.model.User.DisplayNameType;
 import pl.styall.library.core.form.UserFormModel;
 import pl.styall.library.core.model.AbstractUserData.Sex;
