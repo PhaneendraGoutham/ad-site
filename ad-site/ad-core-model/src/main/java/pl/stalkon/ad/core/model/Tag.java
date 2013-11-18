@@ -1,5 +1,8 @@
 package pl.stalkon.ad.core.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -9,6 +12,7 @@ import pl.styall.library.core.model.CommonEntity;
 @Table(name="tags")
 public class Tag extends CommonEntity {
 
+	public static final List<String> JSON_SM_SHOW = Arrays.asList("id", "name");
 	/**
 	 * 
 	 */

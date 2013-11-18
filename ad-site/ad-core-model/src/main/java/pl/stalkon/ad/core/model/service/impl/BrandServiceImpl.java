@@ -77,7 +77,6 @@ public class BrandServiceImpl implements BrandService {
 			WistiaProjectData wistiaProjectData, Long companyId) {
 		Brand brand = createBrand(brandPostDto, wistiaProjectData);
 		if (companyId != null) {
-			System.out.println("adfasdfsdfasdf");
 			Company company = companyDao.get(companyId);
 			brand.setCompany(company);
 		}

@@ -1,6 +1,7 @@
 package pl.stalkon.ad.core.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -19,14 +20,21 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.Formula;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
 @Table(name = "ads")
+
 public class Ad extends CommonEntity {
 
 	private static final long serialVersionUID = 1335218634734582331L;
 
+	public static final List<String> JSON_SHOW = Arrays.asList("id","place","dateOnMain","creationDate","year","title","description","ageProtected","approved","user.displayName","user.id","user.userData.imageUrl",
+		"brand.name","brand.id","brand.smallLogoUrl","rank","voteCount","thumbnail","videoUrl");
+	
 	public enum Type {
 		MOVIE, PICTURE, GAME
 	}
@@ -134,10 +142,9 @@ public class Ad extends CommonEntity {
 	}
 
 	public Double getRank() {
-		if (rank != null) {
-			return this.rank / voteCount;
-		} else
+		if(rank== null)
 			return new Double(0);
+		return rank;
 	}
 
 	public void setRank(Double rank) {

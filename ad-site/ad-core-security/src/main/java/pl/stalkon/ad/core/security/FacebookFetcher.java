@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookProfile;
 
@@ -23,8 +23,6 @@ public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 
 	private static Logger log = Logger.getLogger(FacebookFetcher.class);
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private UserService userService;
@@ -34,7 +32,7 @@ public class FacebookFetcher implements SocialUserDataFetcher<Facebook> {
 		FacebookProfile profile = api.userOperations().getUserProfile();
 		UserRegForm userRegForm = new UserRegForm();
 		userRegForm.setMail(profile.getEmail());
-		String password = RandomStringUtils.random(12,0,0,true,true,null, new SecureRandom());
+		String password = KeyGenerators.string().generateKey();
 		String username = RandomStringUtils.random(10,0,35,true,true,"abcdefghijklmnopqrstuvwxyz1234567890".toCharArray(), new SecureRandom());
 		userRegForm.setPassword(password);
 		userRegForm.setConfirmPassword(password);

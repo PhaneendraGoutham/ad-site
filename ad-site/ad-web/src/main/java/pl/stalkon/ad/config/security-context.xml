@@ -8,11 +8,11 @@
 
 
 
-	<security:authentication-manager alias="authenticationManager">
+	<security:authentication-manager alias="authenticationManager" >
 		<security:authentication-provider
 			ref="authenticationProvider" />
-		<security:authentication-provider
-			ref="socialAuthenticationProvider" />
+<!-- 		<security:authentication-provider  -->
+<!-- 			ref="socialAuthenticationProvider" /> -->
 	</security:authentication-manager>
 	<security:http pattern="/resources/**" security="none" />
 	<security:http pattern="/favicon.ico" security="none" />
@@ -20,19 +20,22 @@
 	<security:http pattern="/uploads/**" security="none" />
 	
 	
-	<security:http use-expressions="true" access-denied-page="/user/login">
+	<security:http use-expressions="true" create-session="stateless" entry-point-ref="authenticationEntryPoint" >
 		<security:anonymous enabled="true" />
-		<security:remember-me key="asdf"
-			services-ref="persistentTokenBasedRememberMeServices" />
-		<security:custom-filter ref="socialAuthenticationFilter"
-			before="PRE_AUTH_FILTER" />
+<!-- 		<security:remember-me key="asdf" -->
+<!-- 			services-ref="persistentTokenBasedRememberMeServices" /> -->
+<!-- 		<security:custom-filter ref="socialAuthenticationFilter" -->
+<!-- 			before="PRE_AUTH_FILTER" /> -->
+		<security:custom-filter ref="tokenAuthenticationFilter"
+			before="BASIC_AUTH_FILTER" />
+			
 		<security:custom-filter ref="userMessageFilter"
 			after="SESSION_MANAGEMENT_FILTER" />
-		<security:form-login login-page="/user/login"
-			login-processing-url="/process_loging" password-parameter="password"
-			username-parameter="username" authentication-failure-url="/user/login?login_error=1" />
-		<security:logout invalidate-session="true" logout-url="/user/logout"
-			logout-success-url="/" />
+<!-- 		<security:form-login login-page="/user/login" -->
+<!-- 			login-processing-url="/process_loging" password-parameter="password" -->
+<!-- 			username-parameter="username" authentication-failure-url="/user/login?login_error=1" /> -->
+<!-- 		<security:logout invalidate-session="true" logout-url="/user/logout" -->
+<!-- 			logout-success-url="/" /> -->
 
 		<security:intercept-url pattern="/ad/register"
 			access="hasRole('ROLE_USER') and !hasRole('ROLE_COMPANY')" />
@@ -48,7 +51,7 @@
 
 		<security:intercept-url pattern="/ad" method="POST"
 			access="hasRole('ROLE_USER')" />
-
+<security:intercept-url method="OPTIONS" access="hasRole('ROLE_ANONYMOUS')" pattern="/**"/>
 		<security:intercept-url pattern="/ad/update/*"
 			method="POST" access="hasRole('ROLE_USER')" />
 
@@ -80,13 +83,14 @@
 		<security:intercept-url pattern="/user/upload/image"
 			method="POST" access="hasRole('ROLE_USER')" />
 
-		<security:intercept-url pattern="/user/profile"
+		<security:intercept-url pattern="/user/*/profile"
 			access="hasRole('ROLE_USER')" />
-		<security:intercept-url pattern="/user/password"
+		<security:intercept-url method="POST"  pattern="/user/*/password"
 			access="hasRole('ROLE_USER')" />
 		<security:intercept-url pattern="/user/message"
 			access="hasRole('ROLE_USER')" />
-
+		<security:intercept-url pattern="/user/login/status"
+			access="hasRole('ROLE_USER')" />
 		<security:intercept-url pattern="/user/upload/image"
 			method="POST" access="hasRole('ROLE_USER')" />
 
@@ -123,21 +127,9 @@
 	<!-- <security:global-method-security -->
 	<!-- secured-annotations="enabled" /> -->
 
+<security:global-method-security pre-post-annotations="enabled" ></security:global-method-security>
 
 
-	<bean id="tilesConfigurer"
-		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
-		<property name="definitions" value="/WEB-INF/views/tiles.xml" />
-	</bean>
-
-	<bean id="viewResolver"
-		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-		<property name="viewClass">
-			<value>
-				org.springframework.web.servlet.view.tiles2.TilesView
-			</value>
-		</property>
-	</bean>
 
 
 

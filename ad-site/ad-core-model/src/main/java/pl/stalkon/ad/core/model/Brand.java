@@ -1,5 +1,6 @@
 package pl.stalkon.ad.core.model;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,8 @@ import pl.styall.library.core.model.CommonEntity;
 @Table(name = "brands")
 public class Brand extends CommonEntity {
 	private static final long serialVersionUID = -3646540035738604078L;
-
+	public static final List<String> JSON_SHOW = Arrays.asList("id","creationDate","description","name","smallLogoUrl","logoUrl");
+	public static final List<String> JSON_SM_SHOW = Arrays.asList("id","name");
 	@Column(length = 1024, nullable = false)
 	private String description;
 

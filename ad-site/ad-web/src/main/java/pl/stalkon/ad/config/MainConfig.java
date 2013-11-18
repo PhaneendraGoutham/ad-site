@@ -19,11 +19,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import pl.stalkon.ad.core.model.service.MailService;
 import pl.stalkon.ad.core.model.service.impl.MailServiceImpl;
+import pl.styall.library.core.filter.CorsFilter;
 
 @Configuration
-@ComponentScan(basePackages = { "pl.stalkon.ad.core.controller",
+@ComponentScan(basePackages = { "pl.stalkon.ad.rest.controller",
 		"pl.stalkon.ad.core.model",
-		"pl.stalkon.dailymotion.api.module.service.impl",
 		"pl.stalkon.video.api.service.impl", "pl.stalkon.video.api.youtube" })
 @PropertySource("classpath:pl/stalkon/ad/config/application.properties")
 @EnableCaching(order = 1)
@@ -71,6 +71,12 @@ public class MainConfig {
 		javaMailSenderImpl.setJavaMailProperties(props);
 		return javaMailSenderImpl;
 	}
+	
+	@Bean
+	public CorsFilter corsFilter(){
+		return new CorsFilter();
+	}
+	
 	
 	@Bean
 	public MailService mailService(){

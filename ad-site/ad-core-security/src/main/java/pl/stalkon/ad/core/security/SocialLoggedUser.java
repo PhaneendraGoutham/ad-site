@@ -26,11 +26,10 @@ public class SocialLoggedUser extends LoggedUser implements SocialUserDetails {
 	private final LoggedType type;
 
 	public SocialLoggedUser(Long id, String username, String displayName, Date birthdate,
-			String password, String salt, String imageUrl, LoggedType type,
+			String password, String imageUrl, LoggedType type,
 			Collection<? extends GrantedAuthority> authorities) {
-		super(id, username, password, salt, imageUrl, authorities);
+		super(id, username, password,  imageUrl, authorities);
 		this.displayName = displayName;
-		System.out.println(countYears(birthdate));
 		if(countYears(birthdate) >= 18){
 			this.adult = true;
 		}
@@ -38,13 +37,12 @@ public class SocialLoggedUser extends LoggedUser implements SocialUserDetails {
 	}
 	
 	public SocialLoggedUser(Long id, String username,
-			String password, String salt, String imageUrl,LoggedType type, Date birthdate, boolean enabled,
+			String password,  String imageUrl,LoggedType type, Date birthdate, boolean enabled,
 			boolean accountNonExpired, boolean credentialsNonExpired,
 			boolean accountNonLocked,
 			Collection<? extends GrantedAuthority> authorities) {
-		super(id, username, password, salt, imageUrl, enabled, accountNonExpired,
+		super(id, username, password,  imageUrl, enabled, accountNonExpired,
 				credentialsNonExpired, accountNonLocked, authorities);
-		System.out.println(countYears(birthdate));
 		if(countYears(birthdate) >= 18){
 			this.adult = true;
 		}

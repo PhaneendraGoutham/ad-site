@@ -110,6 +110,12 @@
     <artifactId>spring-context-support</artifactId>
 			<version>${org.springframework.version}</version>
  </dependency>
+ 
+ <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aop</artifactId>
+    <version>${org.springframework.version}</version>
+</dependency>
 		<!-- Spring Security -->
 
 		<dependency>
@@ -181,7 +187,11 @@
 			<version>${jackson.version}</version>
 		</dependency>
 
-
+<dependency>
+  <groupId>com.fasterxml.jackson.datatype</groupId>
+  <artifactId>jackson-datatype-hibernate4</artifactId>
+			<version>${jackson.version}</version>
+</dependency>  
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
@@ -190,7 +200,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>5.0.1.Final</version>
+			<version>4.3.1.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.imgscalr</groupId>
@@ -323,6 +333,11 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.1</version>
 		</dependency>
+				<dependency>
+					<groupId>commons-beanutils</groupId>
+					<artifactId>commons-beanutils</artifactId>
+					<version>20030211.134440</version>
+				</dependency>
 	</dependencies>
 
 	

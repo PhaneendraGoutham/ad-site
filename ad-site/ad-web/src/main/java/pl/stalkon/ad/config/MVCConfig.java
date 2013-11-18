@@ -26,11 +26,15 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.mvc.WebContentInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+
 import pl.stalkon.ad.core.controller.FileController;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.impl.FileServiceImpl;
 import pl.styall.library.core.ext.QueryArgumentResolver;
+import pl.styall.library.core.rest.ext.EntityDtmMapper;
 
 @EnableWebMvc
 @Configuration
@@ -58,7 +62,10 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	}
 	
 
-	
+	@Bean
+	public EntityDtmMapper entityDtmMapper(){
+		return new EntityDtmMapper();
+	}
 	
 	@Bean
 	public MultipartResolver multipartResolver(){
@@ -67,10 +74,6 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		return commonsMultipartResolver;
 	}
 	
-	@Bean
-	public FileController fileController(){
-		return new FileController();
-	}
 	
 	@Bean
 	public FileService fileService(){
@@ -116,13 +119,17 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void configureMessageConverters(
 			List<HttpMessageConverter<?>> converters) {
-		converters.add(new MappingJackson2HttpMessageConverter());
+		MappingJackson2HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter();
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new Hibernate4Module());
+		jacksonConverter.setObjectMapper(objectMapper);
+		converters.add(jacksonConverter);
 	}
 	@Override
 	public void addArgumentResolvers(
 			List<HandlerMethodArgumentResolver> argumentResolvers) {
-		argumentResolvers.add(new ServletWebArgumentResolverAdapter(
-				new QueryArgumentResolver()));
+//		argumentResolvers.add(new ServletWebArgumentResolverAdapter(
+//				new QueryArgumentResolver()));
 	}
 
 	@Override

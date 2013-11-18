@@ -83,48 +83,48 @@ public class AdController {
 	@Autowired
 	private MessageSource messageSource;
 
-//	@RequestMapping(value = { "ad/main", "/" }, method = RequestMethod.GET)
-//	public String getMainSite(
-//			Model model,
-//			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-//			Principal principal) {
-//		AdSearchDto adSearchDto = new AdSearchDto();
-//		adSearchDto.setPlace(Place.MAIN);
-//		// AdBrowserWrapper adBrowserWrapper = adService.getMain(
-//		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
-//		// page), ControllerHelperBean.AD_PER_PAGE,
-//		// controllerHelperBean.getActive(principal));
-//		// controllerHelperBean.preparePagination(
-//		// ControllerHelperBean.AD_PER_PAGE, model,
-//		// adBrowserWrapper.getTotal(), page);
-//		AdBrowserWrapper adBrowserWrapper = adService.getMain(adSearchDto,
-//				new Paging(page, AD_PER_PAGE),
-//				controllerHelperBean.getActive(principal));
-//		preparePagination(page, adBrowserWrapper.getTotal(), model);
-//		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-//		model.addAttribute("path", "ad/main");
-//		return "browser";
-//	}
-//
-//	@RequestMapping(value = { "ad/waiting" }, method = RequestMethod.GET)
-//	public String getWaitingSite(
-//			Model model,
-//			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
-//			Principal principal) {
-//		// AdBrowserWrapper adBrowserWrapper = adService.getWaiting(
-//		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
-//		// page), ControllerHelperBean.AD_PER_PAGE,
-//		// controllerHelperBean.getActive(principal));
-//		AdSearchDto adSearchDto = new AdSearchDto();
-//		adSearchDto.setPlace(Place.WAITING);
-//		AdBrowserWrapper adBrowserWrapper = adService.getWaiting(adSearchDto,
-//				new Paging(page, AD_PER_PAGE),
-//				controllerHelperBean.getActive(principal));
-//		preparePagination(page, adBrowserWrapper.getTotal(), model);
-//		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
-//		model.addAttribute("path", "ad/waiting");
-//		return "browser";
-//	}
+	@RequestMapping(value = { "ad/main", "/" }, method = RequestMethod.GET)
+	public String getMainSite(
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal) {
+		AdSearchDto adSearchDto = new AdSearchDto();
+		adSearchDto.setPlace(Place.MAIN);
+		// AdBrowserWrapper adBrowserWrapper = adService.getMain(
+		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+		// page), ControllerHelperBean.AD_PER_PAGE,
+		// controllerHelperBean.getActive(principal));
+		// controllerHelperBean.preparePagination(
+		// ControllerHelperBean.AD_PER_PAGE, model,
+		// adBrowserWrapper.getTotal(), page);
+		AdBrowserWrapper adBrowserWrapper = adService.getMain(adSearchDto,
+				new Paging(page, AD_PER_PAGE),
+				controllerHelperBean.getActive(principal));
+		preparePagination(page, adBrowserWrapper.getTotal(), model);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute("path", "ad/main");
+		return "browser";
+	}
+
+	@RequestMapping(value = { "ad/waiting" }, method = RequestMethod.GET)
+	public String getWaitingSite(
+			Model model,
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page,
+			Principal principal) {
+		// AdBrowserWrapper adBrowserWrapper = adService.getWaiting(
+		// controllerHelperBean.getFrom(ControllerHelperBean.AD_PER_PAGE,
+		// page), ControllerHelperBean.AD_PER_PAGE,
+		// controllerHelperBean.getActive(principal));
+		AdSearchDto adSearchDto = new AdSearchDto();
+		adSearchDto.setPlace(Place.WAITING);
+		AdBrowserWrapper adBrowserWrapper = adService.getWaiting(adSearchDto,
+				new Paging(page, AD_PER_PAGE),
+				controllerHelperBean.getActive(principal));
+		preparePagination(page, adBrowserWrapper.getTotal(), model);
+		model.addAttribute("adBrowserWrapper", adBrowserWrapper);
+		model.addAttribute("path", "ad/waiting");
+		return "browser";
+	}
 
 	@RequestMapping(value = "contest/{contestId}/ad", method = RequestMethod.GET)
 	public String getContestAds(
@@ -200,7 +200,7 @@ public class AdController {
 		return "ad/browser";
 	}
 
-	@RequestMapping(value = { "ad/" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "ad/search" }, method = RequestMethod.GET)
 	public String search(
 			@ModelAttribute("adSearchDto") AdSearchDto adSearchDto,
 			Model model,

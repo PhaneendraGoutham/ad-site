@@ -29,18 +29,18 @@ public class SocialSecurityConfig {
 	@Autowired
 	private UsersConnectionRepository usersConnectionRepository;
 
-	@Bean 
-	public SocialAuthenticationFilter socialAuthenticationFilter(AuthenticationManager authenticationManager, RememberMeServices rememberMeServices, SocialAuthenticationServiceLocator authenticationServiceLocator) {
-		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(authenticationManager, userIdSource(), usersConnectionRepository, authenticationServiceLocator);
-		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
-		socialAuthenticationFilter.setFilterProcessesUrl("/social/login");
-		return socialAuthenticationFilter;
-	}
+//	@Bean 
+//	public SocialAuthenticationFilter socialAuthenticationFilter(AuthenticationManager authenticationManager, RememberMeServices rememberMeServices, SocialAuthenticationServiceLocator authenticationServiceLocator) {
+//		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(authenticationManager, userIdSource(), usersConnectionRepository, authenticationServiceLocator);
+//		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
+//		socialAuthenticationFilter.setFilterProcessesUrl("/social/login");
+//		return socialAuthenticationFilter;
+//	}
 
-	@Bean
-	public AuthenticationProvider socialAuthenticationProvider() {
-		return new SocialAuthenticationProvider(usersConnectionRepository, socialUsersDetailsService());
-	}
+//	@Bean
+//	public AuthenticationProvider socialAuthenticationProvider() {
+//		return new SocialAuthenticationProvider(usersConnectionRepository, socialUsersDetailsService());
+//	}
 
 	@Bean(name="userDetailsService")
 	public MixUserDetailsService socialUsersDetailsService() {

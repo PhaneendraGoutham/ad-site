@@ -1,5 +1,6 @@
 package pl.stalkon.ad.core.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.stalkon.ad.core.model.Ad.Place;
@@ -21,7 +22,15 @@ public class AdSearchDto {
 	private Long contestId;
 	private Boolean winner;
 	private Long userId;
+	private Integer page = 1;
 
+	public Integer getPage() {
+		return page;
+	}
+
+	public void setPage(Integer page) {
+		this.page = page;
+	}
 
 	public String getOrderBy() {
 		return orderBy;
@@ -176,6 +185,9 @@ public class AdSearchDto {
 		this.yearTo = yearTo;
 	}
 
-
+	public void setBrandId(Long id){
+		this.brandList = new ArrayList<Long>(1);
+		this.brandList.add(id);
+	}
 
 }

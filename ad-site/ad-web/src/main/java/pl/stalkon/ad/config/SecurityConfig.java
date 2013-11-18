@@ -5,13 +5,18 @@ import java.awt.Color;
 
 import javax.sql.DataSource;
 
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 
@@ -29,9 +34,22 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
 import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
 
 import pl.stalkon.ad.core.model.service.UserInfoService;
+import pl.stalkon.ad.core.security.SocialLoggedUser;
+import pl.stalkon.ad.core.security.UserStatusMapperImpl;
 import pl.stalkon.ad.extensions.CaptchaValidator;
-import pl.styall.library.core.security.authentication.AuthenticationProvider;
+import pl.styall.library.core.security.authentication.LoggedUser;
+import pl.styall.library.core.security.authorization.LoggedUserPermissionEvaluator;
 import pl.styall.library.core.security.filter.UserMessageFilter;
+import pl.styall.library.core.security.rest.AuthenticationEntryPointImpl;
+import pl.styall.library.core.security.rest.AuthenticationResultHandler;
+import pl.styall.library.core.security.rest.HibernateTokenRepository;
+import pl.styall.library.core.security.rest.LoginController;
+import pl.styall.library.core.security.rest.SeriesTokenAuthenticationProvider;
+import pl.styall.library.core.security.rest.TokenAuthenticationFilter;
+import pl.styall.library.core.security.rest.TokenRepository;
+import pl.styall.library.core.security.rest.TokenService;
+import pl.styall.library.core.security.rest.TokenServiceImpl;
+import pl.styall.library.core.security.rest.UpdateTokenResultHandler;
 
 @Configuration
 @ImportResource("classpath:pl/stalkon/ad/config/security-context.xml")
@@ -48,25 +66,70 @@ public class SecurityConfig {
 	
 	@Autowired
 	private UserInfoService userInfoService;
-
-	@Bean
-	public JdbcTokenRepositoryImpl tokenRepository() {
-		JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
-		repository.setDataSource(dataSource);
-		repository.setCreateTableOnStartup(false);
-		return repository;
-	}
-
-	@Bean
-	public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
-		PersistentTokenBasedRememberMeServices service = new PersistentTokenBasedRememberMeServices(
-				env.getProperty("login.cookies.key"), userDetailsService,
-				tokenRepository());
-		service.setAlwaysRemember(true);
-		return service;
-	}
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	
 	
+	
+//	@Bean
+//	public JdbcTokenRepositoryImpl tokenRepository() {
+//		JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
+//		repository.setDataSource(dataSource);
+//		repository.setCreateTableOnStartup(false);
+//		return repository;
+//	}
+//
+//	@Bean
+//	public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
+//		PersistentTokenBasedRememberMeServices service = new PersistentTokenBasedRememberMeServices(
+//				env.getProperty("login.cookies.key"), userDetailsService,
+//				tokenRepository());
+//		service.setAlwaysRemember(true);
+//		return service;
+//	}
+	@Bean
+	public LoggedUserPermissionEvaluator<SocialLoggedUser> loggedUserPermissionEvaluator(){
+		return new LoggedUserPermissionEvaluator<SocialLoggedUser>();
+	}
+	@Bean
+	public LoginController loginController(){
+		return new LoginController(tokenService(), new UserStatusMapperImpl());
+	}
+	
+	@Bean
+	public TokenRepository tokenRepository(){
+		return new HibernateTokenRepository();
+	}
+	
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint(){
+		return new AuthenticationEntryPointImpl();
+	}
+	
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public TokenService tokenService(){
+		TokenServiceImpl tokenService = new TokenServiceImpl(tokenRepository(), userDetailsService, bCryptPasswordEncoder());
+		return tokenService;
+	}
+	
+	@Bean
+	public AuthenticationResultHandler authenticationResultHandler(){
+		UpdateTokenResultHandler handler = new UpdateTokenResultHandler(tokenService());
+		return handler;
+	}
+	
+	@Bean
+	public TokenAuthenticationFilter tokenAuthenticationFilter(){
+		TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter(authenticationManager,authenticationEntryPoint());
+		tokenAuthenticationFilter.setAuthenticationResultHandler(authenticationResultHandler());
+		return tokenAuthenticationFilter;
+	}
 	
 	@Bean
 	public UserMessageFilter userMessageFilter(){
@@ -75,14 +138,10 @@ public class SecurityConfig {
 		return filter;
 	}
 	
-	@Bean
-	public ShaPasswordEncoder passwordEncoder() {
-		return new ShaPasswordEncoder(256);
-	}
 
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
-		return new AuthenticationProvider();
+		return new SeriesTokenAuthenticationProvider(tokenService(), userDetailsService);
 	}
 
 	@Bean

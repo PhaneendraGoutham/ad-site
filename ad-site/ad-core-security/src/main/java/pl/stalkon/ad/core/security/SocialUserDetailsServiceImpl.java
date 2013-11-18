@@ -59,8 +59,7 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 		}
 		return new SocialLoggedUser(user.getId(), user.getCredentials()
 				.getUsername(), user.getDisplayName(), user.getUserData().getBirthDate(), user
-				.getCredentials().getPassword(), user.getCredentials()
-				.getSalt(), user.getUserData().getImageUrl(), type, getAuthorities(roles));
+				.getCredentials().getPassword(),  user.getUserData().getImageUrl(), type, getAuthorities(roles));
 	}
 
 	protected Collection<SimpleGrantedAuthority> getAuthorities(

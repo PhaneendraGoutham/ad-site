@@ -3,6 +3,9 @@ package pl.stalkon.ad.core.model.service.impl;
 import java.security.SecureRandom;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,9 @@ import pl.styall.library.core.model.service.impl.AbstractUserServiceImpl;
 public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		UserService {
 
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
 	@Override
 	@Transactional
 	public User register(UserRegForm userRegForm) {
@@ -30,10 +36,8 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		Credentials credentials = new Credentials();
 		String password = userRegForm.getPassword();
 
-		credentials.setSalt();
 		credentials.setToken();
-		credentials.setPassword(passwordEncoder.encodePassword(password,
-				credentials.getSalt()));
+		credentials.setPassword(passwordEncoder.encode(password));
 		credentials.setMail(userRegForm.getMail());
 		credentials.setUsername(userRegForm.getUsername());
 		credentials.setActive(false);// TODO:
@@ -104,11 +108,9 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 	public String generateAndSetNewPassword(String mail) {
 		User user = getUserByMailOrUsername(mail);
 		if (user != null) {
-			String newPassword = RandomStringUtils.random(12, 0, 0, true, true,
-					null, new SecureRandom());
+			String newPassword = KeyGenerators.string().generateKey();
 			user.getCredentials().setPassword(
-					passwordEncoder.encodePassword(newPassword, user
-							.getCredentials().getSalt()));
+					passwordEncoder.encode(newPassword));
 			userDao.save(user);
 			return newPassword;
 		}
