@@ -51,6 +51,9 @@
 
 		<security:intercept-url pattern="/ad" method="POST"
 			access="hasRole('ROLE_USER')" />
+			
+		<security:intercept-url pattern="/brand/*/ad" method="POST"
+			access="hasRole('ROLE_COMPANY')" />	
 <security:intercept-url method="OPTIONS" access="hasRole('ROLE_ANONYMOUS')" pattern="/**"/>
 		<security:intercept-url pattern="/ad/update/*"
 			method="POST" access="hasRole('ROLE_USER')" />

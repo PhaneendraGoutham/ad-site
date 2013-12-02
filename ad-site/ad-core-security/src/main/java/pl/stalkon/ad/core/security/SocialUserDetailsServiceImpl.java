@@ -11,7 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.User;
+import pl.stalkon.ad.core.model.dao.CompanyDao;
 import pl.stalkon.ad.core.model.dao.UserDao;
 import pl.stalkon.ad.core.security.SocialLoggedUser.LoggedType;
 import pl.stalkon.social.singleconnection.interfaces.SocialUserDetails;
@@ -26,12 +28,19 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private CompanyDao companyDao;
 
 	@Override
 	@Transactional
 	public SocialUserDetails loadUserByUserId(Long userId) {
 		User user = userDao.get(userId);
-		return createSocialUserDetails(user);
+		if(user.getUserRoles().contains(new UserRole("ROLE_COMPANY"))){
+			Company company = companyDao.getByUser(user.getId());
+			return createSocialUserDetails(user, company.getId());
+		}
+		return createSocialUserDetails(user, null);
 	}
 
 	@Override
@@ -39,10 +48,14 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		User user = userDao.loadUserByLogin(username);
-		return createSocialUserDetails(user);
+		if(user.getUserRoles().contains(new UserRole("ROLE_COMPANY"))){
+			Company company = companyDao.getByUser(user.getId());
+			return createSocialUserDetails(user, company.getId());
+		}
+		return createSocialUserDetails(user, null);
 	}
 	
-	private SocialUserDetails createSocialUserDetails(User user){
+	private SocialUserDetails createSocialUserDetails(User user, Long companyId){
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
 		}
@@ -59,7 +72,7 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 		}
 		return new SocialLoggedUser(user.getId(), user.getCredentials()
 				.getUsername(), user.getDisplayName(), user.getUserData().getBirthDate(), user
-				.getCredentials().getPassword(),  user.getUserData().getImageUrl(), type, getAuthorities(roles));
+				.getCredentials().getPassword(),  user.getUserData().getImageUrl(), type, getAuthorities(roles), companyId);
 	}
 
 	protected Collection<SimpleGrantedAuthority> getAuthorities(

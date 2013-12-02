@@ -47,6 +47,7 @@ import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.extensions.AnswerAlreadyPostedException;
 import pl.stalkon.ad.extensions.ContestFinishedException;
+import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
 @Controller
 public class ContestController {
@@ -74,16 +75,17 @@ public class ContestController {
 	@Autowired
 	private MessageSource messageSource;
 
-	@RequestMapping(value = "contest", method = RequestMethod.POST)
-	@PreAuthorize("@controllerHelperBean.isUserBrandOwner(principal.id, #contestPostDto.brandId)")
+	@RequestMapping(value = "/brand/{brandId}/contest", method = RequestMethod.POST)
+	@PreAuthorize("@controllerHelperBean.isUserBrandOwner(principal.id, #brandId)")
 	@ResponseBody
-	public Long register(@Valid @RequestBody ContestPostDto contestPostDto,
-			Principal principal) {
+	public SingleObjectResponse register(@Valid @RequestBody ContestPostDto contestPostDto,
+			Principal principal, @PathVariable("brandId") Long brandId) {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
+		contestPostDto.setBrandId(brandId);
 		Contest contest = contestService.register(socialLoggedUser.getId(),
 				contestPostDto);
-		return contest.getId();
+		return new SingleObjectResponse(contest.getId());
 	}
 
 	@RequestMapping(value = "contest/{contestId}", method = RequestMethod.POST)
@@ -94,10 +96,10 @@ public class ContestController {
 		contestService.upadate(contestId, contestPostDto);
 	}
 
-
 	@RequestMapping(value = "contest", method = RequestMethod.GET)
 	@ResponseBody
-	public ContestBrowserWrapper get(@RequestParam(required = false, value = "page", defaultValue = "1") int page) {
+	public ContestBrowserWrapper get(
+			@RequestParam(required = false, value = "page", defaultValue = "1") int page) {
 		ContestBrowserWrapper contestBrowserWrapper = contestService
 				.get(new Paging(page, CONTESTS_PER_PAGE));
 		return contestBrowserWrapper;
@@ -154,7 +156,8 @@ public class ContestController {
 
 	@RequestMapping(value = "contest/{contestId}/answer", method = RequestMethod.POST)
 	public Long registerAnswer(@PathVariable("contestId") Long contestId,
-			@NotNull @RequestParam("answer") String answer, Principal principal) throws ContestFinishedException, AnswerAlreadyPostedException {
+			@NotNull @RequestParam("answer") String answer, Principal principal)
+			throws ContestFinishedException, AnswerAlreadyPostedException {
 		Contest contest = contestService.get(contestId);
 		if (contest.getState() == State.FINISHED) {
 			throw new ContestFinishedException();
@@ -166,8 +169,8 @@ public class ContestController {
 			throw new AnswerAlreadyPostedException();
 		}
 
-		ContestAnswer contestAnswer = contestService.registerAnswer(socialLoggedUser.getId(), contestId,
-				answer);
+		ContestAnswer contestAnswer = contestService.registerAnswer(
+				socialLoggedUser.getId(), contestId, answer);
 		return contestAnswer.getId();
 	}
 
@@ -183,25 +186,27 @@ public class ContestController {
 		contestService.setWinnerUserInfo(ads, contestId);
 	}
 
-//	@RequestMapping(value = "contest/message/{userInfoId}", method = RequestMethod.GET)
-//	public String getContestMessage(
-//			@PathVariable("userInfoId") Long userInfoId, Principal principal) {
-//		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-//				.getPrincipal();
-//		UserInfo userInfo = userInfoService.getWithContest(userInfoId);
-//		User user = userService.getWithAddresses(socialLoggedUser.getId());
-//		model.addAttribute("user", user);
-//		UserAddressDto userAddressDto = new UserAddressDto();
-//		if (user.getAddresses().size() > 0) {
-//			model.addAttribute("address", user.getAddresses().get(0));
-//			userAddressDto.setAddress(user.getAddresses().get(0));
-//			userAddressDto.setFirstname(user.getUserData().getName());
-//			userAddressDto.setSurname(user.getUserData().getSurname());
-//		}
-//		model.addAttribute("userInfo", userInfo);
-//		model.addAttribute("userAddressDto", userAddressDto);
-//		return "contest/contest-winner-info";
-//	}
+	// @RequestMapping(value = "contest/message/{userInfoId}", method =
+	// RequestMethod.GET)
+	// public String getContestMessage(
+	// @PathVariable("userInfoId") Long userInfoId, Principal principal) {
+	// SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication)
+	// principal)
+	// .getPrincipal();
+	// UserInfo userInfo = userInfoService.getWithContest(userInfoId);
+	// User user = userService.getWithAddresses(socialLoggedUser.getId());
+	// model.addAttribute("user", user);
+	// UserAddressDto userAddressDto = new UserAddressDto();
+	// if (user.getAddresses().size() > 0) {
+	// model.addAttribute("address", user.getAddresses().get(0));
+	// userAddressDto.setAddress(user.getAddresses().get(0));
+	// userAddressDto.setFirstname(user.getUserData().getName());
+	// userAddressDto.setSurname(user.getUserData().getSurname());
+	// }
+	// model.addAttribute("userInfo", userInfo);
+	// model.addAttribute("userAddressDto", userAddressDto);
+	// return "contest/contest-winner-info";
+	// }
 
 	@RequestMapping(value = "contest/message/{userInfoId}/accept", method = RequestMethod.GET)
 	public void acceptUserContestInfo(

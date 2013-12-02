@@ -19,6 +19,7 @@ public class UserStatusMapperImpl implements UserStatusMapper {
 		map.put("displayName", user.getDisplayName());
 		map.put("id", user.getId());
 		map.put("imageUrl", user.getImageUrl());
+		map.put("companyId", user.getCompanyId());
 		List<String> roles = new ArrayList<String>(user.getAuthorities().size());
 		for(GrantedAuthority au: user.getAuthorities()){
 			roles.add(au.getAuthority().replace("ROLE_", "").toLowerCase());

@@ -1,6 +1,7 @@
 package pl.stalkon.ad.rest.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,8 @@ import pl.stalkon.video.api.service.impl.WistiaApiService;
 import pl.stalkon.video.api.wistia.WistiaException;
 import pl.stalkon.video.api.wistia.WistiaStats;
 import pl.styall.library.core.rest.ext.EntityDtmMapper;
+import pl.styall.library.core.rest.ext.MultipleObjectResponse;
+import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
 @Controller
 public class BrandController {
@@ -63,10 +66,11 @@ public class BrandController {
 				Brand.JSON_SM_SHOW);
 	}
 	
-	@RequestMapping(value = "brand/byterm", method = RequestMethod.GET)
+	@RequestMapping(value = { "brand/{brandId}/wistiaproject" }, method = RequestMethod.GET)
 	@ResponseBody
-	public List<BrandSearchDto> getBrandByTerm(@RequestParam("term") String term) {
-		return brandService.getByTerm(term);
+	public SingleObjectResponse getBrandWistiaProject(@PathVariable("brandId") Long brandId) {
+		Brand brand = brandService.get(brandId);
+		return new SingleObjectResponse(brand.getWistiaProjectData().getHashedId());
 	}
 
 	@RequestMapping(value = { "brand/{brandId}" }, method = RequestMethod.GET)
@@ -106,6 +110,15 @@ public class BrandController {
 		Brand brand = brandService.register(brandPostDto, wistiaProjectData,
 				companyId);
 		return brand.getId();
+	}
+	
+	@RequestMapping(value = "/company/{companyId}/brand", method = RequestMethod.GET)
+	@ResponseBody
+	@PreAuthorize("@companyService.isCompanyOfUser(principal.id,#companyId)")
+	public List<Object> getCompanyBrands(@PathVariable("companyId") Long companyId) {
+		List<Brand> brands = brandService.getCompanyBrands(companyId);
+		List<Object> result = new EntityDtmMapper().mapEntitiesToDtm(brands, Brand.class, Brand.JSON_SHOW);
+		return result;
 	}
 
 	@RequestMapping(value = "brand/{brandId}/stats", method = RequestMethod.GET)

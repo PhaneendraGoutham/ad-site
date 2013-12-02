@@ -65,13 +65,13 @@ public class UserController {
 	@Autowired
 	private UserInfoService userInfoService;
 	
-    @RequestMapping(method = RequestMethod.OPTIONS)
-    public void commonOptions(HttpServletResponse theHttpServletResponse) throws IOException {
-        theHttpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with, authtoken");
-        theHttpServletResponse.addHeader("Access-Control-Max-Age", "60"); // seconds to cache preflight request --> less OPTIONS traffic
-        theHttpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    }
-	
+//    @RequestMapping(method = RequestMethod.OPTIONS)
+//    public void commonOptions(HttpServletResponse theHttpServletResponse) throws IOException {
+//        theHttpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with, authtoken");
+//        theHttpServletResponse.addHeader("Access-Control-Max-Age", "60"); // seconds to cache preflight request --> less OPTIONS traffic
+//        theHttpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//    }
+//	
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	@ResponseBody
 	public Long processRegister(@Valid @RequestBody UserRegForm userRegForm) {

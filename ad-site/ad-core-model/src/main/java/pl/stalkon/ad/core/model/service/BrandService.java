@@ -13,6 +13,7 @@ public interface BrandService  {
 //	public Brand register(BrandPostDto brandPostDto, WistiaProject wistiaProjectData);
 	public Brand register(BrandPostDto brandPostDto, WistiaProjectData wistiaProjectData, Long companyId);
 	public Brand update(BrandPostDto brandPostDto, Long brandId);
+	public List<Brand> getCompanyBrands(Long companyId);
 	public Brand get(Long id);
 	public List<BrandSearchDto> getByTerm(String term);
 	

@@ -48,6 +48,11 @@ public class BrandDao extends AbstractDao<Brand> {
 		return cost;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Brand> getCompanyBrands(Long companyId){
+		return (List<Brand>) currentSession().createQuery("from Brand as brand where brand.company.id=:companyId").setLong("companyId", companyId).list();
+	}
+	
 //	public void addRestrictions(Criteria criteria, String alias,
 //			List<DaoQueryObject> queryObjectList) {
 //		for (DaoQueryObject qo : queryObjectList) {

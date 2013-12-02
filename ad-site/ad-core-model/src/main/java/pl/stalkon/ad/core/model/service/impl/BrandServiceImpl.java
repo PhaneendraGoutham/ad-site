@@ -120,5 +120,11 @@ public class BrandServiceImpl implements BrandService {
 		return brandDao.getBrandCurrentCost(brandId);
 	}
 
+	@Override
+	@Transactional
+	public List<Brand> getCompanyBrands(Long companyId) {
+		return brandDao.getCompanyBrands(companyId);
+	}
+
 
 }

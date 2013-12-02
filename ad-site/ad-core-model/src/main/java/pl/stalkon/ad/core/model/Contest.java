@@ -85,8 +85,9 @@ public class Contest extends CommonEntity {
 	}
 
 	public String getDescription() {
-		byte decoded[] = Base64.decodeBase64(description.getBytes());
-		return new String(decoded);
+//		byte decoded[] = Base64.decodeBase64(description.getBytes());
+//		return new String(decoded);
+		return description;
 	}
 
 	public void setDescription(String description) {

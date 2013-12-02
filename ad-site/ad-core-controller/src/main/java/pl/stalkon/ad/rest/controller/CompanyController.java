@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,22 +42,23 @@ public class CompanyController {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		Company resultCompany = companyService.register(company, socialLoggedUser.getId());
-		mailService.sendCompanyVerificationEmail(resultCompany);
-		return company.getId();
+		//mailService.sendCompanyVerificationEmail(resultCompany);
+		return resultCompany.getId();
 	}
 	
-//	@RequestMapping(value = "/user/company")
-//	public String userCompanySite(Model model, Principal principal, HttpServletRequest request){
-//		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-//				.getPrincipal();
-//		Company company = companyService.getCompanyWithBrandsByUser(socialLoggedUser.getId());
-//		if(company.getBrands().size() == 1){
-//			return "redirect:/brand/"+company.getBrands().get(0).getId().toString();
-//		}
-//		model.addAttribute("company", company);
-//		model.addAttribute("path", "company/base-view");
-//		return "company/base-view";
-//	}
+	@RequestMapping(value = "/user/{userId}/company")
+	@PreAuthorize("principal.id.equals(#userId)")
+	public String userCompanySite(Model model, Principal principal, HttpServletRequest request){
+		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
+				.getPrincipal();
+		Company company = companyService.getCompanyWithBrandsByUser(socialLoggedUser.getId());
+		if(company.getBrands().size() == 1){
+			return "redirect:/brand/"+company.getBrands().get(0).getId().toString();
+		}
+		model.addAttribute("company", company);
+		model.addAttribute("path", "company/base-view");
+		return "company/base-view";
+	}
 	
 	
 	@RequestMapping(value = "/user/company/{companyId}/approved")

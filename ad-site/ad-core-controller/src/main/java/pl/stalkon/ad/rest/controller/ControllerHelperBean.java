@@ -111,6 +111,7 @@ public class ControllerHelperBean {
 
 	public boolean isUserBrandOwner(Long userId, Long brandId) {
 		Company company = companyService.getCompanyWithBrandsByUser(userId);
+		System.out.println(brandId);
 		Brand mockBrand = new Brand();
 		mockBrand.setId(brandId);
 		if (company.getBrands().contains(mockBrand)) {

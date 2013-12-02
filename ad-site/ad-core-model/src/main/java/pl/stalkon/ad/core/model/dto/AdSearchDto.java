@@ -17,7 +17,7 @@ public class AdSearchDto {
 	private Short place;
 	private List<Long> tagList;
 	private List<Long> brandList;
-	private String orderBy = "rank";
+	private String orderBy = "creationDate";
 	private String order = "desc";
 	private Long contestId;
 	private Boolean winner;

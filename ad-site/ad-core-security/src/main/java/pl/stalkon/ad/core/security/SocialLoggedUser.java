@@ -22,14 +22,15 @@ public class SocialLoggedUser extends LoggedUser implements SocialUserDetails {
 	
 	private String displayName;
 	private Boolean adult = false;
-
+	private Long companyId;
 	private final LoggedType type;
 
 	public SocialLoggedUser(Long id, String username, String displayName, Date birthdate,
 			String password, String imageUrl, LoggedType type,
-			Collection<? extends GrantedAuthority> authorities) {
+			Collection<? extends GrantedAuthority> authorities, Long companyId) {
 		super(id, username, password,  imageUrl, authorities);
 		this.displayName = displayName;
+		this.companyId = companyId;
 		if(countYears(birthdate) >= 18){
 			this.adult = true;
 		}
@@ -82,5 +83,13 @@ public class SocialLoggedUser extends LoggedUser implements SocialUserDetails {
 		Interval i = new Interval(birth, curr);
 		Years years = Years.yearsIn(i);
 		return years.getYears();
+	}
+
+	public Long getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
 	}
 }

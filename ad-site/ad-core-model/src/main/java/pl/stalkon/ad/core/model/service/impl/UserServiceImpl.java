@@ -1,6 +1,8 @@
 package pl.stalkon.ad.core.model.service.impl;
 
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +23,11 @@ import pl.styall.library.core.model.UserRole;
 import pl.styall.library.core.model.defaultimpl.Address;
 import pl.styall.library.core.model.defaultimpl.UserData;
 import pl.styall.library.core.model.service.impl.AbstractUserServiceImpl;
+import pl.styall.library.core.security.rest.UserLoginsService;
 
 @Service("userService")
 public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
-		UserService {
+		UserService, UserLoginsService {
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -115,6 +118,13 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 			return newPassword;
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public List<String> getUserLogins(String login) {
+		User user = getUserByMailOrUsername(login);
+		return Arrays.asList(user.getCredentials().getMail(), user.getCredentials().getUsername());
 	}
 
 }

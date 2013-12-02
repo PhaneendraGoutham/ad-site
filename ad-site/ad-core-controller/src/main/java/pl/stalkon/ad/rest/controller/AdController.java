@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,6 +80,20 @@ public class AdController {
 		videoApiService.setApiData(ad);
 		return new SingleObjectResponse(result.getId());
 	}
+	
+	@RequestMapping(value = "/brand/{brandId}/ad", method = RequestMethod.POST)
+	@PreAuthorize("@controllerHelperBean.isUserBrandOwner(principal.id, #adPostDto.brandId)")
+	@ResponseBody
+	public SingleObjectResponse addBrandAd(@Valid @RequestBody AdPostDto adPostDto,
+			Principal principal, @PathVariable("brandId") Long brandId) throws VideoApiException {
+		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
+				.getPrincipal();
+		Ad ad = videoApiService.setVideoDetails(adPostDto);
+		Ad result = adService.register(adPostDto, ad, socialLoggedUser.getId(),
+				false);
+		videoApiService.setApiData(ad);
+		return new SingleObjectResponse(result.getId());
+	}
 
 	@RequestMapping(value = { "ad", "user/{userId}/ad",
 			"contest/{contestId}/ad", "brand/{brandId}/ad" }, method = RequestMethod.GET)
@@ -110,6 +125,15 @@ public class AdController {
 		System.out.println(tags.size());
 		return entityDtmMapper.mapEntitiesToDtm(tags, Tag.class,
 				Tag.JSON_SM_SHOW);
+	}
+	
+	@RequestMapping(value = "ad/{id}/rate", method = RequestMethod.POST)
+	@ResponseBody
+	public void vote(@PathVariable(value = "id") Long id,
+			@RequestParam(value="rank") Short rank, Principal principal){
+		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
+				.getPrincipal();
+		adService.vote(id, socialLoggedUser.getId(), rank);
 	}
 
 	private AdBrowserWrapper getAds(AdSearchDto adSearchDto, Principal principal) {

@@ -3,10 +3,12 @@ package pl.stalkon.ad.config;
 import java.awt.Color;
 
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -33,7 +35,9 @@ import com.octo.captcha.engine.GenericCaptchaEngine;
 import com.octo.captcha.image.gimpy.GimpyFactory;
 import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
 
+import pl.stalkon.ad.core.model.service.MixUserService;
 import pl.stalkon.ad.core.model.service.UserInfoService;
+import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.core.security.UserStatusMapperImpl;
 import pl.stalkon.ad.extensions.CaptchaValidator;
@@ -50,6 +54,7 @@ import pl.styall.library.core.security.rest.TokenRepository;
 import pl.styall.library.core.security.rest.TokenService;
 import pl.styall.library.core.security.rest.TokenServiceImpl;
 import pl.styall.library.core.security.rest.UpdateTokenResultHandler;
+import pl.styall.library.core.security.rest.UserLoginsService;
 
 @Configuration
 @ImportResource("classpath:pl/stalkon/ad/config/security-context.xml")
@@ -70,7 +75,8 @@ public class SecurityConfig {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	
+	@Resource(name="userService")
+	private UserLoginsService userLoginsService;
 	
 //	@Bean
 //	public JdbcTokenRepositoryImpl tokenRepository() {
@@ -114,7 +120,7 @@ public class SecurityConfig {
 	
 	@Bean
 	public TokenService tokenService(){
-		TokenServiceImpl tokenService = new TokenServiceImpl(tokenRepository(), userDetailsService, bCryptPasswordEncoder());
+		TokenServiceImpl tokenService = new TokenServiceImpl(tokenRepository(), userDetailsService, bCryptPasswordEncoder(), userLoginsService);
 		return tokenService;
 	}
 	

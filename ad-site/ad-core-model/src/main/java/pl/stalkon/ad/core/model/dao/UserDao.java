@@ -1,5 +1,7 @@
 package pl.stalkon.ad.core.model.dao;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import pl.stalkon.ad.core.model.User;
@@ -17,6 +19,5 @@ public class UserDao extends pl.styall.library.core.model.dao.UserDao<User>{
 //	}
 	
 	
-
 
 }
