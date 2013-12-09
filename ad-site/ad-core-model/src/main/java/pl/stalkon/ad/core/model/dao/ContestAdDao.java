@@ -59,6 +59,7 @@ public class ContestAdDao extends AbstractDao<ContestAd> {
 //		}
 //		return added;
 
+	
 	public List<ContestAd> getContestAdsWithAds(Long contestId){
 		Criteria criteria = currentSession().createCriteria(ContestAd.class);
 		Criteria userCriteria = criteria.createCriteria("ad").createCriteria("user");

@@ -1,0 +1,21 @@
+﻿
+<article class="clearfix col-sm-12" data-ng-repeat="contest in contests">
+	<div
+		class="thumbnail clearfix right-caption col-sm-12 margin-top margin-bottom">
+		<img data-ng-src="{{contest.imageUrl}}" class="contest-image" />
+		<div class="">
+			<h3 class="wrap-text  list-group-item-heading">
+				<a href="#/konkursy/{{contest.id}}" class="text-info">{{contest.name}}</a>
+			</h3>
+			<p class="list-group-item-text contest-description">{{contest.description}}</p>
+		</div>
+	</div>
+</article>
+<article class="clearfix text-center" data-ng-show="smallnumPages > 1 && contests.length > 0" data-ng-controller="PagingCtrl">
+	<pagination direction-links="false" total-items="total"
+		page="currentPage" num-pages="smallnumPages" max-size="10"
+		items-per-page="5" on-select-page="selectPage(page)"></pagination>
+	<button class="btn btn-block btn-sm btn-danger"
+		data-ng-click="currentPage = currentPage + 1; selectPage(currentPage)"
+		data-ng-show="currentPage < smallnumPages">Dalej</button>
+</article>

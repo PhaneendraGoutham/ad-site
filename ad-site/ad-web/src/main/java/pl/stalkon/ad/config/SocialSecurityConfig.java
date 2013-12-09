@@ -32,7 +32,7 @@ public class SocialSecurityConfig {
 //	@Bean 
 //	public SocialAuthenticationFilter socialAuthenticationFilter(AuthenticationManager authenticationManager, RememberMeServices rememberMeServices, SocialAuthenticationServiceLocator authenticationServiceLocator) {
 //		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(authenticationManager, userIdSource(), usersConnectionRepository, authenticationServiceLocator);
-//		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
+////		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
 //		socialAuthenticationFilter.setFilterProcessesUrl("/social/login");
 //		return socialAuthenticationFilter;
 //	}

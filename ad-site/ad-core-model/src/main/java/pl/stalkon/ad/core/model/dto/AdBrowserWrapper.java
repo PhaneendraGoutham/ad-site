@@ -4,24 +4,12 @@ import java.util.List;
 
 import pl.stalkon.ad.core.model.Ad;
 
-public class AdBrowserWrapper {
+public class AdBrowserWrapper extends BrowserWrapper<Ad> {
 
-	private final List<Ad> ads;
-	private final Long total;
-
-	public AdBrowserWrapper(List<Ad> ads, Long total) {
-		super();
-		this.ads = ads;
-		this.total = total;
+	public AdBrowserWrapper(List<Ad> resultList, Long total) {
+		super(resultList, total);
 	}
 
-	public List<Ad> getAds() {
-		return ads;
-	}
-
-	public Long getTotal() {
-		return total;
-	}
 
 
 }

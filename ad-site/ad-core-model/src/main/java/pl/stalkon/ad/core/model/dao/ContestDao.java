@@ -67,6 +67,13 @@ public class ContestDao extends AbstractDao<Contest> {
 		return new ContestBrowserWrapper(contests, total);
 	}
 
+	
+
+	public Long getBrandContestsCount(Long brandId) {
+		return (Long) currentSession()
+				.createQuery("select count(*) from Contest where brand = :brandId")
+				.setLong("brandId", brandId).uniqueResult();
+	}
 	public boolean addRestrictions(Criteria criteria, String alias,
 			List<DaoQueryObject> queryObjectList) {
 		boolean added = false;

@@ -50,6 +50,12 @@ public class AdDao extends AbstractDao<Ad> {
 		return new AdBrowserWrapper(ads, total);
 	}
 
+	public Long getBrandAdsCount(Long brandId) {
+		return (Long) currentSession()
+				.createQuery("select count(*) from Ad where brand = :brandId")
+				.setLong("brandId", brandId).uniqueResult();
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<Ad> getList(List<DaoQueryObject> queryObjectList, Order order,
 			Paging paging) {
@@ -68,7 +74,8 @@ public class AdDao extends AbstractDao<Ad> {
 	}
 
 	private List<Ad> getAds(Criteria adCriteria, Order order, Paging paging) {
-		criteriaConfigurer.configureCriteria(adCriteria, order, paging.from, paging.perPage);
+		criteriaConfigurer.configureCriteria(adCriteria, order, paging.from,
+				paging.perPage);
 		adCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return (List<Ad>) adCriteria.list();
 	}

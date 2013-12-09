@@ -4,23 +4,12 @@ import java.util.List;
 
 import pl.stalkon.ad.core.model.ContestAnswer;
 
-public class ContestAnswerBrowserWrapper {
+public class ContestAnswerBrowserWrapper extends BrowserWrapper<ContestAnswer> {
 
-	private final List<ContestAnswer> answers;
-	private final Long total;
-
-	public ContestAnswerBrowserWrapper(List<ContestAnswer> answers, Long total) {
-		super();
-		this.answers = answers;
-		this.total = total;
+	public ContestAnswerBrowserWrapper(List<ContestAnswer> resultList,
+			Long total) {
+		super(resultList, total);
 	}
 
-	public Long getTotal() {
-		return total;
-	}
-
-	public List<ContestAnswer> getAnswers() {
-		return answers;
-	}
 
 }

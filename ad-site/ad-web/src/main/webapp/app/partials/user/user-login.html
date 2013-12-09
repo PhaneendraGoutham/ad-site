@@ -1,0 +1,37 @@
+﻿<article class="clearfix">
+    <form class="form-horizontal" novalidate ng-submit="login()">
+        <div class="form-group">
+            <label for="login" class="control-label col-sm-4">Login</label>
+            <div class="input-group col-sm-7">
+                <span class="input-group-addon"><i class="icon-user"></i></span>
+                <input name="login" type="text" data-ng-model="loginModel.login" class="form-control" placeholder="Nazwa użytkownika lub email" />
+            </div>
+
+        </div>
+        <div class="form-group">
+
+            <label for="password" class="control-label col-sm-4">Hasło</label>
+            <div class="input-group col-sm-7">
+                <span class="input-group-addon"><i class="icon-lock"></i></span>
+                <input type="password" data-ng-model="loginModel.password" name="password" class="form-control" placeholder="Hasło" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-7 col-sm-offset-4">
+                 <span>Nie masz konta? <a href="#uzytkownik/zarejestruj" class="text-info">Zarejestruj się!</a></span>
+                 <a class="text-info pull-right" href="#/uzytkownik/haslo/przypomnij">Nie pamiętam hasła!</a>
+            </div>
+        </div>
+
+
+        
+            <div class="form-group ">
+                <div class=" col-sm-7 col-sm-offset-4">
+                <button type="submit" class="btn btn-sm btn-success">Zaloguj się</button>
+                <button class="btn btn-sm btn-primary">Zaloguj z facebook</button>
+                    </div>
+            </div>
+        
+
+    </form>
+</article>

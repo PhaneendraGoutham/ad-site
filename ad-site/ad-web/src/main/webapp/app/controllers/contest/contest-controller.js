@@ -1,0 +1,109 @@
+app.controller('ContestListCtrl', ['contestsBrowserWrapper','$scope',"$location",'ContestService','$routeParams',function(contestsBrowserWrapper, $scope, $location, ContestService, $routeParams) {
+    init();
+    function init() {
+        $scope.filters = $location.search();
+        $scope.contests = contestsBrowserWrapper.contests;
+        $scope.total = contestsBrowserWrapper.total;
+        $scope.selectPage = function(page) {
+            $scope.filters.page = page;
+            $location.search($scope.filters);
+        };
+        $scope.$on('$routeUpdate', function(e) {
+            $scope.filters = $location.search();
+            getContests();
+        });
+    }
+    function getContests() {
+        ContestService.getContestsByUrl(function(data){
+            $scope.total = data.total;
+            $scope.contests = data.contests;
+        });
+    }
+}]);
+app.controller('ContestAnswerListCtrl', ['answerBrowserWrapper','$scope','$routeParams','ContestService',function(answerBrowserWrapper, $scope, $routeParams, ContestService) {
+    init();
+    function init() {
+        $scope.contestAnswers = answerBrowserWrapper.answers;
+        $scope.total = answerBrowserWrapper.total;
+        $scope.currentPage = 1;
+        $scope.selectPage = function(page) {
+            $scope.filters.page = page;
+            $scope.search();
+        };
+        $scope.pressWinner = function(answer) {
+            ContestService.updateWinner($routeParams.id, answer.id, !answer.winner, function(data) {
+                answer.winner = !answer.winner;
+            });
+        };
+    }
+}]);
+app.controller('ContestAnswerRegistrationCtrl', ['ContestService','$scope','$routeParams','ErrorFactory',"$location",'CommonFunctions',function(ContestService, $scope, $routeParams, ErrorFactory, $location, CommonFunctions) {
+    init();
+    function init() {
+        $scope.regModel = {};
+        $scope.errorMessages = ErrorFactory.getErrorMessages({});
+        $scope.submit = function() {
+            ContestService.registerAnswer($routeParams.id, $scope.regModel, function(data) {
+                $location.path("/konkursy" + $routeParams.id);
+            }, function(message, statusCode) {
+                if (statusCode == 442) {
+                    CommonFunctions.pushAlert('danger', "Konkurs już się zakończył");
+                } else if (statusCode == 443) {
+                    CommonFunctions.pushAlert('danger', "Już wcześniej dodałeś/aś odpowiedź");
+                }
+            });
+        };
+    }
+}]);
+app.controller('ContestCtrl', ['contest','$scope',function(contest, $scope) {
+    init();
+    function init() {
+        $scope.contest = contest;
+
+    }
+}]);
+app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','$routeParams','ContestService','$filter',function($scope, ErrorFactory, $location, $routeParams, ContestService, $filter) {
+    init();
+    function init() {
+        $scope.regModel = {};
+        $scope.regModel.scoresDate = {};
+        $scope.regModel.finishDate = {};
+        $scope.minDate = new Date();
+        $scope.errorMessages = ErrorFactory.getErrorMessages({
+            'dateValid' : {
+                scoresDate : "Data musi być poźniejsza",
+                finishDate : "Data musi być poźniejsza",
+            }
+        });
+        $scope.register = function() {
+            var data = angular.copy($scope.regModel);
+            data.finishDate = new Date(data.finishDate.date.getFullYear(), data.finishDate.date.getMonth(), data.finishDate.date.getDate(), data.finishDate.time.getHours(), data.finishDate.time.getMinutes(), data.finishDate.time.getSeconds());
+            data.scoresDate = new Date(data.scoresDate.date.getFullYear(), data.scoresDate.date.getMonth(), data.scoresDate.date.getDate(), data.scoresDate.time.getHours(), data.scoresDate.time.getMinutes(), data.scoresDate.time.getSeconds());
+            ContestService.registerContest($routeParams.id, data, function(data) {
+                $location.path("/konkursy/" + data.response + '/edytuj');
+            });
+        };
+        $scope.minDate = new Date();
+
+        $scope.$watchCollection('regModel.finishDate', function(finishDate) {
+            if (finishDate.date && finishDate.time) {
+                var date = new Date(finishDate.date.getFullYear(), finishDate.date.getMonth(), finishDate.date.getDate(), finishDate.time.getHours(), finishDate.time.getMinutes(), finishDate.time.getSeconds());
+                if (date <= new Date()) {
+                    $scope.contestRegForm.finishDate.$setValidity("dateValid", false);
+                } else {
+                    $scope.contestRegForm.finishDate.$setValidity("dateValid", true);
+                }
+            }
+        });
+        $scope.$watchCollection('regModel.finishDate', function(scoresDate) {
+            if (scoresDate.date && scoresDate.time) {
+                var date = new Date(scoresDate.date.getFullYear(), scoresDate.date.getMonth(), scoresDate.date.getDate(), scoresDate.time.getHours(), scoresDate.time.getMinutes(), scoresDate.time.getSeconds());
+                if (date <= new Date()) {
+                    $scope.contestRegForm.scoresDate.$setValidity("dateValid", false);
+                } else {
+                    $scope.contestRegForm.scoresDate.$setValidity("dateValid", true);
+                }
+            }
+        });
+    }
+}]);

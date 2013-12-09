@@ -1,0 +1,30 @@
+﻿             <article class="clearfix col-sm-12">
+              	 			<ul class="nav nav-pills col-sm-12">
+                                <li data-ng-show="contest.type == 'AD'"><a href="#/konkursy/{{contest.id}}/reklamy">Reklamy</a></li>
+                                <li data-ng-show="contest.type == 'AD'" ><a href="#/konkursy/{{contest.id}}/reklamy/dodaj">Dodaj reklamę</a></li>
+                               	<li data-st-access-show="contest.type == 'ANSWER_QUESTION' && hasRole('thisContest')"><a href="#/konkursy/{{contest.id}}/odpowiedzi">Odpowiedzi</a></li>
+                                <li data-ng-show="contest.type == 'ANSWER_QUESTION'"><a href="#/konkursy/{{contest.id}}/odpowiedzi/dodaj">Dodaj odpowiedź</a></li>
+                                <li data-st-access-show="hasRole('thisContest')"><a href="#/konkursy/{{contest.id}}/edytuj">Edytuj</a></li>
+                            </ul>
+                </article>
+                <article class="clearfix col-sm-12">
+
+                            <div class="thumbnail clearfix right-caption col-sm-12 margin-top margin-bottom">
+                                <img data-ng-src="{{contest.imageUrl}}"/>
+                                <div class="">
+                                    <h3 class="wrap-text  list-group-item-heading text-info">{{contest.name}}</h3>
+                                    <p class="list-group-item-text">{{contest.description}}</p>
+                                </div>
+                            </div>
+                            <table class="table no-borders table-condesend">
+                        <tr >
+                            <td class="col-sm-3 text-right text-info">Data zakończenia konkursu</td>
+                            <td class="col-sm-9"><span class="label label-primary">{{contest.finishDate | date:'dd MMM yyyy o hh:mm'}}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-sm-3 text-right text-info">Ogłoszenie wyników</td>
+                            <td class="col-sm-9"><span class="label label-primary">{{contest.scoresDate | date:'dd MMM yyyy o hh:mm'}}</span></td>
+                        </tr>
+                       
+                    </table>
+                </article>

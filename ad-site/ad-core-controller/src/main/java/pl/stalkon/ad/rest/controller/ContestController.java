@@ -155,8 +155,9 @@ public class ContestController {
 	}
 
 	@RequestMapping(value = "contest/{contestId}/answer", method = RequestMethod.POST)
-	public Long registerAnswer(@PathVariable("contestId") Long contestId,
-			@NotNull @RequestParam("answer") String answer, Principal principal)
+	@ResponseBody
+	public SingleObjectResponse registerAnswer(@PathVariable("contestId") Long contestId,
+			@RequestParam("answer") String answer, Principal principal)
 			throws ContestFinishedException, AnswerAlreadyPostedException {
 		Contest contest = contestService.get(contestId);
 		if (contest.getState() == State.FINISHED) {
@@ -171,7 +172,7 @@ public class ContestController {
 
 		ContestAnswer contestAnswer = contestService.registerAnswer(
 				socialLoggedUser.getId(), contestId, answer);
-		return contestAnswer.getId();
+		return new SingleObjectResponse(contestAnswer.getId());
 	}
 
 	@RequestMapping(value = "contest/{contestId}/score", method = RequestMethod.GET)

@@ -1,0 +1,31 @@
+               <article class="clearfix col-sm-12">
+               <ul class="nav nav-pills col-sm-12">
+                                <li><a href="#/marki/{{brand.id}}/reklamy">Reklamy</a></li>
+                                <li ><a href="#/marki/{{brand.id}}/konkursy">Konkursy</a></li>
+								<li data-st-access-show="isAuthorized('thisBrand')"><a href="#/marki/{{brand.id}}/edytuj">Edytuj</a></li>
+                                <li data-st-access-show="isAuthorized('thisBrand')"><a href="#/marki/{{brand.id}}/reklamy/dodaj">Dodaj reklamę</a></li>
+                                <li data-st-access-show="isAuthorized('thisBrand')"><a href="#/marki/{{brand.id}}/konkursy/zarejestruj">Dodaj konkurs</a></li>
+                            </ul>
+                </article>
+                <article class="clearfix col-sm-12">
+                            <div class="thumbnail clearfix right-caption col-sm-12 margin-top margin-bottom">
+                                <img data-ng-src="{{brand.logoUrl}}"/>
+                                <div class="">
+                                    <h3 class="wrap-text  list-group-item-heading text-info">{{brand.name}}</h3>
+                                    <p class="list-group-item-text">{{brand.description}}</div>
+                            </div>
+                        <table class="table no-borders table-condesend">
+                             <tr >
+                            <td class="col-sm-1  text-info">Dodana:</td>
+                            <td class="col-sm-11"><span class="label label-primary">{{brand.creationDate | date:'dd MMM yyyy'}}</span></td>
+                        </tr>
+                        <tr >
+                            <td class="col-sm-1  text-info">Reklamy:</td>
+                            <td class="col-sm-11"><span class="label label-primary">{{brand.adsCount}}</span></td>
+                        </tr>
+                        <tr >
+                            <td class="col-sm-1  text-info">Konkursy:</td>
+                            <td class="col-sm-11"><span class="label label-primary">{{brand.contestsCount}}</span></td>
+                        </tr>
+                    </table>
+                </article>

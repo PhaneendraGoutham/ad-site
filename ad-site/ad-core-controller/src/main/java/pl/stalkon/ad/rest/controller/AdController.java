@@ -122,7 +122,6 @@ public class AdController {
 	@ResponseBody
 	public List<Object> getTags() {
 		List<Tag> tags = adService.getTags();
-		System.out.println(tags.size());
 		return entityDtmMapper.mapEntitiesToDtm(tags, Tag.class,
 				Tag.JSON_SM_SHOW);
 	}
@@ -141,6 +140,24 @@ public class AdController {
 				new Paging(adSearchDto.getPage(), AD_PER_PAGE),
 				controllerHelperBean.getActive(principal));
 		return adBrowserWrapper;
+	}
+	
+	@RequestMapping(value = "ad/{id}/state", method = RequestMethod.POST)
+	@ResponseBody
+	public void update(
+			@PathVariable("id") Long adId,
+			@RequestParam(value = "place", required = false) Short place,
+			@RequestParam(value = "approved", required = false) Boolean approved,
+			@RequestParam(value = "ageProtected", required = false) Boolean ageProtected) {
+		if (place != null) {
+			adService.changePlace(adId, Place.values()[place]);
+		}
+		if (approved != null) {
+			adService.changeApproval(adId, approved);
+		}
+		if (ageProtected != null) {
+			adService.changeAgeProtected(adId, ageProtected);
+		}
 	}
 
 }

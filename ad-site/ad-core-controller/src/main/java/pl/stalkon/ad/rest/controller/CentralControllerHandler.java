@@ -1,5 +1,7 @@
 package pl.stalkon.ad.rest.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import pl.stalkon.ad.core.model.service.UserService;
+import pl.stalkon.ad.extensions.AnswerAlreadyPostedException;
+import pl.styall.library.core.ext.HttpException;
 import pl.styall.library.core.validators.UserValidator;
 
 @ControllerAdvice
@@ -31,6 +35,14 @@ public class CentralControllerHandler {
 	public ResponseEntity<String> handleException(
 			MethodArgumentNotValidException ex) {
 		return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(HttpException.class)
+	@ResponseBody
+	public void handleHttpException(
+			HttpException ex, HttpServletResponse res) {
+		res.setStatus(ex.STATUS_CODE);
+		System.out.println(ex.STATUS_CODE);
 	}
 	
 

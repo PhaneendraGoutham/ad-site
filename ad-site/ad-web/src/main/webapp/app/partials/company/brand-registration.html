@@ -1,0 +1,61 @@
+﻿
+<article class="clearfix">
+	<form class="form-horizontal" id="fileupload" data-ng-show="locationEdit" data-file-upload="options">
+
+			<div class="form-group">
+			<label for="file" class="control-label col-sm-4">Wybierz logo</label>
+			<div class=" col-sm-7 input-group">
+				<span class="input-group-addon"><i class="icon-pencil"></i></span> <span
+					class="fileinput-button form-control"
+					ng-class="{disabled: disabled}">{{queue[0].name}}<span class="placeholder" data-ng-show="queue.length == 0">Kliknij aby wybrać logo</span><input
+					type="file" name="file" ng-disabled="disabled" >
+				</span>
+			</div>
+		</div>
+			<div class="form-group" >
+		<label for="file" class="control-label col-sm-4">Duże logo</label>
+			<div class="col-sm-7">
+				<img data-ng-src="{{brand.logoUrl }}" class="brand-logo" />
+			</div>
+		</div>
+		<div class="form-group" data-ng-show="locationEdit">
+		<label for="file" class="control-label col-sm-4">Małe logo</label>
+			<div class="col-sm-7">
+				<img class="brand-small-logo" data-ng-src="{{brand.smallLogoUrl}}" />
+			</div>
+		</div>
+	</form>
+	<form class="form-horizontal" name="brandRegForm" novalidate
+		data-st-submit="register()">
+
+
+
+		<div data-st-valid-form-elem data-st-label="Krótka nazwa"
+			data-st-name="name" data-st-icon="icon-pencil">
+			<input type="text" class="form-control" placeholder="Krótka nazwa"
+				name="name" data-ng-model="regModel.name" required />
+		</div>
+
+		<div data-st-valid-form-elem data-st-label="Opis"
+			data-st-name="description" data-st-icon="icon-edit">
+			<textarea name="description" class="form-control"
+				placeholder="Opisz jak najwięcej szczegółów" rows="5"
+				data-ng-model="regModel.description" required
+				data-ng-maxlength="1024"></textarea>
+		</div>
+
+
+
+		
+
+
+		<div class="form-group">
+			<div class=" col-sm-7 col-sm-offset-4">
+				<button type="submit" class="btn btn-sm btn-success">{{submitText}}</button>
+			</div>
+		</div>
+
+	</form>
+
+
+</article>

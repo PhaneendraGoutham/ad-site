@@ -15,9 +15,9 @@ public class AdsMapWrapper {
 	
 	public AdsMapWrapper(AdBrowserWrapper adBrowserWrapper, EntityDtmMapper entityDtmmapper) {
 		this.total = adBrowserWrapper.getTotal();
-		ads = new ArrayList<Map<String, Object>>(adBrowserWrapper.getAds().size());
+		ads = new ArrayList<Map<String, Object>>(adBrowserWrapper.getResultList().size());
 		
-		for(Ad ad: adBrowserWrapper.getAds()){
+		for(Ad ad: adBrowserWrapper.getResultList()){
 			ads.add(entityDtmmapper.mapEntityToDtm(ad, Ad.class, Ad.JSON_SHOW));
 		}
 	}

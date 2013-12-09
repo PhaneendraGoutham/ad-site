@@ -3,6 +3,9 @@ package pl.stalkon.ad.core.model.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Place;
 import pl.stalkon.ad.core.model.AdComment;
@@ -72,5 +75,7 @@ public interface AdService {
 	public void informComment(Long id, String message);
 
 	public List<Map<String, Object>> getRatings(List<Long> ids);
+	
+	public Long getBrandAdsCount(Long brandId);
 	
 }

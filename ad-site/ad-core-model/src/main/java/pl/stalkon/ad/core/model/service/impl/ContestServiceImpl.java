@@ -261,6 +261,12 @@ public class ContestServiceImpl implements ContestService{
 		return users;
 	}
 
+	@Override
+	@Transactional
+	public Long getBrandContestCount(Long brandId) {
+		return contestDao.getBrandContestsCount(brandId);
+	}
+
 
 
 

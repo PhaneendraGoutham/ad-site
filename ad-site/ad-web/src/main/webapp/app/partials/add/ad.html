@@ -1,0 +1,99 @@
+<article class="clearfix"
+	data-ng-repeat="ad in model.ads track by $index">
+	<div class=" col-sm-8">
+		<a href="#/reklamy/{{ad.id}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
+	</div>
+	<div class=" col-sm-4 margin-top" data-ng-show="ad.official">
+		<a href="#/marki/{{ad.brand.id}}" class="pull-right"><img
+			data-ng-src="{{ad.brand.smallLogoUrl}}"></a>
+	</div>
+	<div data-ng-switch on="currentUser.adult || !ad.ageProtected">
+		<iframe width="620" height="349" data-ng-src="{{ad.videoUrl}}"
+			frameborder="0" allowfullscreen data-ng-switch-when="true"></iframe>
+		<img src="/resources/img/18.png" data-ng-switch-when="false" />
+	</div>
+	<div class="row margin-bottom margin-top">
+		<div class=" col-sm-4">
+			<div class=" col-sm-3">
+				<img class="avatar img-rounded"
+					data-ng-src="{{ad.user.userData.imageUrl}}" />
+			</div>
+			<div class=" col-sm-9">
+				<a href="#/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a><br />
+				<small>{{ ad.creationDate | date:'dd.MM.yyyy o HH:mm' }}</small>
+			</div>
+		</div>
+		<div class=" col-sm-5">
+			<ul class="nav nav-justified nav-pills">
+				<li data-ng-class="{on : bottomVideoPanelView==description}"><a
+					data-ng-click="bottomVideoPanelView = 'description'">Opis</a></li>
+				<li data-ng-class="{on : bottomVideoPanelView==comments}"><a
+					data-ng-click="bottomVideoPanelView = 'comments'">Komentarze</a></li>
+				<li data-ng-class="{on : bottomVideoPanelView==inform}"><a
+					data-ng-click="bottomVideoPanelView = 'inform'">Zgłoś</a></li>
+			</ul>
+		</div>
+		<div class=" col-sm-3 rating" data-ng-controller="RatingCtrl">
+
+			<rating value="rate" max="max" state-on="'icon-star icon-large'"
+				state-off="'icon-star-empty icon-large'" readonly="isReadonly"
+				on-hover="hoveringOver(value)" on-leave="onLeave()"
+				on-click="onClick(ad, value)"></rating>
+			<span class="label"
+				data-ng-class="{'label-default': labelValue==1, 'label-primary':  labelValue==2, 'label-success':  labelValue==3, 'label-warning': labelValue ==4, 'label-danger': labelValue == 5}"
+				data-ng-show="!isReadonly">{{overStar ||ad.rank | number:2}}</span>
+
+		</div>
+	</div>
+	<div class="row margin-bottom" ng-switch on="bottomVideoPanelView">
+
+		<div data-ng-switch-when="comments">
+			<div class="fb-comments" data-href="ad/{{ad.id }}" data-width="590"
+				data-num-posts="20" data-colorscheme="dark"></div>
+		</div>
+		<div data-ng-switch-when="inform" class=" col-md-12">
+			<div class=" col-md-12 form-group">
+
+				<textarea class="form-control"
+					placeholder="Podaj jak najdokładniejszy powód zgłoszenia..."></textarea>
+			</div>
+			<div class=" col-md-1  form-group">
+				<button class="btn btn-default">
+					<i class="icon-white icon-flag"></i>Zgłoś
+				</button>
+			</div>
+
+
+		</div>
+		<div class=" col-md-12" data-ng-switch-when="description">
+			<p class="text-left  col-md-12" data-ng-bind="ad.description"></p>
+
+		</div>
+	</div>
+	<div class="row margin-bottom" data-ng-controller="AdAdminPanelCtrl"
+		data-st-access-show="hasRole('admin')">
+		<div class="text-center">
+			<button class="btn btn-sm"
+				data-ng-class="{'btn-success': ad.place == 'MAIN', 'btn-primary': ad.place == 'WAITING'}"
+				data-ng-click="changePlace(ad, 0, 'MAIN')">Główna</button>
+			<button class="btn btn-sm"
+				data-ng-class="{'btn-success': ad.place == 'WAITING', 'btn-primary': ad.place == 'MAIN'}"
+				data-ng-click="changePlace(ad, 1, 'WAITING')">Poczekalnia</button>
+			<button class="btn btn-sm"
+				data-ng-class="{'btn-success': ad.approved, 'btn-primary': !ad.approved}"
+				data-ng-click="changeApproved(ad)">Aktywna</button>
+			<button class="btn btn-sm"
+				data-ng-class="{'btn-success': ad.ageProtected, 'btn-primary': !ad.ageProtected}"
+				data-ng-click="changeAgeProtected(ad)">Dla dorosłych</button>
+		</div>
+	</div>
+</article>
+<article class="clearfix text-center" data-ng-show="smallnumPages > 1 && ads.length > 0" data-ng-controller="PagingCtrl">
+
+	<pagination direction-links="false" total-items="total"
+		page="currentPage" num-pages="smallnumPages" max-size="10"
+		items-per-page="5" on-select-page="selectPage(page)"></pagination>
+	<button class="btn btn-block btn-sm btn-danger"
+		data-ng-click="currentPage = currentPage + 1; selectPage(currentPage)"
+		data-ng-show="currentPage < smallnumPages">Dalej</button>
+</article>

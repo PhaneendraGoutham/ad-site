@@ -48,6 +48,8 @@ public class SocialUserDetailsServiceImpl implements MixUserDetailsService {
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		User user = userDao.loadUserByLogin(username);
+		if(user == null)
+			throw new UsernameNotFoundException("Username not found");
 		if(user.getUserRoles().contains(new UserRole("ROLE_COMPANY"))){
 			Company company = companyDao.getByUser(user.getId());
 			return createSocialUserDetails(user, company.getId());

@@ -1,0 +1,54 @@
+﻿
+<article class="clearfix">
+	<form class="form-horizontal" name="regForm" novalidate
+		data-st-submit="register()">
+		<div data-st-valid-form-elem data-st-label="Pełna nazwa"
+			data-st-name="name" data-st-icon="icon-pencil">
+			<input class="form-control" placeholder="Nazwa" name="name"
+				data-ng-model="regModel.name" required="required" />
+		</div>
+		<div data-st-valid-form-elem data-st-label="Nr telefonu"
+			data-st-name="phone" data-st-icon="icon-phone">
+			<input type="text" class="form-control" placeholder="Nr telefonu"
+				name="phone" data-ng-model="regModel.phone"
+				numbers-only="numbers-only" required="required" />
+		</div>
+		<div data-st-valid-form-elem data-st-label="Nip" data-st-name="nip"
+			data-st-icon="icon-book">
+			<input class="form-control" placeholder="Podaj 10-cio cyfrowy nip"
+				name="nip" data-ng-model="regModel.nip"
+				data-ng-pattern="/^[0-9]{10}$/" required="required"
+				numbers-only="numbers-only" />
+		</div>
+		<div data-st-valid-form-elem data-st-label="Kod pocztowy"
+			data-st-name="zip" data-st-icon="icon-envelope">
+			<input class="form-control" placeholder="00-000" name="zip"
+				data-ng-model="regModel.address.zip"
+				data-ng-pattern="/^[0-9]{2}-[0-9]{3}$/" required="required" />
+		</div>
+		<div data-st-valid-form-elem data-st-label="Ulica"
+			data-st-name="street" data-st-icon="icon-road icon-small">
+			<input class="form-control" placeholder="Ulica" name="street"
+				data-ng-model="regModel.address.street" data-ng-minlength="3"
+				data-ng-maxlength="64" required="required" />
+		</div>
+		<div data-st-valid-form-elem data-st-label="Miejscowość"
+			data-st-name="city" data-st-icon="icon-map-marker icon-large">
+			<input class="form-control" placeholder="Miejscowość" name="city"
+				data-ng-model="regModel.address.city" data-ng-minlength="3"
+				data-ng-maxlength="64" required="required" />
+		</div>
+		<div data-st-valid-form-elem data-st-label="Nr domu"
+			data-st-name="homeNr" data-st-icon="icon-building">
+			<input class="form-control" placeholder="Nr domu" name="homeNr"
+				data-ng-model="regModel.address.homeNr" required
+				data-ng-maxlength="20" required="required" />
+		</div>
+		<div class="form-group">
+			<div class=" col-sm-7 col-sm-offset-4">
+				<button type="submit" class="btn btn-sm btn-success">Zarejestruj</button>
+			</div>
+		</div>
+	</form>
+</article>
+</html>

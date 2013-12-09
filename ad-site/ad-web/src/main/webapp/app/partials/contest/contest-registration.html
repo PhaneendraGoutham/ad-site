@@ -1,0 +1,70 @@
+﻿
+<article class="clearfix">
+	<form class="form-horizontal" name="contestRegForm" novalidate
+		data-st-submit="register()">
+
+		<div data-st-valid-form-elem data-st-label="Nazwa" data-st-name="name"
+			data-st-icon="icon-pencil">
+			<input class="form-control" placeholder="Nazwa konkursu" name="name"
+				data-ng-model="regModel.name" required data-minlength="3"
+				data-maxlength="128" />
+		</div>
+
+
+		<div data-st-valid-form-elem data-st-label="Opis"
+			data-st-name="description" data-st-icon="icon-edit">
+			<textarea class="form-control" placeholder="Opis" rows="5"
+				name="description" data-ng-model="regModel.description" required></textarea>
+		</div>
+		
+		<div data-st-valid-form-elem data-st-label="Data zakończenia"
+			data-st-name="finishDate" data-st-icon="icon-calendar"
+			data-st-input-group="false">
+			<div class="col-sm-7">
+				<div class="col-sm-5 input-inline-group-elem">
+					<input class="form-control" datepicker-popup="dd MMM yyyy"
+						min="minDate" show-weeks="false"
+						data-ng-model="regModel.finishDate.date" name="finishDate" required/>
+				</div>
+				<div class="col-sm-7 input-inline-group-elem" >
+					<input timepicker data-ng-model="$parent.regModel.finishDate.time"
+						show-meridian="false" />
+				</div>
+			</div>
+		</div>
+		<div data-st-valid-form-elem data-st-label="Data podania wyników"
+			data-st-name="scoresDate" data-st-icon="icon-calendar"
+			data-st-input-group="false">
+			<div class="col-sm-7">
+				<div class="col-sm-5 input-inline-group-elem">
+					<input class="form-control" datepicker-popup="dd MMM yyyy"
+						min="minDate" show-weeks="false"
+						data-ng-model="regModel.scoresDate.date" name="scoresDate" required/>
+				</div>
+				<div class="col-sm-7 input-inline-group-elem">
+					<input timepicker data-ng-model="$parent.regModel.scoresDate.time"
+						show-meridian="false" />
+				</div>
+			</div>
+		</div>
+		<div data-st-valid-form-elem data-st-label="Typ konkursu"
+			data-st-name="type" data-st-icon="icon-search"
+			data-st-input-group="false">
+			<div class="col-sm-7">
+
+				<label class="radio-inline"> <input type="radio" name="type"
+					required data-ng-model="regModel.type" value="AD" />Dodaj reklamę
+				</label> <label class="radio-inline"> <input type="radio"
+					name="type" required data-ng-model="regModel.type" value="ANSWER" />Odpowiedz
+					na pytanie
+				</label>
+			</div>
+
+		</div>
+		<div class="form-group">
+			<div class=" col-sm-7 col-sm-offset-4">
+				<button type="submit" class="btn btn-sm btn-success">Zarejestruj</button>
+			</div>
+		</div>
+	</form>
+</article>

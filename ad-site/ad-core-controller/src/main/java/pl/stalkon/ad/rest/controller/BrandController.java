@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -38,7 +39,9 @@ import pl.stalkon.ad.core.model.dto.BrandSearchDto;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.BrandService;
 import pl.stalkon.ad.core.model.service.CompanyService;
+import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
+import pl.stalkon.ad.extensions.NotFoundException;
 import pl.stalkon.video.api.service.impl.WistiaApiService;
 import pl.stalkon.video.api.wistia.WistiaException;
 import pl.stalkon.video.api.wistia.WistiaStats;
@@ -51,6 +54,12 @@ public class BrandController {
 
 	@Autowired
 	private BrandService brandService;
+	
+	@Autowired
+	private AdService adService;
+	
+	@Autowired
+	private ContestService contestService;
 
 	@Autowired
 	private WistiaApiService wistiaApiService;
@@ -58,12 +67,20 @@ public class BrandController {
 	@Autowired
 	private EntityDtmMapper entityDtmMapper;
 
+	@RequestMapping(value = "brand/sm", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Object> getSmallList() {
+		List<Brand> brands = brandService.get();
+		return entityDtmMapper.mapEntitiesToDtm(brands, Brand.class,
+				Brand.JSON_SM_SHOW);
+	}
+	
 	@RequestMapping(value = "brand", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Object> get() {
 		List<Brand> brands = brandService.get();
 		return entityDtmMapper.mapEntitiesToDtm(brands, Brand.class,
-				Brand.JSON_SM_SHOW);
+				Brand.JSON_SHOW);
 	}
 	
 	@RequestMapping(value = { "brand/{brandId}/wistiaproject" }, method = RequestMethod.GET)
@@ -75,10 +92,17 @@ public class BrandController {
 
 	@RequestMapping(value = { "brand/{brandId}" }, method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String, Object> getBrandAds(@PathVariable("brandId") Long brandId) {
+	public Map<String, Object> getBrandAds(@PathVariable("brandId") Long brandId) throws NotFoundException {
 		Brand brand = brandService.get(brandId);
-		return entityDtmMapper.mapEntityToDtm(brand, Brand.class,
+		if(brand == null)
+			throw new NotFoundException();
+		Long adsCount = adService.getBrandAdsCount(brandId);
+		Long contestsCount = contestService.getBrandContestCount(brandId);
+		Map<String, Object> result = entityDtmMapper.mapEntityToDtm(brand, Brand.class,
 				Brand.JSON_SHOW);
+		result.put("adsCount", adsCount);
+		result.put("contestsCount", contestsCount);
+		return result;
 	}
 
 	@RequestMapping(value = "brand/{brandId}", method = RequestMethod.POST)
@@ -103,13 +127,13 @@ public class BrandController {
 	@RequestMapping(value = "/company/{companyId}/brand", method = RequestMethod.POST)
 	@ResponseBody
 	@PreAuthorize("@companyService.isCompanyOfUser(principal.id,#companyId)")
-	public Long addByCompany(@Valid @RequestBody BrandPostDto brandPostDto,
+	public SingleObjectResponse addByCompany(@Valid @RequestBody BrandPostDto brandPostDto,
 			Principal principal, @PathVariable("companyId") Long companyId) {
 		WistiaProjectData wistiaProjectData = wistiaApiService
 				.createWistiaProject(brandPostDto.getName());
 		Brand brand = brandService.register(brandPostDto, wistiaProjectData,
 				companyId);
-		return brand.getId();
+		return new SingleObjectResponse(brand.getId());
 	}
 	
 	@RequestMapping(value = "/company/{companyId}/brand", method = RequestMethod.GET)

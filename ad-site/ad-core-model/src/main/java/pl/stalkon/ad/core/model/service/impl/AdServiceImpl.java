@@ -499,7 +499,11 @@ public class AdServiceImpl implements AdService {
 	}
 
 
-
+	@Override
+	@Transactional
+	public Long getBrandAdsCount(Long brandId) {
+		return adDao.getBrandAdsCount(brandId);
+	}
 
 	// @Override
 	// @Transactional

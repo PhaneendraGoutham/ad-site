@@ -33,7 +33,7 @@ public class Ad extends CommonEntity {
 	private static final long serialVersionUID = 1335218634734582331L;
 
 	public static final List<String> JSON_SHOW = Arrays.asList("id","place","dateOnMain","creationDate","year","title","description","ageProtected","approved","user.displayName","user.id","user.userData.imageUrl",
-		"brand.name","brand.id","brand.smallLogoUrl","rank","voteCount","thumbnail","videoUrl");
+		"brand.name","brand.id","brand.smallLogoUrl","rank","voteCount","thumbnail","videoUrl", "contestAd.winner", "official");
 	
 	public enum Type {
 		MOVIE, PICTURE, GAME

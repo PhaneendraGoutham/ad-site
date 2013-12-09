@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -31,9 +30,9 @@ import pl.styall.library.core.security.filter.UserMessageSessionAttribute;
 @Component
 public class ControllerHelperBean {
 
-//	public final int AD_PER_PAGE = 5;
-//	public final int CONTESTS_PER_PAGE = 5;
-//	public final int CONTESTS_ANSWERS_PER_PAGE = 10;
+	// public final int AD_PER_PAGE = 5;
+	// public final int CONTESTS_PER_PAGE = 5;
+	// public final int CONTESTS_ANSWERS_PER_PAGE = 10;
 
 	@Autowired
 	private CompanyService companyService;
@@ -43,16 +42,13 @@ public class ControllerHelperBean {
 
 	@Autowired
 	private MessageSource messageSource;
-	
-	
+
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private UserInfoService userInfoService;
 
-	
-	
 	public boolean getActive(Principal principal) {
 		if (principal != null) {
 			SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
@@ -71,10 +67,10 @@ public class ControllerHelperBean {
 		model.addAttribute("currentPage", page);
 	}
 
-//	public int getFrom(int perPage, int page) {
-//		page--;
-//		return page * perPage;
-//	}
+	// public int getFrom(int perPage, int page) {
+	// page--;
+	// return page * perPage;
+	// }
 
 	public void reathenticateUser(String username) {
 		SocialLoggedUser userDetails = (SocialLoggedUser) userDetailsService
@@ -142,28 +138,24 @@ public class ControllerHelperBean {
 		return "redirect:/info-page";
 	}
 
-	public boolean isContestAdmin(HttpServletRequest request,
-			Principal principal, Long contestId) {
-		if (request.isUserInRole(UserRoleDef.ROLE_CONTEST)) {
-			SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-					.getPrincipal();
-			if (contestService.isContestAdmin(socialLoggedUser.getId(),
-					contestId)) {
-				return true;
-			}
+	public boolean isContestAdmin(Long userId, Long contestId) {
+		if (contestService.isContestAdmin(userId, contestId)) {
+			return true;
 		}
 		return false;
 	}
-	
-	public void setUserMessagesSessionAttr(SocialLoggedUser socialLoggedUser, HttpServletRequest request){
-		//TODO: rethink use of this method its a copy of the one from filter
-		int userMessagesCount = userInfoService.getUserMessagesCount(socialLoggedUser.getId());
+
+	public void setUserMessagesSessionAttr(SocialLoggedUser socialLoggedUser,
+			HttpServletRequest request) {
+		// TODO: rethink use of this method its a copy of the one from filter
+		int userMessagesCount = userInfoService
+				.getUserMessagesCount(socialLoggedUser.getId());
 		UserMessageSessionAttribute attr = new UserMessageSessionAttribute();
 		attr.setUnhandledMessagesCount(userMessagesCount);
 		long currentTimestamp = new Date().getTime();
 		attr.setTimestamp(currentTimestamp);
 		request.getSession().setAttribute("userMessagesAttribute", attr);
-		
+
 	}
 
 }

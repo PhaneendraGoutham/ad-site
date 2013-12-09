@@ -1,0 +1,65 @@
+<article class="clearfix">
+    <form class="form-horizontal" name="userRegForm" novalidate data-st-submit="register()">
+        
+           <div data-st-valid-form-elem data-st-label="Nazwa uzytkownika" data-st-name="username" data-st-icon="icon-user">     
+                <input type="text" name="username" class="form-control" placeholder="Nazwa użytkownika"
+                    data-ng-model="regModel.username" required data-ng-minlength="5" data-ng-maxlength="20"
+                    data-ng-pattern="/^[0-9a-zA-Z_.]+$/" data-st-ensure-unique=""/>    
+        </div>
+        <div data-st-valid-form-elem data-st-label="Hasło" data-st-name="password" data-st-icon="icon-lock">
+                <input type="password" name="password" class="form-control" placeholder="Hasło" data-ng-model="regModel.password"
+                    required data-ng-minlength="6" data-ng-maxlength="20" data-ng-pattern="/[0-9a-zA-Z,.-=;'!@#$%^&*()_]+$/" />
+        </div>
+        <div data-st-valid-form-elem data-st-label="Powtórz hasło" data-st-name="confirm" data-st-icon="icon-lock">       
+                <input type="password" name="confirm" data-ng-model="regModel.confirmPassword" class="form-control"
+                    placeholder="Powtórz hasło" data-st-field-match="regModel.password" />
+        </div>
+        <div data-st-valid-form-elem data-st-label="Email" data-st-name="email" data-st-icon="icon-envelope">       
+                <input type="email" name="email" class="form-control" placeholder="Email" data-ng-model="regModel.mail"
+                    required data-st-ensure-unique=""/>
+        </div>
+        <div data-st-valid-form-elem data-st-label="Data urodzenia" data-st-name="birthdate" data-st-input-group="false">       
+            <div class="col-sm-7">
+                <div class="col-sm-3 input-inline-group-elem">
+                    <input class="form-control" name="birthdate" data-ng-model="regModel.birthdate.day" placeholder="Dzień" st-date-validation="regModel.birthdate" required/>
+                </div>
+                <div class="col-sm-5 input-inline-group-elem">
+                    <select data-ng-options="(months.indexOf(month) + 1) as month for month in months" class="form-control" name="birthdate"
+                        data-ng-model="regModel.birthdate.month" required><option value="">Miesiąc</option></select>
+                </div>
+                <div class="col-sm-4 input-inline-group-elem">
+                    <input class="form-control" name="birthdate" data-ng-model="regModel.birthdate.year" placeholder="Rok" required/>
+                </div>
+            </div>       
+        </div>   
+        <div data-st-valid-form-elem data-st-label="Płeć" data-st-name="sex" data-st-input-group="false">    
+            <div class="col-sm-7">
+                <label class="radio-inline">
+                    <input type="radio" value="FEMALE" name="sex" data-ng-model="regModel.sex" required="" />
+                    Kobieta
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="MALE" name="sex" data-ng-model="regModel.sex" required=""/>
+                    Mężczyzna
+                </label>
+            </div>
+        </div>
+        <div class="form-group" data-ng-class="{'has-error': st.userRegForm.needsAttention(userRegForm.terms)}">
+            <div class="col-sm-7 col-sm-offset-4" >
+                <label class="control-label checkbox-inline" >
+                    <input type="checkbox" name="terms" data-ng-model="regModel.terms" required=""/>Akceptuje warunki <a href="#" class="text-info">regulaminu</a>
+                </label>
+            </div>
+           
+        </div>
+
+        
+            <div class="form-group">
+                <div class=" col-sm-7 col-sm-offset-4">
+                <button type="submit" class="btn btn-sm btn-success">Zarejestruj</button>
+                        </div>
+            </div>
+    
+
+    </form>
+</article>

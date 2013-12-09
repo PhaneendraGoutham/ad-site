@@ -1,0 +1,24 @@
+<article class="clearfix form-horizontal"
+	data-ng-repeat="contestAnswer in contestAnswers">
+	<div class="form-group">
+		<label class="col-sm-4 control-label">Odpowiedź</label>
+		<div class="col-sm-7">
+			<p class="form-control-static">{{contestAnswer.answer}}</p>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-7 col-sm-offset-4">
+			<button class="btn btn-sm"
+				data-ng-class="{'btn-success': contestAnswer.winner,'btn-primary': !contestAnswer.winner}" data-ng-click="pressWinner(contestAnswer)">Zwycięzca</button>
+		</div>
+	</div>
+</article>
+
+<article class="clearfix text-center" data-ng-show="smallnumPages > 1">
+	<pagination direction-links="false" total-items="total"
+		page="currentPage" num-pages="smallnumPages" max-size="10"
+		items-per-page="10" on-select-page="selectPage(page)"></pagination>
+	<button class="btn btn-block btn-sm btn-danger"
+		data-ng-click="currentPage = currentPage + 1; selectPage(currentPage)"
+		data-ng-show="currentPage < smallnumPages">Dalej</button>
+</article>

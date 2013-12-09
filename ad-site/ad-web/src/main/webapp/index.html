@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" data-ng-app="spotnikApp">
+<!--<![endif]-->
+<head>
+<meta name="generator"
+	content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<title></title>
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width" />
+<link rel="stylesheet" href="resources/css/bootstrap.css" />
+<link rel="stylesheet" href="resources/css/font-awesome.css" />
+<link rel="stylesheet" href="resources/css/datetimepicker.css" />
+<script type="text/javascript"
+	src="resources/components/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="resources/components/angular.js"></script>
+<script type="text/javascript"
+	src="resources/components/angular-cookies.js"></script>
+<script type="text/javascript" src="resources/components/ngShowHide.js"></script>
+<script type="text/javascript" src="resources/components/ngresource.js"></script>
+<script type="text/javascript" src="resources/components/mocks.js"></script>
+<script type="text/javascript" src="app/modules/st-auth-module-test.js"></script>
+<script type="text/javascript"
+	src="resources/components/localstorage.js"></script>
+<script type="text/javascript"
+	src="resources/components/angular-locale_pl-pl.js"></script>
+<script type="text/javascript"
+	src="resources/components/datetimepicker.js"></script>
+<script type="text/javascript" src="resources/components/moment.js"></script>
+<script type="text/javascript"
+	src="resources/components/upload-widget.js"></script>
+<script type="text/javascript"
+	src="resources/components/ui-bootstrap-custom-tpls-0.6.0.min.js"></script>
+<script type="text/javascript" src="app/modules/st-auth-module.js"></script>
+<script type="text/javascript" src="app/app.js"></script>
+
+<script type="text/javascript"
+	src="app/controllers/ad/ad-list-controller.js"></script>
+
+<script type="text/javascript"
+	src="app/controllers/user/user-controllers.js"></script>
+<script type="text/javascript" src="app/services/ad-services.js"></script>
+
+<script type="text/javascript"
+	src="app/controllers/company/company-controllers.js"></script>
+<script type="text/javascript"
+	src="app/controllers/contest/contest-controller.js"></script>
+<script
+	src="http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<script
+	src="http://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+<script type="text/javascript" src="app/services/company-services.js"></script>
+<script type="text/javascript" src="app/services/user-service.js"></script>
+<script type="text/javascript" src="app/services/contest-services.js"></script>
+<script type="text/javascript" src="app/directives/form-directives.js"></script>
+<script type="text/javascript" src="app/services/static-data.js"></script>
+<script src="resources/components/jquery.ui.widget.js"></script>
+<script src="resources/components/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="resources/components/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="resources/components/jquery.fileupload-process.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="resources/components/jquery.fileupload-image.js"></script>
+<script src="resources/components/jquery.fileupload-validate.js"></script>
+<script src="resources/components/jquery.fileupload-angular.js"></script>
+
+</head>
+<body  >
+	<!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+	<div class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<div class="navbar-custom-brand">
+				<img src="resources/img/logo.png" />
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav" data-st-active="">
+					<li class="active"><a href="#/"><i class="icon-home"></i>GŁÓWNA</a>
+					</li>
+					<li><a href="#/poczekalnia"><i class="icon-coffee"></i>POCZEKALNIA</a>
+					</li>
+					<li><a href="#/przegladaj"><i class="icon-search"></i>PRZEGLĄDAJ</a>
+					</li>
+					<li><a href="#/reklamy/dodaj"
+						data-st-access-show="hasRole('user') && !hasRole('company')" st-register-watch="true"><i
+							class="icon-plus-sign-alt"></i> DODAJ</a></li>
+					<li><a href="#/losuj"><i class="icon-random"></i>LOSUJ</a></li>
+					<li><a href="#/marki">MARKI</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right" data-st-active="">
+					<li data-st-access-show="hasRole('public')" st-register-watch="true"><a
+						href="#/uzytkownik/zaloguj"><i class="icon-user"></i>ZALOGUJ</a></li>
+					<li data-st-access-show="hasRole('user')" class="dropdown" st-register-watch="true"><a
+						class="dropdown-toggle"> <img src="resources/img/no-user.gif" />
+					</a>
+						<div class="dropdown-menu" data-ng-controller="UserDropdownCtrl">
+
+							<div class="thumbnail clearfix right-caption">
+								<img class="pull-left" src="resources/img/no-user.gif" />
+								<div class="caption ">
+									<span class="heading">{{currentUser.displayName}}</span>
+
+								</div>
+
+								<ul class="nav nav-pills ">
+									<li><a href="#/uzytkownik/haslo/zmien">Hasło</a></li>
+									<li><a href="#/uzytkownik/{{currentUser.id}}/reklamy">Reklamy</a></li>
+
+									<li><a href="#/partnerzy/zarejestruj"
+										data-st-access-show="!hasRole('company')" st-register-watch="true">Firma</a> <a
+										href="#/partnerzy/{{currentUser.companyId}}"
+										data-st-access-show="hasRole('company')" st-register-watch="true">Firma</a></li>
+								</ul>
+								<button class="btn btn-sm btn-warning"
+									data-ng-click="showProfile()">Wyświetl profil</button>
+								<button class="btn btn-sm btn-warning" data-ng-click="logout()">Wyloguj</button>
+
+
+							</div>
+
+						</div></li>
+				</ul>
+			</div>
+			<!--/.navbar-collapse -->
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class=" col-sm-8">
+				<div class="row">
+					<div class=" col-sm-12">
+						<div alert class="main-alert" data-ng-repeat="alert in alerts"
+							type="alert.type" close="closeAlert($index)">{{alert.msg}}</div>
+					</div>
+				</div>
+				<div class="row">
+					<section class=" col-sm-12 center-section" ng-view></section>
+				</div>
+			</div>
+			<aside class=" col-sm-4 aside-section">
+				<div class="panel panel-default" data-ng-controller="TopAdsCtrl">
+					<!-- Default panel contents -->
+					<div class="panel-heading text-center">Popularne</div>
+					<!-- List group -->
+
+
+					<div class="thumbnail clearfix"
+						data-ng-repeat="ad in model.topAds track by $index ">
+						<a href="#/reklamy/{{ad.id}}" class="pull-left"> <span>
+								<img class="" data-ng-src="{{ad.thumbnail}}" />
+						</span>
+						</a>
+						<div class="caption">
+							<div class="wrap-text text-info">
+								<a href="#/reklamy/{{ad.id}}">{{ad.title}}</a>
+							</div>
+							<!-- 							<small>użytkownik: <a -->
+							<!-- 								href="#/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a></small> -->
+						</div>
+						<div>
+							<rating value="roundRank(ad.rank)" max="5"
+								state-on="'icon-star '"
+								state-off="'icon-star-empty '" readonly="true"></rating>
+							<span class="label"
+								data-ng-class="{'label-default': ad.rank>=1 && ad.rank<=2, 'label-primary':  ad.rank>=2 && ad.rank<=3, 'label-success':  ad.rank>=3 && ad.rank<=4, 'label-warning': ad.rank >=4 && ad.rank<=5, 'label-danger': ad.rank == 5}"
+								data-ng-show="!isReadonly"><small>{{ad.rank |
+									number:2}}</small></span>
+						</div>
+						
+					</div>
+													
+
+
+				</div>
+			</aside>
+		</div>
+	</div>
+</body>
+</html>

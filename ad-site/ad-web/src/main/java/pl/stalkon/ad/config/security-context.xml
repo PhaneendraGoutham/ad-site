@@ -59,7 +59,7 @@
 			method="POST" access="hasRole('ROLE_USER')" />
 
 		<security:intercept-url pattern="/ad/*/state"
-			method="POST" access="hasRole('ROLE_AD_ADMIN')" />
+			method="POST" access="hasRole('ROLE_ADMIN')" />
 
 		<security:intercept-url pattern="/brand/register"
 			access="hasRole('ROLE_ADMIN')" />
