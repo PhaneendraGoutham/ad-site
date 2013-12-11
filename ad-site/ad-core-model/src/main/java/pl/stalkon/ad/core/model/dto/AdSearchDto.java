@@ -23,6 +23,7 @@ public class AdSearchDto {
 	private Boolean winner;
 	private Long userId;
 	private Integer page = 1;
+	private Long parentId;
 
 	public Integer getPage() {
 		return page;
@@ -167,6 +168,14 @@ public class AdSearchDto {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 	public Integer getYearFrom() {

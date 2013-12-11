@@ -264,11 +264,11 @@ app.directive('ngFocus', ['$parse',function($parse) {
     }
 }]);
 
-app.filter('matchStringFilter', function(){
-   return function(textToMatch, text){
-       if(testToMatch.match(text)){
-           return true;
-       }
-       return false;
-   } ;
-});
+//app.filter('matchStringFilter', function(){
+//   return function(textToMatch, text){
+//       if(testToMatch.match(text)){
+//           return true;
+//       }
+//       return false;
+//   } ;
+//});

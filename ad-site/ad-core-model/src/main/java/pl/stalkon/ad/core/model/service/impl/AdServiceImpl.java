@@ -66,26 +66,27 @@ public class AdServiceImpl implements AdService {
 	@Autowired
 	private TagDao tagDao;
 
-//	@Transactional
-//	@Override
-//	public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList,
-//			Order order, Paging ) {
-//		return adDao.get(queryObjectList, order, first, last);
-//	}
+	// @Transactional
+	// @Override
+	// public AdBrowserWrapper get(List<DaoQueryObject> queryObjectList,
+	// Order order, Paging ) {
+	// return adDao.get(queryObjectList, order, first, last);
+	// }
 
 	@Transactional
 	@Override
-	@Cacheable(value = "ad", key = "#id")
+	// @Cacheable(value = "ad", key = "#id")
 	public Ad get(Long id, boolean approved) {
 		Ad ad = adDao.get(id);
 		Hibernate.initialize(ad.getUser());
 		Hibernate.initialize(ad.getBrand());
+//		ad.getParent().getId();
 		return ad;
 	}
 
 	@Transactional
 	@Override
-	@CacheEvict(value = {"waiting"}, allEntries = true)
+	@CacheEvict(value = { "waiting" }, allEntries = true)
 	public Ad register(AdPostDto adPostDto, Ad ad, Long userId, boolean official) {
 		for (Long tagId : adPostDto.getTags()) {
 			Tag tag = tagDao.get(tagId);
@@ -151,39 +152,40 @@ public class AdServiceImpl implements AdService {
 		return comment;
 	}
 
-//	@Transactional
-//	@Override
-//	@Cacheable("main")
-//	public AdBrowserWrapper getMain(Integer pageFrom, Integer pageCount,
-//			boolean approved) {
-//		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
-//		queryObjectList.add(new DaoQueryObject("place", Ad.Place.MAIN));
-//		if (!approved)
-//			queryObjectList.add(new DaoQueryObject("approved", true));
-//		return adDao.get(queryObjectList, Order.desc("dateOnMain"),
-//				new Integer(pageFrom), new Integer(pageCount));
-//	}
-//
-//	@Transactional
-//	@Override
-//	@Cacheable("waiting")
-//	public AdBrowserWrapper getWaiting(Integer pageFrom, Integer pageCount,
-//			boolean approved) {
-//		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
-//		queryObjectList.add(new DaoQueryObject("place", Ad.Place.WAITING));
-//		if (!approved)
-//			queryObjectList.add(new DaoQueryObject("approved", true));
-//		return adDao.get(queryObjectList, Order.desc("creationDate"),
-//				new Integer(pageFrom), new Integer(pageCount));
-//	}
+	// @Transactional
+	// @Override
+	// @Cacheable("main")
+	// public AdBrowserWrapper getMain(Integer pageFrom, Integer pageCount,
+	// boolean approved) {
+	// List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
+	// queryObjectList.add(new DaoQueryObject("place", Ad.Place.MAIN));
+	// if (!approved)
+	// queryObjectList.add(new DaoQueryObject("approved", true));
+	// return adDao.get(queryObjectList, Order.desc("dateOnMain"),
+	// new Integer(pageFrom), new Integer(pageCount));
+	// }
+	//
+	// @Transactional
+	// @Override
+	// @Cacheable("waiting")
+	// public AdBrowserWrapper getWaiting(Integer pageFrom, Integer pageCount,
+	// boolean approved) {
+	// List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
+	// queryObjectList.add(new DaoQueryObject("place", Ad.Place.WAITING));
+	// if (!approved)
+	// queryObjectList.add(new DaoQueryObject("approved", true));
+	// return adDao.get(queryObjectList, Order.desc("creationDate"),
+	// new Integer(pageFrom), new Integer(pageCount));
+	// }
 
 	@Transactional
 	@Override
-	@Cacheable(value="top", key="#paging.perPage")
+	@Cacheable(value = "top", key = "#paging.perPage")
 	public List<Ad> getTop(Paging paging, Date date) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();
 		if (date != null) {
-			queryObjectList.add(new DaoQueryObject("creationDate", date, CompareType.MORE));
+			queryObjectList.add(new DaoQueryObject("creationDate", date,
+					CompareType.MORE));
 		}
 		queryObjectList.add(new DaoQueryObject("approved", true));
 		queryObjectList.add(new DaoQueryObject("place", Place.MAIN));
@@ -286,7 +288,7 @@ public class AdServiceImpl implements AdService {
 
 	@Override
 	@Transactional
-	@Cacheable(value= "waiting", key="#paging.from + '-' + #paging.perPage + '-' + #approved")
+	@Cacheable(value = "waiting", key = "#paging.from + '-' + #paging.perPage + '-' + #approved")
 	public AdBrowserWrapper getWaiting(AdSearchDto adSearchDto, Paging paging,
 			boolean approved) {
 		adSearchDto.setOrder("desc");
@@ -296,14 +298,14 @@ public class AdServiceImpl implements AdService {
 
 	@Override
 	@Transactional
-	@Cacheable(value="main", key="#paging.from + '-' + #paging.perPage + '-' + #approved")
+	@Cacheable(value = "main", key = "#paging.from + '-' + #paging.perPage + '-' + #approved")
 	public AdBrowserWrapper getMain(AdSearchDto adSearchDto, Paging paging,
 			boolean approved) {
 		adSearchDto.setOrder("desc");
 		adSearchDto.setOrderBy("creationDate");
 		return get(adSearchDto, paging, approved);
 	}
-	
+
 	@Override
 	@Transactional
 	public AdBrowserWrapper get(AdSearchDto adSearchDto, Paging paging,
@@ -355,6 +357,8 @@ public class AdServiceImpl implements AdService {
 				.getYearFrom(), CompareType.MORE));
 		queryObjectList.add(new DaoQueryObject("year", adSearchDto.getYearTo(),
 				CompareType.LESS));
+		queryObjectList.add(new DaoQueryObject("parent.id", adSearchDto
+				.getParentId()));
 		if (adSearchDto.getText() != null && !adSearchDto.getText().equals("")) {
 			queryObjectList.add(new DaoQueryObject("title", "%"
 					+ adSearchDto.getText() + "%", CompareType.LIKE));
@@ -386,11 +390,12 @@ public class AdServiceImpl implements AdService {
 			tagList.add(new DaoQueryObject("id", adSearchDto.getTagList(),
 					CompareType.IN_DISJUNCTION));
 			queryObjectList.add(new DaoQueryObject("tags", tagList));
-//			List<Long> adIds = tagDao.getAdIds(adSearchDto.getTagList());
-//			if(adIds != null && adIds.size() > 0){
-//				queryObjectList.add(new DaoQueryObject("id", adIds, CompareType.IN));
-//			}
-			
+			// List<Long> adIds = tagDao.getAdIds(adSearchDto.getTagList());
+			// if(adIds != null && adIds.size() > 0){
+			// queryObjectList.add(new DaoQueryObject("id", adIds,
+			// CompareType.IN));
+			// }
+
 		}
 	}
 
@@ -491,13 +496,13 @@ public class AdServiceImpl implements AdService {
 
 	@Override
 	@Transactional
-	public List<Ad> getList(AdSearchDto adSearchDto, Paging paging, boolean approved) {
+	public List<Ad> getList(AdSearchDto adSearchDto, Paging paging,
+			boolean approved) {
 		List<DaoQueryObject> queryObjectList = glueConditions(adSearchDto,
 				approved);
 		Order order = prepareOrder(adSearchDto);
 		return adDao.getList(queryObjectList, order, paging);
 	}
-
 
 	@Override
 	@Transactional

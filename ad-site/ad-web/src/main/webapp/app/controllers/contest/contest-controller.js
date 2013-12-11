@@ -14,7 +14,7 @@ app.controller('ContestListCtrl', ['contestsBrowserWrapper','$scope',"$location"
         });
     }
     function getContests() {
-        ContestService.getContestsByUrl(function(data){
+        ContestService.getContestsByUrl(function(data) {
             $scope.total = data.total;
             $scope.contests = data.contests;
         });
@@ -62,8 +62,14 @@ app.controller('ContestCtrl', ['contest','$scope',function(contest, $scope) {
 
     }
 }]);
-app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','$routeParams','ContestService','$filter',function($scope, ErrorFactory, $location, $routeParams, ContestService, $filter) {
+app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','$routeParams','ContestService','$filter','contest',function($scope, ErrorFactory, $location, $routeParams, ContestService, $filter, contest) {
     init();
+    function prepareDateToSend() {
+        var data = angular.copy($scope.regModel);
+        data.finishDate = new Date(data.finishDate.date.getFullYear(), data.finishDate.date.getMonth(), data.finishDate.date.getDate(), data.finishDate.time.getHours(), data.finishDate.time.getMinutes(), data.finishDate.time.getSeconds());
+        data.scoresDate = new Date(data.scoresDate.date.getFullYear(), data.scoresDate.date.getMonth(), data.scoresDate.date.getDate(), data.scoresDate.time.getHours(), data.scoresDate.time.getMinutes(), data.scoresDate.time.getSeconds());
+        return data;
+    }
     function init() {
         $scope.regModel = {};
         $scope.regModel.scoresDate = {};
@@ -75,18 +81,35 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
                 finishDate : "Data musi być poźniejsza",
             }
         });
-        $scope.register = function() {
-            var data = angular.copy($scope.regModel);
-            data.finishDate = new Date(data.finishDate.date.getFullYear(), data.finishDate.date.getMonth(), data.finishDate.date.getDate(), data.finishDate.time.getHours(), data.finishDate.time.getMinutes(), data.finishDate.time.getSeconds());
-            data.scoresDate = new Date(data.scoresDate.date.getFullYear(), data.scoresDate.date.getMonth(), data.scoresDate.date.getDate(), data.scoresDate.time.getHours(), data.scoresDate.time.getMinutes(), data.scoresDate.time.getSeconds());
-            ContestService.registerContest($routeParams.id, data, function(data) {
-                $location.path("/konkursy/" + data.response + '/edytuj');
-            });
-        };
+        if (contest) {
+            $scope.regModel.name = contest.name;
+            $scope.regModel.description = contest.description;
+            $scope.regModel.finishDate.date = new Date(contest.finishDate);
+            $scope.regModel.finishDate.time = new Date(contest.finishDate);
+            $scope.regModel.scoresDate.date = new Date(contest.scoresDate);
+            $scope.regModel.scoresDate.time = new Date(contest.scoresDate);
+            $scope.regModel.type = contest.type;
+            $scope.register = function() {
+                var data = prepareDateToSend();
+                ContestService.updateContest($routeParams.id, data, function(data) {
+                    $location.path("/konkursy/" + $routeParams.id);
+                });
+            };
+        } else {
+            $scope.regModel.finishDate.time = new Date();
+            $scope.regModel.scoresDate.time = new Date();
+            $scope.register = function() {
+                var data = prepareDateToSend();
+                ContestService.registerContest($routeParams.id, data, function(data) {
+                    $location.path("/konkursy/" + data.response);
+                });
+            };
+
+        }
         $scope.minDate = new Date();
 
         $scope.$watchCollection('regModel.finishDate', function(finishDate) {
-            if (finishDate.date && finishDate.time) {
+            if (finishDate.date && finishDate.time &&  $scope.contestRegForm.finishDate) {
                 var date = new Date(finishDate.date.getFullYear(), finishDate.date.getMonth(), finishDate.date.getDate(), finishDate.time.getHours(), finishDate.time.getMinutes(), finishDate.time.getSeconds());
                 if (date <= new Date()) {
                     $scope.contestRegForm.finishDate.$setValidity("dateValid", false);
@@ -96,7 +119,7 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
             }
         });
         $scope.$watchCollection('regModel.finishDate', function(scoresDate) {
-            if (scoresDate.date && scoresDate.time) {
+            if (scoresDate.date && scoresDate.time &&  $scope.contestRegForm.finishDate) {
                 var date = new Date(scoresDate.date.getFullYear(), scoresDate.date.getMonth(), scoresDate.date.getDate(), scoresDate.time.getHours(), scoresDate.time.getMinutes(), scoresDate.time.getSeconds());
                 if (date <= new Date()) {
                     $scope.contestRegForm.scoresDate.$setValidity("dateValid", false);

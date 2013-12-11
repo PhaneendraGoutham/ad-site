@@ -6,8 +6,8 @@
 		<div data-st-valid-form-elem data-st-label="Nazwa" data-st-name="name"
 			data-st-icon="icon-pencil">
 			<input class="form-control" placeholder="Nazwa konkursu" name="name"
-				data-ng-model="regModel.name" required data-minlength="3"
-				data-maxlength="128" />
+				data-ng-model="regModel.name" required data-ng-minlength="3"
+				data-ng-minlength="128" />
 		</div>
 
 
@@ -55,7 +55,7 @@
 				<label class="radio-inline"> <input type="radio" name="type"
 					required data-ng-model="regModel.type" value="AD" />Dodaj reklamę
 				</label> <label class="radio-inline"> <input type="radio"
-					name="type" required data-ng-model="regModel.type" value="ANSWER" />Odpowiedz
+					name="type" required data-ng-model="regModel.type" value="ANSWER_QUESTION" />Odpowiedz
 					na pytanie
 				</label>
 			</div>

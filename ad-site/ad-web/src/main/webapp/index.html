@@ -13,9 +13,13 @@
 <title></title>
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width" />
+
+<!-- stylesheets -->
 <link rel="stylesheet" href="resources/css/bootstrap.css" />
 <link rel="stylesheet" href="resources/css/font-awesome.css" />
 <link rel="stylesheet" href="resources/css/datetimepicker.css" />
+
+<!-- components -->
 <script type="text/javascript"
 	src="resources/components/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="resources/components/angular.js"></script>
@@ -23,56 +27,51 @@
 	src="resources/components/angular-cookies.js"></script>
 <script type="text/javascript" src="resources/components/ngShowHide.js"></script>
 <script type="text/javascript" src="resources/components/ngresource.js"></script>
-<script type="text/javascript" src="resources/components/mocks.js"></script>
-<script type="text/javascript" src="app/modules/st-auth-module-test.js"></script>
 <script type="text/javascript"
 	src="resources/components/localstorage.js"></script>
 <script type="text/javascript"
 	src="resources/components/angular-locale_pl-pl.js"></script>
 <script type="text/javascript"
-	src="resources/components/datetimepicker.js"></script>
-<script type="text/javascript" src="resources/components/moment.js"></script>
-<script type="text/javascript"
 	src="resources/components/upload-widget.js"></script>
 <script type="text/javascript"
 	src="resources/components/ui-bootstrap-custom-tpls-0.6.0.min.js"></script>
+
+<!-- modules -->
+<script type="text/javascript" src="app/modules/common-module.js"></script>
 <script type="text/javascript" src="app/modules/st-auth-module.js"></script>
+
+<!-- app sources -->
 <script type="text/javascript" src="app/app.js"></script>
 
+<!-- controllers -->
 <script type="text/javascript"
 	src="app/controllers/ad/ad-list-controller.js"></script>
-
 <script type="text/javascript"
 	src="app/controllers/user/user-controllers.js"></script>
-<script type="text/javascript" src="app/services/ad-services.js"></script>
-
 <script type="text/javascript"
 	src="app/controllers/company/company-controllers.js"></script>
 <script type="text/javascript"
 	src="app/controllers/contest/contest-controller.js"></script>
-<script
-	src="http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
-<!-- The Canvas to Blob plugin is included for image resizing functionality -->
-<script
-	src="http://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+	
+<!-- services -->
+<script type="text/javascript" src="app/services/ad-services.js"></script>
 <script type="text/javascript" src="app/services/company-services.js"></script>
 <script type="text/javascript" src="app/services/user-service.js"></script>
 <script type="text/javascript" src="app/services/contest-services.js"></script>
+
+<!-- directives -->
 <script type="text/javascript" src="app/directives/form-directives.js"></script>
-<script type="text/javascript" src="app/services/static-data.js"></script>
+
 <script src="resources/components/jquery.ui.widget.js"></script>
 <script src="resources/components/jquery.iframe-transport.js"></script>
+
 <!-- The basic File Upload plugin -->
 <script src="resources/components/jquery.fileupload.js"></script>
-<!-- The File Upload processing plugin -->
-<script src="resources/components/jquery.fileupload-process.js"></script>
-<!-- The File Upload image preview & resize plugin -->
-<script src="resources/components/jquery.fileupload-image.js"></script>
-<script src="resources/components/jquery.fileupload-validate.js"></script>
+<!-- <script src="resources/components/jquery.fileupload-validate.js"></script> -->
 <script src="resources/components/jquery.fileupload-angular.js"></script>
 
 </head>
-<body  >
+<body>
 	<!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
@@ -90,16 +89,19 @@
 					<li><a href="#/przegladaj"><i class="icon-search"></i>PRZEGLĄDAJ</a>
 					</li>
 					<li><a href="#/reklamy/dodaj"
-						data-st-access-show="hasRole('user') && !hasRole('company')" st-register-watch="true"><i
-							class="icon-plus-sign-alt"></i> DODAJ</a></li>
+						data-st-access-show="hasRole('user') && !hasRole('company')"
+						st-register-watch="true"><i class="icon-plus-sign-alt"></i>
+							DODAJ</a></li>
 					<li><a href="#/losuj"><i class="icon-random"></i>LOSUJ</a></li>
 					<li><a href="#/marki">MARKI</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right" data-st-active="">
-					<li data-st-access-show="hasRole('public')" st-register-watch="true"><a
-						href="#/uzytkownik/zaloguj"><i class="icon-user"></i>ZALOGUJ</a></li>
-					<li data-st-access-show="hasRole('user')" class="dropdown" st-register-watch="true"><a
-						class="dropdown-toggle"> <img src="resources/img/no-user.gif" />
+					<li data-st-access-show="hasRole('public')"
+						st-register-watch="true"><a href="#/uzytkownik/zaloguj"><i
+							class="icon-user"></i>ZALOGUJ</a></li>
+					<li data-st-access-show="hasRole('user')" class="dropdown"
+						st-register-watch="true"><a class="dropdown-toggle"> <img
+							src="resources/img/no-user.gif" />
 					</a>
 						<div class="dropdown-menu" data-ng-controller="UserDropdownCtrl">
 
@@ -115,9 +117,11 @@
 									<li><a href="#/uzytkownik/{{currentUser.id}}/reklamy">Reklamy</a></li>
 
 									<li><a href="#/partnerzy/zarejestruj"
-										data-st-access-show="!hasRole('company')" st-register-watch="true">Firma</a> <a
+										data-st-access-show="!hasRole('company')"
+										st-register-watch="true">Firma</a> <a
 										href="#/partnerzy/{{currentUser.companyId}}"
-										data-st-access-show="hasRole('company')" st-register-watch="true">Firma</a></li>
+										data-st-access-show="hasRole('company')"
+										st-register-watch="true">Firma</a></li>
 								</ul>
 								<button class="btn btn-sm btn-warning"
 									data-ng-click="showProfile()">Wyświetl profil</button>
@@ -167,16 +171,16 @@
 						</div>
 						<div>
 							<rating value="roundRank(ad.rank)" max="5"
-								state-on="'icon-star '"
-								state-off="'icon-star-empty '" readonly="true"></rating>
+								state-on="'icon-star '" state-off="'icon-star-empty '"
+								readonly="true"></rating>
 							<span class="label"
 								data-ng-class="{'label-default': ad.rank>=1 && ad.rank<=2, 'label-primary':  ad.rank>=2 && ad.rank<=3, 'label-success':  ad.rank>=3 && ad.rank<=4, 'label-warning': ad.rank >=4 && ad.rank<=5, 'label-danger': ad.rank == 5}"
 								data-ng-show="!isReadonly"><small>{{ad.rank |
 									number:2}}</small></span>
 						</div>
-						
+
 					</div>
-													
+
 
 
 				</div>

@@ -1,3 +1,15 @@
+
+<article class="clearfix col-sm-12" data-ng-show="singleAd">
+	<ul class="nav nav-pills col-sm-12">
+		<li data-ng-show="singleAd && singleAd.parentId"><a
+			href="#/reklamy/{{singleAd.parentId}}">Pokaż pierwotną reklamę</a></li>
+		<li ><a
+			href="#/przegladaj?parentId={{singleAd.id}}">Pokaż odpowiedzi</a></li>
+		<li ><a
+			href="#/reklamy/{{singleAd.id}}/odpowiedz">Dodaj odpowiedź wideo</a></li>
+	</ul>
+</article>
+
 <article class="clearfix"
 	data-ng-repeat="ad in model.ads track by $index">
 	<div class=" col-sm-8">
@@ -88,7 +100,9 @@
 		</div>
 	</div>
 </article>
-<article class="clearfix text-center" data-ng-show="smallnumPages > 1 && ads.length > 0" data-ng-controller="PagingCtrl">
+<article class="clearfix text-center"
+	data-ng-show="smallnumPages > 1 && ads.length > 0"
+	data-ng-controller="PagingCtrl">
 
 	<pagination direction-links="false" total-items="total"
 		page="currentPage" num-pages="smallnumPages" max-size="10"

@@ -1,30 +1,11 @@
 ﻿app.controller('AdSearchCtrl', ['AdFactory','$scope','filterFilter','$location','CommonFunctions','AdService','$http','possibleTags','possibleBrands','adBrowserWrapper',function(AdFactory, $scope, filterFilter, $location, CommonFunctions, AdService, $http, possibleTags, possibleBrands, adBrowserWrapper) {
-
     $scope.search = function() {
         var params = $scope.filters;
-        // var tags = filterFilter($scope.possibleTags, {
-        // selected : true
-        // });
-        // params.tagList = $.map(tags, function(o) {
-        // return o["id"];
-        // });
-        // params.tagList = params.tagList.join(",");
-        // var brands = filterFilter($scope.possibleBrands, {
-        // selected : true
-        // });
-        // params.brandList = $.map(brands, function(o) {
-        // return o["id"];
-        // });
-        // params.brandList = params.brandList.join(",");
         $.each(params, function(key, val) {
             if (val === undefined || val == null || val.length == 0) {
                 delete params[key];
             }
         });
-        // if ($scope.searchOptions.search) {
-        // registerFiltersWatch();
-        // }
-        // userChangedParams = true;
         $location.search(params);
     };
     $scope.changeOrder = function(orderBy) {
@@ -66,10 +47,6 @@
     }
 
     $scope.$on('$routeUpdate', function(e) {
-        // if (!userChangedParams)
-        // setFiltersFromUrlParams();
-        // else
-        // userChangedParams = false;
         $scope.filters = $location.search();
         getAds();
     });
@@ -106,8 +83,6 @@
         $scope.model = {};
         $scope.searchOptions = AdService.getSearchOptions();
 
-        // setFiltersFromUrlParams();
-
         $scope.$watch('filters.brandList', function(v) {
             if (v)
                 $scope.helper.brandArr = v.split(',');
@@ -129,11 +104,13 @@
                 $scope.filters.tagList = v.join(',');
         });
         registerFiltersWatch();
-        $scope.model.ads = adBrowserWrapper.ads;
-        $scope.total = adBrowserWrapper.total;
-        // $scope.search();
-        // userChangedParams = false;
-        // getAds();
+        if (adBrowserWrapper.total !== undefined) {
+            $scope.model.ads = adBrowserWrapper.ads;
+            $scope.total = adBrowserWrapper.total;
+        } else {
+            $scope.model.ads = [adBrowserWrapper];
+            $scope.singleAd = adBrowserWrapper;
+        }
     }
 
     function registerFiltersWatch() {
@@ -161,54 +138,6 @@
                 });
             }, true);
     }
-    //
-    // function setFiltersFromUrlParams() {
-    // if ($scope.searchOptions.search) {
-    // var params = {};
-    // angular.copy($location.search(), params);
-    //
-    // // if ($scope.searchOptions.filters.tags && $scope.possibleTags.length >
-    // 0) {
-    // // setTagsOrBrandsFromUrlParams($location.search().tagList,
-    // $scope.possibleTags);
-    // // }
-    // // if ($scope.searchOptions.filters.brands &&
-    // $scope.possibleBrands.length > 0) {
-    // // setTagsOrBrandsFromUrlParams($location.search().brandList,
-    // $scope.possibleBrands);
-    // // }
-    // // delete params.tags;
-    // // delete params.brands;
-    // angular.forEach($scope.filters, function(i, e) {
-    // delete $scope.filters[e];
-    // });
-    // angular.forEach(params, function(paramV, paramK) {
-    // angular.forEach($scope.searchOptions.filters, function(filterV, filterK)
-    // {
-    // if (paramK.match(filterK) && filterV) {
-    // $scope.filters[paramK] = paramV;
-    // return;
-    // }
-    // });
-    // });
-    // }
-    // }
-
-    // function setTagsOrBrandsFromUrlParams(array, possibles) {
-    // if (array !== undefined) {
-    // array = array instanceof Array ? array : array.split(',');
-    // $.each(possibles, function(i, elem) {
-    // $.each(array, function(ino, possible) {
-    // if (possible == elem.id)
-    // elem.selected = true;
-    // });
-    // });
-    // } else {
-    // $.each(possibles, function(i, elem) {
-    // elem.selected = false;
-    // });
-    // }
-    // }
 
     function getRangeString(from, to) {
         if (from === undefined || from == null || from.length == 0)
@@ -226,13 +155,6 @@
         }
     }
 
-    // return {
-    // resolve : {
-    // possibleTags : ['$http','$q',function($http, $q) {
-    // fetchPossibleTags();
-    // }],
-    // }
-    // };
 }]);
 
 app.controller('RatingCtrl', ['$scope','AdService',function($scope, AdService) {
@@ -299,11 +221,52 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
             },
         });
 
-        $scope.companyUser = Auth.hasRole('company');
+         $scope.companyUser = Auth.hasRole('company');
         if ($routeParams.contestId) {
             $scope.regModel.contestId = $routeParams.contestId;
         }
-        if (!$scope.companyUser) {
+        if ($routeParams.adId && !$scope.companyUser) {
+            $scope.regModel.adId = $routeParams.adId;
+            $scope.regModel.brandId = possibleBrands.brand.id;
+        } else if ($routeParams.brandId) {
+            $scope.regModel.brandId = $routeParams.id;
+            $scope.$watch('regModel.videoId', function(value) {
+                if ($scope.regModel.videoId) {
+                    AdService.postBrandAd($scope.regModel.brandId, $scope.regModel, function(data) {
+                        $location.path("/marki/" + $scope.regModel.brandId + "/reklamy");
+
+                    });
+                }
+            });
+            var uploadWidgetCb = {
+                'uploadSuccess' : function(jsonFile) {
+                    $scope.regModel.videoId = jsonFile.hashed_id;
+                    $scope.regModel.thumbnail = jsonFile.thumbnail.url;
+                    $scope.regModel.duration = Math.floor(jsonFile.duration);
+                    $scope.$apply();
+
+                },
+                'fileQueued' : function(file) {
+                    var ext = file.name.split('.').pop().toLowerCase();
+                    if ($.inArray(ext, ['mov','mpg','avi','flv','f4v','mp4','m4v','asf','wmv','vob','mod','3gp','mkv','divx','xvid']) == -1) {
+                        this.cancelUpload();
+                        this.reset();
+                        $(".upload-status").addClass('hidden');
+                        $("#upload-file-error").html("Tylko pliki z roższerzeniem mov, mpg, avi, flv, f4v, mp4, m4v, asf, wmv, vob, mod, 3gp, mkv, divx, xvid");
+                        $("#upload-file-error").removeClass('hidden');
+                    } else {
+                        $(".upload-status").removeClass('hidden');
+                        $("#upload-file-error").addClass('hidden');
+                    }
+                },
+            };
+            var uploadWidget = new wistia.UploadWidget({
+                divId : 'wistia-upload-widget',
+                publicProjectId : possibleBrands,
+                buttonText : "Dodaj reklamę",
+                callbacks : uploadWidgetCb
+            });
+        } else {
             $scope.possibleBrands = possibleBrands || [];
             brandModalScope.items = possibleBrands;
             brandModalScope.title = "Wybierz markę";
@@ -321,47 +284,6 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
                 $scope.regModel.brandId = item.id;
                 brandModal.close();
             };
-        } else {
-            $scope.regModel.brandId = $routeParams.id;
-            $scope.$watch('regModel.videoId', function(value) {
-                if ($scope.regModel.videoId) {
-                    AdService.postBrandAd($scope.regModel.brandId, $scope.regModel, function(data) {
-                        $location.path("/marki/" + $scope.regModel.brandId + "/reklamy");
-
-                    });
-                }
-            });
-            var uploadWidgetCb = {
-
-                'uploadSuccess' : function(jsonFile) {
-                    $scope.regModel.videoId = jsonFile.hashed_id;
-                    $scope.regModel.thumbnail = jsonFile.thumbnail.url;
-                    $scope.regModel.duration = Math.floor(jsonFile.duration);
-                    $scope.$apply();
-
-                },
-
-                'fileQueued' : function(file) {
-                    var ext = file.name.split('.').pop().toLowerCase();
-                    if ($.inArray(ext, ['mov','mpg','avi','flv','f4v','mp4','m4v','asf','wmv','vob','mod','3gp','mkv','divx','xvid']) == -1) {
-                        this.cancelUpload();
-                        this.reset();
-                        $(".upload-status").addClass('hidden');
-                        $("#upload-file-error").html("Tylko pliki z roższerzeniem mov, mpg, avi, flv, f4v, mp4, m4v, asf, wmv, vob, mod, 3gp, mkv, divx, xvid");
-                        $("#upload-file-error").removeClass('hidden');
-                    } else {
-                        $(".upload-status").removeClass('hidden');
-                        $("#upload-file-error").addClass('hidden');
-                    }
-                },
-
-            };
-            var uploadWidget = new wistia.UploadWidget({
-                divId : 'wistia-upload-widget',
-                publicProjectId : possibleBrands,
-                buttonText : "Dodaj reklamę",
-                callbacks : uploadWidgetCb
-            });
         }
 
         tagModalScope.items = possibleTags;
@@ -447,14 +369,4 @@ app.controller('AdAdminPanelCtrl', ['$scope','AdService',function($scope, AdServ
             });
         };
     }
-}]);
-
-app.controller("PagingCtrl", ["$scope", "$location", function($scope, $location){
-    init();
-    function init(){
-        $scope.filters.page = parseInt($scope.filters.page) || 1;
-    }
-    $scope.$watch('filters.page', function(v){
-        $scope.currentPage = parseInt($scope.filters.page) || 1;
-    });
 }]);

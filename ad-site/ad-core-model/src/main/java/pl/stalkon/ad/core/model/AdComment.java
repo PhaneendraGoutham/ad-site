@@ -39,7 +39,7 @@ public class AdComment extends CommonEntity {
 	@OrderBy(value="creation_date")
 	private List<AdComment> children;
 
-	@ManyToOne(optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id", insertable = true, updatable = false)
 	private AdComment parent = null;
 

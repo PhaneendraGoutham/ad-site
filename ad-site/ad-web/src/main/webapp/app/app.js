@@ -1,6 +1,15 @@
-var app = angular.module('spotnikApp', ['ngResource','ui.bootstrap','st-auth-module','ui.bootstrap.datetimepicker','blueimp.fileupload']);
+var app = angular.module('spotnikApp', ['ngResource','ui.bootstrap','st-auth-module','blueimp.fileupload','st-common-module']);
 
-app.config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider',
+app.factory("BaseUrlInterceptor", function() {
+    return {
+        request : function(config) {
+            if (config.url.substring(0, 3) != "app" && config.url.substring(0, 8) != "template") {
+                config.url = "/api" + config.url;
+            }
+            return config;
+        }
+    }
+}).config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider',
 
 function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider, CommonFunctionsProvider) {
 
@@ -57,7 +66,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }
             return deferred.promise;
         }],
-        adBrowserWrapper: ['$q','AdService',function($q, AdService) {
+        adBrowserWrapper : ['$q','AdService',function($q, AdService) {
             return resolveFetcher($q, AdService.getAdsByUrl);
         }],
     };
@@ -160,13 +169,25 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }
         },
         resolve : adSearchResolve,
-    }).when("/marki/:id/reklamy/dodaj", {
+    }).when("/marki/:brandId/reklamy/dodaj", {
         controller : 'AdRegistrationCtrl',
         templateUrl : "app/partials/add/ad-registration.html",
         access : "thisBrand",
         resolve : {
             possibleBrands : ['$q','AdService','$route',function($q, AdService, $route) {
-                return resolveFetcher($q, AdService.fetchWistiaProjectId, $route.current.params.id, 'response');
+                return resolveFetcher($q, AdService.fetchWistiaProjectId, $route.current.params.brandId, 'response');
+            }],
+            possibleTags : ['$q','AdService',function($q, AdService) {
+                return resolveFetcher($q, AdService.getPossibleTags);
+            }],
+        },
+    }).when("/reklamy/:adId/odpowiedz", {
+        controller : 'AdRegistrationCtrl',
+        templateUrl : "app/partials/add/ad-registration.html",
+        access : "user",
+        resolve : {
+            possibleBrands : ['$q','AdService','$route',function($q, AdService, $route) {
+                return resolveFetcher($q, AdService.getAdsByUrl);
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
@@ -175,7 +196,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     }).when("/marki/:id/konkursy", {
         controller : 'ContestListCtrl',
         templateUrl : "app/partials/contest/contest-list.html",
-        reloadOnSearch: false,
+        reloadOnSearch : false,
         resolve : {
             contestsBrowserWrapper : ['$q','ContestService','$route',function($q, ContestService, $route) {
                 return resolveFetcher($q, ContestService.getContestsByUrl);
@@ -190,6 +211,15 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, ContestService.fetchContest, $route.current.params.id);
             }],
         }
+    }).when("/konkursy/:id/edytuj", {
+        controller : 'ContestRegistrationCtrl',
+        templateUrl : "app/partials/contest/contest-registration.html",
+        resolve : {
+            contest : ['$q','ContestService','$route',function($q, ContestService, $route) {
+                return resolveFetcher($q, ContestService.fetchContest, $route.current.params.id);
+            }],
+        },
+        access : userRoles.thisContest,
     }).when("/uzytkownik/zaloguj", {
         controller : 'UserLoginCtrl',
         templateUrl : "app/partials/user/user-login.html",
@@ -198,6 +228,11 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         controller : 'ContestRegistrationCtrl',
         templateUrl : "app/partials/contest/contest-registration.html",
         access : "company",
+        resolve : {
+            contest : function() {
+                return null;
+            },
+        }
     }).when("/uzytkownik/zaloguj", {
         controller : 'UserLoginCtrl',
         templateUrl : "app/partials/user/user-login.html",
@@ -274,7 +309,9 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, companyService.fetchBrand, $route.current.params.id);
             }],
         }
-    }).otherwise("/");
+    }).otherwise({
+        redirectTo: '/'
+    });
 
     AuthProvider.setProtectedResourcesList([{
         url : '/ad',
@@ -317,6 +354,10 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         method : 'POST',
         access : 'company',
     },{
+        url : 'contest/*',
+        method : 'POST',
+        access : 'company',
+    },{
         url : '/contest/*/answer',
         method : 'POST',
         access : 'user',
@@ -331,7 +372,9 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     }]);
     AuthProvider.setUserRoles(userRoles);
     stAuthInterceptorProvider.setLoginUrl("/uzytkownik/zaloguj");
+    $httpProvider.interceptors.push('BaseUrlInterceptor');
     $httpProvider.interceptors.push('stAuthInterceptor');
+
     // $httpProvider.defaults.headers.post["Content-Type"] =
     // "application/x-www-form-urlencoded";
     CommonFunctionsProvider.setWordMappings({
@@ -344,6 +387,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         "" : "ad?place=0",
         "przegladaj" : "ad",
         "marki" : "brand",
+        "odpowiedz": "",
     });
 
 }]).run(['$rootScope','$location','Auth','CommonFunctions','$q',function($rootScope, $location, Auth, CommonFunctions, $q) {
@@ -359,8 +403,8 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         }
     }
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
-        if (next.access) {
-            var pPromise = Auth.isAuthorized(next.access, next.params);
+        if (next.$$route && next.$$route.access) {
+            var pPromise = Auth.isAuthorized(next.$$route.access, next.params);
             var promise = $q.when(pPromise);
             promise.then(handleAuthorizationResponse, handleAuthorizationResponse);
             next.resolve = next.resolve || {};
@@ -372,5 +416,4 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         }
     });
 
-}]);
-;
+}])

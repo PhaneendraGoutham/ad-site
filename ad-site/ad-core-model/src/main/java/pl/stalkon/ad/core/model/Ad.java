@@ -33,7 +33,7 @@ public class Ad extends CommonEntity {
 	private static final long serialVersionUID = 1335218634734582331L;
 
 	public static final List<String> JSON_SHOW = Arrays.asList("id","place","dateOnMain","creationDate","year","title","description","ageProtected","approved","user.displayName","user.id","user.userData.imageUrl",
-		"brand.name","brand.id","brand.smallLogoUrl","rank","voteCount","thumbnail","videoUrl", "contestAd.winner", "official");
+		"brand.name","brand.id","brand.smallLogoUrl","rank","voteCount","thumbnail","videoUrl", "contestAd.winner", "official", "parentId");
 	
 	public enum Type {
 		MOVIE, PICTURE, GAME
@@ -116,6 +116,14 @@ public class Ad extends CommonEntity {
 
 	@Column(nullable = false, columnDefinition = "BOOL default false")
 	private Boolean official;
+	
+	@ManyToOne(optional = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_id", insertable = true, updatable = false)
+	private Ad parent = null;
+	
+	@Column(name = "parent_id", insertable = false, updatable = false)
+	private Long parentId;
+	
 
 	public String getThumbnail() {
 		if (wistiaVideoData != null) {
@@ -257,6 +265,22 @@ public class Ad extends CommonEntity {
 
 	public Boolean getOfficial() {
 		return official;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+
+	public Ad getParent() {
+		return parent;
+	}
+
+	public void setParent(Ad parent) {
+		this.parent = parent;
 	}
 
 	public void setOfficial(Boolean official) {

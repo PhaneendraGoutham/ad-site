@@ -15,7 +15,10 @@ app.service("ContestService", ['$http','$location','CommonFunctions',function($h
         $http.get('/contest/' + contestId).success(success);
     };
     this.registerContest = function(brandId, regModel, success, error) {
-        $http.post('/brand/' + brandId + '/contest', regModel, CommonFunctions.getPostHeader()).success(success);
+        $http.post('/brand/' + brandId + '/contest', regModel).success(success);
+    };
+    this.updateContest = function(contestId, regModel, success, error) {
+        $http.post('/contest/' + contestId, regModel).success(success);
     };
     this.registerAnswer = function(contestId, regModel, success, error) {
         $http.post('/contest/' + contestId + '/answer', $.param(regModel),CommonFunctions.getPostHeader()).success(success);

@@ -108,6 +108,8 @@ public class AdController {
 	public Map<String, Object> get(@PathVariable("id") Long id,
 			Principal principal) {
 		Ad ad = adService.get(id, controllerHelperBean.getActive(principal));
+//		if(ad != null)
+//		System.out.println(ad.getParent().getId());
 		return entityDtmMapper.mapEntityToDtm(ad, Ad.class, Ad.JSON_SHOW);
 	}
 
