@@ -31,7 +31,7 @@ app.controller('ContestAnswerListCtrl', ['answerBrowserWrapper','$scope','$route
             $scope.search();
         };
         $scope.pressWinner = function(answer) {
-            ContestService.updateWinner($routeParams.id, answer.id, !answer.winner, function(data) {
+            ContestService.updateWinner($routeParams.contestId, answer.id, !answer.winner, function(data) {
                 answer.winner = !answer.winner;
             });
         };
@@ -43,8 +43,8 @@ app.controller('ContestAnswerRegistrationCtrl', ['ContestService','$scope','$rou
         $scope.regModel = {};
         $scope.errorMessages = ErrorFactory.getErrorMessages({});
         $scope.submit = function() {
-            ContestService.registerAnswer($routeParams.id, $scope.regModel, function(data) {
-                $location.path("/konkursy" + $routeParams.id);
+            ContestService.registerAnswer($routeParams.contestId, $scope.regModel, function(data) {
+                $location.path("/konkursy" + $routeParams.contestId);
             }, function(message, statusCode) {
                 if (statusCode == 442) {
                     CommonFunctions.pushAlert('danger', "Konkurs już się zakończył");
@@ -91,8 +91,8 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
             $scope.regModel.type = contest.type;
             $scope.register = function() {
                 var data = prepareDateToSend();
-                ContestService.updateContest($routeParams.id, data, function(data) {
-                    $location.path("/konkursy/" + $routeParams.id);
+                ContestService.updateContest($routeParams.contestId, data, function(data) {
+                    $location.path("/konkursy/" + $routeParams.contestId);
                 });
             };
         } else {
@@ -100,7 +100,7 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
             $scope.regModel.scoresDate.time = new Date();
             $scope.register = function() {
                 var data = prepareDateToSend();
-                ContestService.registerContest($routeParams.id, data, function(data) {
+                ContestService.registerContest($routeParams.brandId, data, function(data) {
                     $location.path("/konkursy/" + data.response);
                 });
             };

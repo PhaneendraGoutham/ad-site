@@ -101,7 +101,7 @@
 	</div>
 </article>
 <article class="clearfix text-center"
-	data-ng-show="smallnumPages > 1 && ads.length > 0"
+	data-ng-show="smallnumPages > 1 && $parent.model.ads.length > 0"
 	data-ng-controller="PagingCtrl">
 
 	<pagination direction-links="false" total-items="total"

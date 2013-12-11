@@ -229,7 +229,7 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
             $scope.regModel.adId = $routeParams.adId;
             $scope.regModel.brandId = possibleBrands.brand.id;
         } else if ($routeParams.brandId) {
-            $scope.regModel.brandId = $routeParams.id;
+            $scope.regModel.brandId = $routeParams.brandId;
             $scope.$watch('regModel.videoId', function(value) {
                 if ($scope.regModel.videoId) {
                     AdService.postBrandAd($scope.regModel.brandId, $scope.regModel, function(data) {

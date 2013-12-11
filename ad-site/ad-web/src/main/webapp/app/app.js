@@ -37,11 +37,11 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         contest : "contest",
         thisBrand : {
             role : "company",
-            url : "/auth/brand/:id",
+            url : "/auth/brand/:brandId",
         },
         thisContest : {
             role : "company",
-            url : "/auth/contest/:id",
+            url : "/auth/contest/:contestId",
         }
     };
 
@@ -91,7 +91,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, AdService.getPossibleTags);
             }],
         },
-    }).when("/reklamy/:id", {
+    }).when("/reklamy/:adId", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/add/ad.html",
         reloadOnSearch : false,
@@ -121,12 +121,12 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             search : false,
         },
         resolve : adSearchResolve,
-    }).when("/uzytkownik/:id/reklamy", {
+    }).when("/uzytkownik/:userId/reklamy", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/add/search.html",
         reloadOnSearch : false,
         resolve : adSearchResolve,
-    }).when("/konkursy/:id/reklamy", {
+    }).when("/konkursy/:contestId/reklamy", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/add/search.html",
         reloadOnSearch : false,
@@ -136,12 +136,12 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }
         },
         resolve : adSearchResolve,
-    }).when("/konkursy/:id/odpowiedzi", {
+    }).when("/konkursy/:contestId/odpowiedzi", {
         controller : 'ContestAnswerListCtrl',
         templateUrl : "app/partials/contest/contest-answer.html",
         resolve : {
             answerBrowserWrapper : ['$q','ContestService','$route',function($q, ContestService, $route) {
-                return resolveFetcher($q, ContestService.getAnswers, $route.current.params.id);
+                return resolveFetcher($q, ContestService.getAnswers, $route.current.params.contestId);
             }],
         },
     // access : "thisContest",
@@ -156,11 +156,11 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, AdService.getPossibleTags);
             }],
         },
-    }).when("/konkursy/:id/odpowiedzi/dodaj", {
+    }).when("/konkursy/:contestId/odpowiedzi/dodaj", {
         controller : 'ContestAnswerRegistrationCtrl',
         templateUrl : "app/partials/contest/contest-answer-registration.html",
         access : userRoles.user,
-    }).when("/marki/:id/reklamy", {
+    }).when("/marki/:brandId/reklamy", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/add/search.html",
         adSearchOptions : {
@@ -193,7 +193,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, AdService.getPossibleTags);
             }],
         },
-    }).when("/marki/:id/konkursy", {
+    }).when("/marki/:brandId/konkursy", {
         controller : 'ContestListCtrl',
         templateUrl : "app/partials/contest/contest-list.html",
         reloadOnSearch : false,
@@ -203,20 +203,20 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }],
 
         }
-    }).when("/konkursy/:id", {
+    }).when("/konkursy/:contestId", {
         controller : 'ContestCtrl',
         templateUrl : "app/partials/contest/contest.html",
         resolve : {
             contest : ['$q','ContestService','$route',function($q, ContestService, $route) {
-                return resolveFetcher($q, ContestService.fetchContest, $route.current.params.id);
+                return resolveFetcher($q, ContestService.fetchContest, $route.current.params.contestId);
             }],
         }
-    }).when("/konkursy/:id/edytuj", {
+    }).when("/konkursy/:contestId/edytuj", {
         controller : 'ContestRegistrationCtrl',
         templateUrl : "app/partials/contest/contest-registration.html",
         resolve : {
             contest : ['$q','ContestService','$route',function($q, ContestService, $route) {
-                return resolveFetcher($q, ContestService.fetchContest, $route.current.params.id);
+                return resolveFetcher($q, ContestService.fetchContest, $route.current.params.contestId);
             }],
         },
         access : userRoles.thisContest,
@@ -224,7 +224,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         controller : 'UserLoginCtrl',
         templateUrl : "app/partials/user/user-login.html",
 
-    }).when("/marki/:id/konkursy/zarejestruj", {
+    }).when("/marki/:brandId/konkursy/zarejestruj", {
         controller : 'ContestRegistrationCtrl',
         templateUrl : "app/partials/contest/contest-registration.html",
         access : "company",
@@ -248,14 +248,14 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         controller : 'PassChangeCtrl',
         templateUrl : "app/partials/user/user-change-password.html",
 
-    }).when("/uzytkownik/:id/profil", {
+    }).when("/uzytkownik/:userId/profil", {
         controller : 'UserProfileCtrl',
         templateUrl : "app/partials/user/profile.html",
         access : "user",
         resolve : {
             profileData : ['$q','$http','$rootScope','UserService',function($q, $http, $rootScope, UserService) {
                 if ($rootScope.currentUser.companyId) {
-                    return resolveFetcher($q, UserService.fetchUserProfile, $rootScope.currentUser.id, 'response');
+                    return resolveFetcher($q, UserService.fetchUserProfile, $rootScope.currentUser.userId, 'response');
                 }
             }],
         }
@@ -263,7 +263,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         controller : 'CompanyRegistrationCtrl',
         templateUrl : "app/partials/company/company-registration.html",
         access : "user",
-    }).when("/partnerzy/:id", {
+    }).when("/partnerzy/:companyId", {
         controller : 'BrandListCtrl',
         templateUrl : "app/partials/company/brand-list.html",
         access : "company",
@@ -282,7 +282,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, companyService.fetchBrands);
             }]
         }
-    }).when("/partnerzy/:id/marki/zarejestruj", {
+    }).when("/partnerzy/:companyId/marki/zarejestruj", {
         controller : 'BrandRegistrationCtrl',
         templateUrl : "app/partials/company/brand-registration.html",
         access : "company",
@@ -292,21 +292,21 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             },
 
         }
-    }).when("/marki/:id", {
+    }).when("/marki/:brandId", {
         controller : 'BrandCtrl',
         templateUrl : "app/partials/company/brand.html",
         resolve : {
             brand : ['$q','CompanyService','$route',function($q, companyService, $route) {
-                return resolveFetcher($q, companyService.fetchBrand, $route.current.params.id);
+                return resolveFetcher($q, companyService.fetchBrand, $route.current.params.brandId);
             }],
         }
-    }).when("/marki/:id/edytuj", {
+    }).when("/marki/:brandId/edytuj", {
         controller : 'BrandRegistrationCtrl',
         templateUrl : "app/partials/company/brand-registration.html",
         access : "thisBrand",
         resolve : {
             brand : ['$q','CompanyService','$route',function($q, companyService, $route) {
-                return resolveFetcher($q, companyService.fetchBrand, $route.current.params.id);
+                return resolveFetcher($q, companyService.fetchBrand, $route.current.params.brandId);
             }],
         }
     }).otherwise({

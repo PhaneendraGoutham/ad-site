@@ -41,7 +41,7 @@ app.controller('BrandRegistrationCtrl',['$scope','ErrorFactory','$location','$ro
 			$scope.brand = brand;
 			$scope.submitText = "Zaktualizuj";
 			$scope.options ={
-				url: "/brand/"+$routeParams.id+"/upload/image",
+				url: "/brand/"+$routeParams.brandId+"/upload/image",
 				type: "POST",
 				dataType: "json",
 				headers:{},
@@ -53,13 +53,13 @@ app.controller('BrandRegistrationCtrl',['$scope','ErrorFactory','$location','$ro
 				$scope.brand.logoUrl = data.result.big;
 			});
 			$scope.register = function(){
-				CompanyService.updateBrand($routeParams.id, $scope.regModel, function(data){
-					$location.path("/marki/"+$routeParams.id);
+				CompanyService.updateBrand($routeParams.brandId, $scope.regModel, function(data){
+					$location.path("/marki/"+$routeParams.brandId);
 				});
 			};
 		}else{
 			$scope.register = function(){
-				CompanyService.registerBrand($routeParams.id, $scope.regModel, function(data){
+				CompanyService.registerBrand($routeParams.companyId, $scope.regModel, function(data){
 					$location.path("/marki/"+data.response+"/edytuj");
 				});
 			};
