@@ -113,16 +113,16 @@ public class BrandController {
 		brandService.update(brandPostDto, brandId);
 	}
 
-	@RequestMapping(value = "/brand", method = RequestMethod.POST)
-	@ResponseBody
-	public Long add(@Valid @RequestBody BrandPostDto brandPostDto) {
-
-		WistiaProjectData wistiaProjectData = wistiaApiService
-				.createWistiaProject(brandPostDto.getName());
-		Brand brand = brandService.register(brandPostDto, wistiaProjectData,
-				null);
-		return brand.getId();
-	}
+//	@RequestMapping(value = "/brand", method = RequestMethod.POST)
+//	@ResponseBody
+//	public Long add(@Valid @RequestBody BrandPostDto brandPostDto) {
+//
+//		WistiaProjectData wistiaProjectData = wistiaApiService
+//				.createWistiaProject(brandPostDto.getName());
+//		Brand brand = brandService.register(brandPostDto, wistiaProjectData,
+//				null);
+//		return brand.getId();
+//	}
 
 	@RequestMapping(value = "/company/{companyId}/brand", method = RequestMethod.POST)
 	@ResponseBody

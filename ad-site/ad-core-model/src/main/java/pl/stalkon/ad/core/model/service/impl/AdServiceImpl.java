@@ -103,6 +103,13 @@ public class AdServiceImpl implements AdService {
 			contestAd.setAd(ad);
 			contestAd.setContest(contest);
 			ad.setContestAd(contestAd);
+			adPostDto.setBrandId(contest.getBrand().getId());			
+		}
+		if(adPostDto.getParentId() != null){
+			Ad parent = adDao.get(adPostDto.getParentId());
+			parent.setId(adPostDto.getParentId());
+			ad.setParent(parent);
+			adPostDto.setBrandId(parent.getBrand().getId());	
 		}
 		Brand brand = brandDao.get(adPostDto.getBrandId());
 		// brand.addAdd(ad);

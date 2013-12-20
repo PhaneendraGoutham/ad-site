@@ -48,7 +48,6 @@ public class HibernateConfig {
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setPackagesToScan("pl.stalkon.ad.core.model", "pl.styall.library.core.security.rest");
-
 		sessionFactory.setDataSource(dataSource());
 		sessionFactory.setAnnotatedClasses(new Class[] { UserData.class,
 				Address.class, UserRole.class, SocialUser.class });

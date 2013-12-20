@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,6 +18,8 @@ import javax.persistence.TemporalType;
 
 
 import org.apache.commons.codec.binary.Base64;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import pl.styall.library.core.model.CommonEntity;
 
@@ -52,7 +55,7 @@ public class Contest extends CommonEntity {
 	@Column(name = "scores_date", nullable=false)
 	private Date scoresDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional=false)
 	private Brand brand;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional=false, cascade = CascadeType.PERSIST)

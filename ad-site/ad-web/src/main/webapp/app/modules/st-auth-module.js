@@ -92,18 +92,18 @@
             changeUser : function(user) {
                 changeUser(user);
             },
-            updateLoggedInUser : function(success, error) {
-                var $http = $injector.get("$http");
-                $http({
-                    method : "GET",
-                    url : self.userStatusUrl
-                }).success(function(data) {
-                    changeUser(data);
-                    storage.set('loggedInUser', $rootScope.currentUser);
-                    if (success)
-                        success(data);
-                }).error(error);
-            },
+//            updateLoggedInUser : function(success, error) {
+//                var $http = $injector.get("$http");
+//                $http({
+//                    method : "GET",
+//                    url : self.userStatusUrl
+//                }).success(function(data) {
+//                    changeUser(data);
+//                    storage.set('loggedInUser', $rootScope.currentUser);
+//                    if (success)
+//                        success(data);
+//                }).error(error);
+//            },
             updateAuthToken : function(authToken) {
                 storage.set('authToken', authToken);
             },
@@ -172,7 +172,7 @@
                     angular.forEach(urlParams, function(elem) {
                         url = url.replace(elem, params[elem.substring(1)]);
                     });
-                    $http.get(url).success(function(data) {
+                    $http.get(url, {cache: true}).success(function(data) {
                         if (data.response)
                             return deferred.resolve(data.response && authorized);
                         else
@@ -389,6 +389,7 @@
             var animate = $animator(scope, attrs);
             scope.hasRole = Auth.hasRole;
             scope.isAuthorized = Auth.isAuthorized;
+            animate['hide'](elem);
             var registerWatch = scope.$eval(attrs.stRegisterWatch);
             // if (registerWatch) {
             scope.$watchCollection('currentUser', function() {

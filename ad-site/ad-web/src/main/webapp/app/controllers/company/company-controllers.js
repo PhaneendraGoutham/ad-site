@@ -1,4 +1,4 @@
-app.controller('CompanyRegistrationCtrl',['CompanyService', '$location','$scope', 'Auth', 'ErrorFactory', function(CompanyService, $location, $scope, Auth, ErrorFactory){
+app.controller('CompanyRegistrationCtrl',['CompanyService', '$location','$scope', '$rootScope', 'ErrorFactory', function(CompanyService, $location, $scope, $rootScope, ErrorFactory){
 	init();
 	function init(){
 		$scope.regModel = {};
@@ -6,8 +6,8 @@ app.controller('CompanyRegistrationCtrl',['CompanyService', '$location','$scope'
 	    $scope.errorMessages = ErrorFactory.getErrorMessages({});
 		$scope.register = function(){
 			CompanyService.register($scope.regModel, function(data){
-				Auth.updateLoggedInUser();
-				Auth.changeUser({companyId: data.response});
+				$rootScope.currentUser.companyId = data.response;
+				$rootScope.currentUser.roles.push("company");
 				$location.path("/company/"+data.response);
 			});
 			

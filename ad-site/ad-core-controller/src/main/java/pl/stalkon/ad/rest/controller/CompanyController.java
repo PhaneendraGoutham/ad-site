@@ -46,28 +46,15 @@ public class CompanyController {
 		return resultCompany.getId();
 	}
 	
-	@RequestMapping(value = "/user/{userId}/company")
-	@PreAuthorize("principal.id.equals(#userId)")
-	public String userCompanySite(Model model, Principal principal, HttpServletRequest request){
-		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
-				.getPrincipal();
-		Company company = companyService.getCompanyWithBrandsByUser(socialLoggedUser.getId());
-		if(company.getBrands().size() == 1){
-			return "redirect:/brand/"+company.getBrands().get(0).getId().toString();
-		}
-		model.addAttribute("company", company);
-		model.addAttribute("path", "company/base-view");
-		return "company/base-view";
-	}
 	
 	
-	@RequestMapping(value = "/user/company/{companyId}/approved")
-	@ResponseBody
-	public void changeActive(@PathVariable("companyId")Long companyId, @RequestParam("approved") Boolean approved){
-		Company company = companyService.setApproved(companyId, approved);
-		if(approved){
-			mailService.sendCompanyVerificationEmail(company);
-		}
-	}
+//	@RequestMapping(value = "/user/company/{companyId}/approved")
+//	@ResponseBody
+//	public void changeActive(@PathVariable("companyId")Long companyId, @RequestParam("approved") Boolean approved){
+//		Company company = companyService.setApproved(companyId, approved);
+//		if(approved){
+//			mailService.sendCompanyVerificationEmail(company);
+//		}
+//	}
 	
 }

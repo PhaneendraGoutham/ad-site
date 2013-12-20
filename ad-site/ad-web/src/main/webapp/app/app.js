@@ -3,7 +3,7 @@ var app = angular.module('spotnikApp', ['ngResource','ui.bootstrap','st-auth-mod
 app.factory("BaseUrlInterceptor", function() {
     return {
         request : function(config) {
-            if (config.url.substring(0, 3) != "app" && config.url.substring(0, 8) != "template") {
+            if (config.url.substring(0, 3) != "app" && config.url.substring(0, 8) != "template" && !(config.url.match(".html"))) {
                 config.url = "/api" + config.url;
             }
             return config;
@@ -149,8 +149,20 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         controller : 'AdRegistrationCtrl',
         templateUrl : "app/partials/add/ad-registration.html",
         resolve : {
-            possibleBrands : ['$q','AdService','$route',function($q, AdService, $route) {
-                return resolveFetcher($q, AdService.getPossibleBrands);
+            possibleBrands : ['$q','AdService','$route', 'Auth', 'ContestService',function($q, AdService, $route, Auth, ContestService) {
+                var deferred = $q.defer();
+                ContestService.fetchContest($route.current.params.contestId,function(contest) {
+                    if (Auth.hasRole('company')) {
+                        AdService.fetchWistiaProjectId(contest.brand.id, function(data) {
+                            ad.brand.wistiaProjectId = data.response;
+                            deferred.resolve(contest);
+                        });
+                    } else {
+                        deferred.resolve(contest);
+                    }
+                });
+                return deferred.promise;
+//                return resolveFetcher($q, AdService.getPossibleBrands);
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
@@ -175,19 +187,39 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         access : "thisBrand",
         resolve : {
             possibleBrands : ['$q','AdService','$route',function($q, AdService, $route) {
-                return resolveFetcher($q, AdService.fetchWistiaProjectId, $route.current.params.brandId, 'response');
+                var deferred = $q.defer();
+                AdService.fetchWistiaProjectId($route.current.params.brandId, function(data) {
+                
+                    var possibleBrands = {};
+                    possibleBrands.brand = {};
+                    possibleBrands.brand.wistiaProjectId = data.response;
+                    deferred.resolve(possibleBrands);
+                });
+                return deferred.promise;
+//                return resolveFetcher($q, AdService.fetchWistiaProjectId, $route.current.params.brandId, 'response');
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
             }],
         },
-    }).when("/reklamy/:adId/odpowiedz", {
+    }).when("/reklamy/:parentId/odpowiedz", {
         controller : 'AdRegistrationCtrl',
         templateUrl : "app/partials/add/ad-registration.html",
         access : "user",
         resolve : {
-            possibleBrands : ['$q','AdService','$route',function($q, AdService, $route) {
-                return resolveFetcher($q, AdService.getAdsByUrl);
+            possibleBrands : ['$q','AdService','$route','Auth',function($q, AdService, $route, Auth) {
+                var deferred = $q.defer();
+                AdService.getAdsByUrl(function(ad) {
+                    if (Auth.hasRole('company')) {
+                        AdService.fetchWistiaProjectId(ad.brand.id, function(data) {
+                            ad.brand.wistiaProjectId = data.response;
+                            deferred.resolve(ad);
+                        });
+                    } else {
+                        deferred.resolve(ad);
+                    }
+                });
+                return deferred.promise;
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
@@ -254,9 +286,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         access : "user",
         resolve : {
             profileData : ['$q','$http','$rootScope','UserService',function($q, $http, $rootScope, UserService) {
-                if ($rootScope.currentUser.companyId) {
-                    return resolveFetcher($q, UserService.fetchUserProfile, $rootScope.currentUser.userId, 'response');
-                }
+                return resolveFetcher($q, UserService.fetchUserProfile, $rootScope.currentUser.id, 'response');
             }],
         }
     }).when("/partnerzy/zarejestruj", {
@@ -265,7 +295,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         access : "user",
     }).when("/partnerzy/:companyId", {
         controller : 'BrandListCtrl',
-        templateUrl : "app/partials/company/brand-list.html",
+        templateUrl : "app/partials/company/company.html",
         access : "company",
         resolve : {
             brands : ['$q','CompanyService','$rootScope',function($q, companyService, $rootScope) {
@@ -310,7 +340,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }],
         }
     }).otherwise({
-        redirectTo: '/'
+        redirectTo : '/'
     });
 
     AuthProvider.setProtectedResourcesList([{
@@ -369,6 +399,10 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         url : '/auth/*',
         method : 'GET',
         access : 'user',
+    },{
+        url : '/user/login/status',
+        method : 'GET',
+        access : 'user',
     }]);
     AuthProvider.setUserRoles(userRoles);
     stAuthInterceptorProvider.setLoginUrl("/uzytkownik/zaloguj");
@@ -387,7 +421,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         "" : "ad?place=0",
         "przegladaj" : "ad",
         "marki" : "brand",
-        "odpowiedz": "",
+        "odpowiedz" : "",
     });
 
 }]).run(['$rootScope','$location','Auth','CommonFunctions','$q',function($rootScope, $location, Auth, CommonFunctions, $q) {

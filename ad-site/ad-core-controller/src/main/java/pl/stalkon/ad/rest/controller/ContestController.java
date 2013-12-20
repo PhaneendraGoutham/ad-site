@@ -47,6 +47,7 @@ import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.extensions.AnswerAlreadyPostedException;
 import pl.stalkon.ad.extensions.ContestFinishedException;
+import pl.styall.library.core.model.CommonEntity;
 import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
 @Controller
@@ -209,11 +210,11 @@ public class ContestController {
 	// return "contest/contest-winner-info";
 	// }
 
-	@RequestMapping(value = "contest/message/{userInfoId}/accept", method = RequestMethod.GET)
-	public void acceptUserContestInfo(
-			@PathVariable("userInfoId") Long userInfoId) {
-		userInfoService.setHandled(userInfoId, true,
-				UserInfo.Type.CONTEST_WINNER);
-	}
+//	@RequestMapping(value = "contest/message/{userInfoId}/accept", method = RequestMethod.GET)
+//	public void acceptUserContestInfo(
+//			@PathVariable("userInfoId") Long userInfoId) {
+//		userInfoService.setHandled(userInfoId, true,
+//				UserInfo.Type.CONTEST_WINNER);
+//	}
 
 }

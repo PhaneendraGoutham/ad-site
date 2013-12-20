@@ -3,7 +3,7 @@
 		data-st-submit="register()">
 
 		<div data-st-valid-form-elem data-st-label="Wybierz markę"
-			data-st-name="brand" data-st-icon="icon-search" data-ng-show="!companyUser && !(regModel.adId)">
+			data-st-name="brand" data-st-icon="icon-search" data-ng-if="!companyUser && !(regModel.parentId)&& !(regModel.contestId)">
 			<input
 				readonly="true" type="text" class="form-control"
 				placeholder="Wybierz markę" name="brand"
@@ -11,9 +11,9 @@
 				required="required" style="cursor: pointer" />
 		</div>
 		<input type="hidden" data-ng-model="regModel.brandId" />
-		<input type="hidden" data-ng-model="regModel.adId"/>
+		<input type="hidden" data-ng-model="regModel.parentId"/>
 		<div data-st-valid-form-elem data-st-label="Link" data-st-name="url"
-			data-st-icon="icon-facetime-video" data-ng-show="!companyUser" >
+			data-st-icon="icon-facetime-video" data-ng-if="!companyUser" >
 			<input class="form-control" name="url" placeholder="Link do video"
 				data-ng-model="regModel.url" required="required"
 				data-ng-pattern="/((^http:\/\/youtu\.be\/(.*)$)|(^http:\/\/www\.youtube\.com\/watch\?v=(.*)$))/" />

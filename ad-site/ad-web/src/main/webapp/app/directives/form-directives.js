@@ -54,6 +54,7 @@
                         if (!formController.$valid || scope.st.busy.length > 0)
                             return false;
 
+                        formElement.find(':submit').attr('disabled', true);
                         scope.$apply(function() {
                             fn(scope, {
                                 $event : event

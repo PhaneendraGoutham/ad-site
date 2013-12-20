@@ -3,6 +3,8 @@ package pl.stalkon.ad.config;
 import java.util.List;
 import java.util.Locale;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.engine.spi.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.mvc.WebContentInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 
+import com.fasterxml.jackson.core.JsonFactory.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 
@@ -34,7 +37,7 @@ import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.impl.FileServiceImpl;
 import pl.styall.library.core.ext.QueryArgumentResolver;
 import pl.styall.library.core.rest.ext.EntityDtmMapper;
-
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 @EnableWebMvc
 @Configuration
 public class MVCConfig extends WebMvcConfigurerAdapter {
@@ -44,6 +47,8 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 
 	@Autowired
 	private Environment env;
+	@Autowired
+	private LocalSessionFactoryBean sessionFactory;
 	
 	@Override
 	public void configureDefaultServletHandling(
@@ -129,7 +134,8 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 			List<HttpMessageConverter<?>> converters) {
 		MappingJackson2HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter();
 		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.registerModule(new Hibernate4Module());
+		Mapping mapping = sessionFactory.getConfiguration().buildMapping();
+		objectMapper.registerModule(new Hibernate4Module(mapping).configure(com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS, true));
 		jacksonConverter.setObjectMapper(objectMapper);
 		converters.add(jacksonConverter);
 	}

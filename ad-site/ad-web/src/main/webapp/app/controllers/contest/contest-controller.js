@@ -23,7 +23,7 @@ app.controller('ContestListCtrl', ['contestsBrowserWrapper','$scope',"$location"
 app.controller('ContestAnswerListCtrl', ['answerBrowserWrapper','$scope','$routeParams','ContestService',function(answerBrowserWrapper, $scope, $routeParams, ContestService) {
     init();
     function init() {
-        $scope.contestAnswers = answerBrowserWrapper.answers;
+        $scope.contestAnswers = answerBrowserWrapper.contestAnswers;
         $scope.total = answerBrowserWrapper.total;
         $scope.currentPage = 1;
         $scope.selectPage = function(page) {

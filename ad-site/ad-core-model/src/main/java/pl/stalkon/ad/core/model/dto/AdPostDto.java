@@ -31,6 +31,7 @@ public class AdPostDto {
 	private String thumbnail;
 	private Long duration;
 	private String videoId;
+	private Long parentId;
 	
 	@NotNull
 	private Integer year;
@@ -141,5 +142,14 @@ public class AdPostDto {
 	public void setContestId(Long contestId) {
 		this.contestId = contestId;
 	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+
 
 }

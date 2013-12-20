@@ -15,9 +15,9 @@ app.service("CompanyService", ['$http','$location','CommonFunctions',function($h
         $http.get('/brand/' + brandId).success(success);
     };
     this.registerBrand = function(companyId, regModel, success, error) {
-        $http.post('/company/' + companyId + '/brand', regModel, CommonFunctions.getPostHeader()).success(success);
+        $http.post('/company/' + companyId + '/brand', regModel).success(success);
     };
     this.updateBrand = function(brandId, regModel, success, error) {
-        $http.post('/brand/' + brandId, regModel, CommonFunctions.getPostHeader()).success(success);
+        $http.post('/brand/' + brandId, regModel).success(success);
     };
 }]);

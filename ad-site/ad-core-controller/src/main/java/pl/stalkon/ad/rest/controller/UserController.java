@@ -134,21 +134,21 @@ public class UserController {
 		return activated;
 	}
 
-	@RequestMapping(value = "/user/{userId}/message", method = RequestMethod.GET)
-	@PreAuthorize("principal.id.equals(#userId)")
-	public List<UserInfo> getMessages(@PathVariable("userId") Long userId) {
-		List<UserInfo> userInfos = userInfoService.getMessages(userId, null);
-		return userInfos;
-	}
+//	@RequestMapping(value = "/user/{userId}/message", method = RequestMethod.GET)
+//	@PreAuthorize("principal.id.equals(#userId)")
+//	public List<UserInfo> getMessages(@PathVariable("userId") Long userId) {
+//		List<UserInfo> userInfos = userInfoService.getMessages(userId, null);
+//		return userInfos;
+//	}
 
-	@RequestMapping(value = "/user/{userId}/address/", method = RequestMethod.POST)
-	@PreAuthorize("principal.id.equals(#userId)")
-	@ResponseBody
-	public UserAddressDto getMessages(@PathVariable("userId") Long userId,
-			@Valid @RequestBody UserAddressDto userAddressDto) {
-		userService.updateUserAddress(userAddressDto, userId);
-		return userAddressDto;
-	}
+//	@RequestMapping(value = "/user/{userId}/address/", method = RequestMethod.POST)
+//	@PreAuthorize("principal.id.equals(#userId)")
+//	@ResponseBody
+//	public UserAddressDto getMessages(@PathVariable("userId") Long userId,
+//			@Valid @RequestBody UserAddressDto userAddressDto) {
+//		userService.updateUserAddress(userAddressDto, userId);
+//		return userAddressDto;
+//	}
 
 	@RequestMapping(value = "/user/{userId}/password/recall", method = RequestMethod.POST)
 	public void recallPassword(@PathVariable("userId") Long userId,@NotNull @RequestParam("mail") String mail) {

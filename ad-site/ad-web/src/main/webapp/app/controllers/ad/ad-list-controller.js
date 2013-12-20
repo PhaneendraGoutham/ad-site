@@ -221,15 +221,20 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
             },
         });
 
-         $scope.companyUser = Auth.hasRole('company');
+        $scope.companyUser = Auth.hasRole('company');
         if ($routeParams.contestId) {
             $scope.regModel.contestId = $routeParams.contestId;
-        }
-        if ($routeParams.adId && !$scope.companyUser) {
-            $scope.regModel.adId = $routeParams.adId;
             $scope.regModel.brandId = possibleBrands.brand.id;
-        } else if ($routeParams.brandId) {
-            $scope.regModel.brandId = $routeParams.brandId;
+        }
+        if ($routeParams.parentId) {
+            $scope.regModel.parentId = $routeParams.parentId;
+            $scope.regModel.brandId = possibleBrands.brand.id;
+        }
+        if ($routeParams.brandId) {
+                $scope.regModel.brandId = $routeParams.brandId;
+        }
+        if ($scope.companyUser) {
+           var wistiaProjectId  = possibleBrands.brand.wistiaProjectId;
             $scope.$watch('regModel.videoId', function(value) {
                 if ($scope.regModel.videoId) {
                     AdService.postBrandAd($scope.regModel.brandId, $scope.regModel, function(data) {
@@ -262,7 +267,7 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
             };
             var uploadWidget = new wistia.UploadWidget({
                 divId : 'wistia-upload-widget',
-                publicProjectId : possibleBrands,
+                publicProjectId : wistiaProjectId,
                 buttonText : "Dodaj reklamę",
                 callbacks : uploadWidgetCb
             });
