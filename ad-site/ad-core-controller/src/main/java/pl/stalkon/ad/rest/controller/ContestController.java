@@ -5,39 +5,25 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Contest;
 import pl.stalkon.ad.core.model.ContestAnswer;
-import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.Contest.State;
-import pl.stalkon.ad.core.model.Contest.Type;
-import pl.stalkon.ad.core.model.UserInfo;
-import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.ContestAnswerBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestPostDto;
-import pl.stalkon.ad.core.model.dto.UserAddressDto;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.model.service.ContestService;
@@ -47,7 +33,6 @@ import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.extensions.AnswerAlreadyPostedException;
 import pl.stalkon.ad.extensions.ContestFinishedException;
-import pl.styall.library.core.model.CommonEntity;
 import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
 @Controller

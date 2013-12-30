@@ -1,7 +1,5 @@
 package pl.stalkon.ad.extensions;
 
-import org.springframework.http.HttpStatus;
-
 import pl.styall.library.core.ext.HttpException;
 
 public class NotFoundException extends HttpException {

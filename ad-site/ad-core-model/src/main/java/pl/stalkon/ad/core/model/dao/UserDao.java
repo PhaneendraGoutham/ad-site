@@ -1,7 +1,5 @@
 package pl.stalkon.ad.core.model.dao;
 
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 
 import pl.stalkon.ad.core.model.User;

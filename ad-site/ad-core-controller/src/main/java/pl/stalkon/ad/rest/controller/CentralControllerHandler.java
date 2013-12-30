@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import pl.stalkon.ad.core.model.service.UserService;
-import pl.stalkon.ad.extensions.AnswerAlreadyPostedException;
 import pl.styall.library.core.ext.HttpException;
 import pl.styall.library.core.validators.UserValidator;
 

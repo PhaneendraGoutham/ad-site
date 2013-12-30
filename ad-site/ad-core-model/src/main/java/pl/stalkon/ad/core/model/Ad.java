@@ -21,8 +21,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.Formula;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity

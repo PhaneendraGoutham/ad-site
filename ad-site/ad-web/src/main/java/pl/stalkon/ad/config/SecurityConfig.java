@@ -6,22 +6,16 @@ import java.awt.Color;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-
 import com.octo.captcha.CaptchaFactory;
 import com.octo.captcha.component.image.backgroundgenerator.BackgroundGenerator;
 import com.octo.captcha.component.image.backgroundgenerator.UniColorBackgroundGenerator;
@@ -35,13 +29,9 @@ import com.octo.captcha.engine.GenericCaptchaEngine;
 import com.octo.captcha.image.gimpy.GimpyFactory;
 import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
 
-import pl.stalkon.ad.core.model.service.MixUserService;
 import pl.stalkon.ad.core.model.service.UserInfoService;
-import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.core.security.UserStatusMapperImpl;
-import pl.stalkon.ad.extensions.CaptchaValidator;
-import pl.styall.library.core.security.authentication.LoggedUser;
 import pl.styall.library.core.security.authorization.LoggedUserPermissionEvaluator;
 import pl.styall.library.core.security.filter.UserMessageFilter;
 import pl.styall.library.core.security.rest.AuthenticationEntryPointImpl;
@@ -161,11 +151,6 @@ public class SecurityConfig {
 		CaptchaFactory cf = new GimpyFactory(new DictionaryWordGenerator(new FileDictionary("toddlist")), w2i);
 		GenericCaptchaEngine engine = new GenericCaptchaEngine(new CaptchaFactory[] {cf});
 		return new GenericManageableCaptchaService(engine, 180, 180000);
-	}
-	
-	@Bean
-	public CaptchaValidator captchaValidator(){
-		return new CaptchaValidator();
 	}
 	
 

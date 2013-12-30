@@ -1,52 +1,34 @@
 package pl.stalkon.ad.rest.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import pl.stalkon.ad.core.model.Brand;
-import pl.stalkon.ad.core.model.UserRoleDef;
 import pl.stalkon.ad.core.model.WistiaProjectData;
-import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.BrandPostDto;
-import pl.stalkon.ad.core.model.dto.BrandSearchDto;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.BrandService;
-import pl.stalkon.ad.core.model.service.CompanyService;
 import pl.stalkon.ad.core.model.service.ContestService;
-import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.ad.extensions.NotFoundException;
 import pl.stalkon.video.api.service.impl.WistiaApiService;
 import pl.stalkon.video.api.wistia.WistiaException;
 import pl.stalkon.video.api.wistia.WistiaStats;
 import pl.styall.library.core.rest.ext.EntityDtmMapper;
-import pl.styall.library.core.rest.ext.MultipleObjectResponse;
 import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
 @Controller
