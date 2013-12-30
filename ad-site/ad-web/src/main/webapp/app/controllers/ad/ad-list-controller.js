@@ -231,18 +231,27 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
             $scope.regModel.brandId = possibleBrands.brand.id;
         }
         if ($routeParams.brandId) {
-                $scope.regModel.brandId = $routeParams.brandId;
+            $scope.regModel.brandId = $routeParams.brandId;
         }
         if ($scope.companyUser) {
-           var wistiaProjectId  = possibleBrands.brand.wistiaProjectId;
-            $scope.$watch('regModel.videoId', function(value) {
-                if ($scope.regModel.videoId) {
-                    AdService.postBrandAd($scope.regModel.brandId, $scope.regModel, function(data) {
-                        $location.path("/marki/" + $scope.regModel.brandId + "/reklamy");
-
-                    });
-                }
-            });
+            var wistiaProjectId = possibleBrands.brand.wistiaProjectId;
+            if ($routeParams.parentId || $routeParams.contestId) {
+                $scope.$watch('regModel.videoId', function(value) {
+                    if ($scope.regModel.videoId) {
+                        AdService.postAd($scope.regModel, function(data) {
+                            $location.path("/reklamy/" + data.response);
+                        });
+                    }
+                });
+            } else {
+                $scope.$watch('regModel.videoId', function(value) {
+                    if ($scope.regModel.videoId) {
+                        AdService.postBrandAd($scope.regModel.brandId, $scope.regModel, function(data) {
+                            $location.path("/marki/" + $scope.regModel.brandId + "/reklamy");
+                        });
+                    }
+                });
+            }
             var uploadWidgetCb = {
                 'uploadSuccess' : function(jsonFile) {
                     $scope.regModel.videoId = jsonFile.hashed_id;

@@ -41,7 +41,7 @@ app.controller('BrandRegistrationCtrl',['$scope','ErrorFactory','$location','$ro
 			$scope.brand = brand;
 			$scope.submitText = "Zaktualizuj";
 			$scope.options ={
-				url: "/brand/"+$routeParams.brandId+"/upload/image",
+				url: "/api/brand/"+$routeParams.brandId+"/upload/image",
 				type: "POST",
 				dataType: "json",
 				headers:{},
