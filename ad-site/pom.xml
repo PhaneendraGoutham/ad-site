@@ -31,6 +31,15 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+<!-- 		<repository> -->
+<!-- 	        <id>library-mvn-repo</id> -->
+<!-- 	        <url>https://github.com/stallon2/library/tree/mvn-repo/</url> -->
+<!-- 	        <snapshots> -->
+<!-- 	            <enabled>true</enabled> -->
+<!-- 	            <updatePolicy>always</updatePolicy> -->
+	            
+<!--         </snapshots> -->
+<!--     </repository> -->
 	</repositories>
 	<modules>
 		<module>ad-core-model</module>
