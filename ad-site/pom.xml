@@ -45,7 +45,6 @@
 		<module>ad-core-model</module>
 		<module>ad-core-controller</module>
 		<module>ad-web</module>
-		<module>dailymotion-api-module</module>
 		<module>ad-core-security</module>
 		<module>ad-social</module>
 		<module>video-api-module</module>
