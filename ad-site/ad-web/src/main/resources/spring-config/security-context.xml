@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security" xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+      	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+   		http://www.springframework.org/schema/security
+  		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+
+
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider
+			ref="authenticationProvider" />
+		<!-- <security:authentication-provider -->
+		<!-- ref="socialAuthenticationProvider" /> -->
+	</security:authentication-manager>
+	<!-- <security:http pattern="/WEB-INF/**" security="none" /> -->
+	<!-- <security:http pattern="/uploads/**" security="none" /> -->
+
+
+
+		<security:http pattern="/api/ad/rand"
+			 security="none" />
+		<security:http pattern="/api/tag"
+			 security="none" />
+		<security:http pattern="/api/brand/sm"
+			 security="none" />
+		<security:http pattern="/api/brand/*/wistiaproject"
+			 security="none" />
+
+
+	<security:http use-expressions="true" create-session="stateless"
+		entry-point-ref="authenticationEntryPoint" pattern="/api/**" >
+		<security:anonymous enabled="true"/>
+		<!-- <security:remember-me key="asdf" -->
+		<!-- services-ref="persistentTokenBasedRememberMeServices" /> -->
+		<!-- <security:custom-filter ref="socialAuthenticationFilter" -->
+		<!-- before="PRE_AUTH_FILTER" /> -->
+		<security:custom-filter ref="tokenAuthenticationFilter"
+			before="BASIC_AUTH_FILTER" />
+
+		<!-- <security:custom-filter ref="userMessageFilter" -->
+		<!-- after="SESSION_MANAGEMENT_FILTER" /> -->
+		<!-- <security:form-login login-page="/user/login" -->
+		<!-- login-processing-url="/process_loging" password-parameter="password" -->
+		<!-- username-parameter="username" authentication-failure-url="/user/login?login_error=1" 
+			/> -->
+		<!-- <security:logout invalidate-session="true" logout-url="/user/logout" -->
+		<!-- logout-success-url="/" /> -->
+		<security:intercept-url pattern="/api/user/login"
+			method="POST" access="hasRole('ROLE_ANONYMOUS')"/>
+					<security:intercept-url pattern="/api/user/login/status"
+			access="hasRole('ROLE_USER')" method="GET" />
+		<security:intercept-url pattern="/api/user/*"
+			access="hasRole('ROLE_USER')" method="POST" />
+		<security:intercept-url pattern="/api/user/*/profile"
+			access="hasRole('ROLE_USER')" method="GET" />
+		<security:intercept-url pattern="/api/user/*/password"
+			access="hasRole('ROLE_USER')" method="POST" />
+		<security:intercept-url pattern="/api/user/*/password/recall"
+			access="hasRole('ROLE_USER')" method="POST" />
+
+
+			
+
+		<security:intercept-url pattern="/api/user/*/upload/image"
+			access="hasRole('ROLE_USER')" method="POST" />
+
+		<security:intercept-url pattern="/api/auth/**"
+			access="hasRole('ROLE_USER')" method="GET" />
+
+
+		<security:intercept-url pattern="/api/brand/*/upload/image"
+			access="hasRole('ROLE_COMPANY')" method="POST" />
+
+
+		<security:intercept-url pattern="/api/brand/*"
+			access="hasRole('ROLE_COMPANY')" method="POST" />
+
+		<security:intercept-url pattern="/api/company/*/brand"
+			access="hasRole('ROLE_COMPANY')" method="POST" />
+
+		<security:intercept-url pattern="/api/company/*/brand"
+			access="hasRole('ROLE_COMPANY')" method="GET" />
+
+		<security:intercept-url pattern="/api/company/*/stats"
+			access="hasRole('ROLE_COMPANY')" method="GET" />
+
+
+		<security:intercept-url pattern="/api/brand/*/contest"
+			access="hasRole('ROLE_COMPANY')" method="POST" />
+
+		<security:intercept-url pattern="/api/contest/*"
+			access="hasRole('ROLE_CONTEST')" method="POST" />
+
+		<security:intercept-url pattern="/api/contest/*/answer"
+			access="hasRole('ROLE_CONTEST')" method="GET" />
+
+		<security:intercept-url pattern="/api/contest/*/score"
+			access="hasRole('ROLE_CONTEST')" method="GET" />
+
+		<security:intercept-url pattern="/api/contest/*/answer"
+			access="hasRole('ROLE_USER')" method="POST" />
+
+		<security:intercept-url pattern="/api/contest/*/state"
+			access="hasRole('ROLE_CONTEST')" method="POST" />
+
+		<security:intercept-url pattern="/api/contest/*/ad/*/state"
+			access="hasRole('ROLE_CONTEST')" method="POST" />
+		<security:intercept-url pattern="/api/contest/*/answer/*/state"
+			access="hasRole('ROLE_CONTEST')" method="POST" />
+
+		<security:intercept-url pattern="/api/contest/*/upload/image"
+			access="hasRole('ROLE_CONTEST')" method="POST" />
+
+
+		<security:intercept-url pattern="/api/ad"
+			access="hasRole('ROLE_USER')" method="POST" />
+
+		<security:intercept-url pattern="/api/ad/*/rate"
+			access="hasRole('ROLE_USER')" method="POST" />
+
+		<security:intercept-url pattern="/api/ad/*/state"
+			access="hasRole('ROLE_ADMIN')" method="POST" />
+
+		<security:intercept-url pattern="/api/brand/*/ad"
+			access="hasRole('ROLE_COMPANY')" method="POST" />
+
+
+
+
+		<!-- <security:intercept-url pattern="/ad/register" -->
+		<!-- access="hasRole('ROLE_USER') and !hasRole('ROLE_COMPANY')" /> -->
+
+		<!-- <security:intercept-url pattern="/brand/*/ad/register" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/contest/*/ad/register" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/contest/*/ad" -->
+		<!-- method="POST" access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/ad" method="POST" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/brand/*/ad" -->
+		<!-- method="POST" access="hasRole('ROLE_COMPANY')" /> -->
+		<!-- <security:intercept-url method="OPTIONS" -->
+		<!-- access="hasRole('ROLE_ANONYMOUS')" pattern="/**" /> -->
+		<!-- <security:intercept-url pattern="/ad/update/*" -->
+		<!-- method="POST" access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/ad/*/state" -->
+		<!-- method="POST" access="hasRole('ROLE_ADMIN')" /> -->
+
+		<!-- <security:intercept-url pattern="/brand/register" -->
+		<!-- access="hasRole('ROLE_ADMIN')" /> -->
+
+		<!-- <security:intercept-url pattern="/brand" -->
+		<!-- method="POST" access="hasRole('ROLE_ADMIN')" /> -->
+
+
+		<!-- <security:intercept-url pattern="/company/*/brand/register" -->
+		<!-- access="hasRole('ROLE_COMPANY')" /> -->
+
+		<!-- <security:intercept-url pattern="/company/*/brand" -->
+		<!-- method="POST" access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/company/register" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/company" -->
+		<!-- method="POST" access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/user/company" -->
+		<!-- access="hasRole('ROLE_COMPANY')" /> -->
+
+		<!-- <security:intercept-url pattern="/user/upload/image" -->
+		<!-- method="POST" access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/user/*/profile" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+		<!-- <security:intercept-url method="POST" -->
+		<!-- pattern="/user/*/password" access="hasRole('ROLE_USER')" /> -->
+		<!-- <security:intercept-url pattern="/user/message" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+		<!-- <security:intercept-url pattern="/user/login/status" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+		<!-- <security:intercept-url pattern="/user/upload/image" -->
+		<!-- method="POST" access="hasRole('ROLE_USER')" /> -->
+
+
+		<!-- <security:intercept-url pattern="/brand/*/contest/register" -->
+		<!-- access="hasRole('ROLE_COMPANY')" /> -->
+
+		<!-- <security:intercept-url pattern="/contest/*/edit" -->
+		<!-- access="hasRole('ROLE_CONTEST')" /> -->
+
+		<!-- <security:intercept-url pattern="/contest/*" -->
+		<!-- access="hasRole('ROLE_CONTEST')" method="POST"/> -->
+
+
+
+
+		<!-- <security:intercept-url pattern="/company/register" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+		<!-- <security:intercept-url pattern="/user/company" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+
+		<!-- <security:intercept-url pattern="/brand/*/contest/register" -->
+		<!-- access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" /> -->
+		<!-- <security:intercept-url pattern="/contest/register" -->
+		<!-- method="POST" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" 
+			/> -->
+		<!-- <security:intercept-url pattern="/brand/*/edit" -->
+		<!-- access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" /> -->
+		<!-- <security:intercept-url pattern="/brand/*" -->
+		<!-- method="POST" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_COMPANY')" 
+			/> -->
+		<!-- <security:intercept-url pattern="/contest/*/answer" -->
+		<!-- access="hasRole('ROLE_USER')" /> -->
+
+	</security:http>
+	<!-- <security:global-method-security -->
+	<!-- secured-annotations="enabled" /> -->
+
+	<security:global-method-security
+		pre-post-annotations="enabled"></security:global-method-security>
+
+
+
+
+
+
+
+
+	<!-- <bean id="tokenRepository" -->
+	<!-- class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl"> -->
+	<!-- <property name="dataSource" ref="dataSource" /> -->
+	<!-- <property name="createTableOnStartup" value="false" /> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="persistentTokenBasedRememberMeServices" -->
+	<!-- class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices"> -->
+	<!-- <property name="key" value="asdf" /> -->
+	<!-- <property name="userDetailsService" ref="userDetailsService" /> -->
+	<!-- <property name="tokenRepository" ref="tokenRepository" /> -->
+	<!-- <property name="alwaysRemember" value="true" /> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="passwordEncoder" -->
+	<!-- class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"> -->
+	<!-- <constructor-arg value="256" /> -->
+
+	<!-- </bean> -->
+	<!-- <bean id="authenticationProvider" -->
+	<!-- class="pl.styall.library.core.security.authentication.AuthenticationProvider"> -->
+	<!-- </bean> -->
+
+
+
+	<!-- <bean id="jacksonAccessDeniedHandler" -->
+	<!-- class="pl.styall.library.core.security.authorization.JacksonAccessDeniedHandler"></bean> -->
+	<!-- <bean id="restAuthenticationEntryPoint" -->
+	<!-- class="pl.styall.library.core.security.authorization.RestAuthenticationEntryPoint"></bean> -->
+	<!-- <bean id="userCache" -->
+	<!-- class="pl.styall.authentication.rest.EhCacheBasedRestUserCache"> -->
+	<!-- <property name="cache" ref="ehcache" /> -->
+	<!-- </bean> -->
+
+
+	<!-- <bean id="restAuthenticationProvider" -->
+	<!-- class="pl.styall.authentication.rest.RestAuthenticationProvider"> -->
+	<!-- <property name="restUserService" ref="restUserService" /> -->
+	<!-- <property name="cache" ref="userCache" /> -->
+	<!-- <constructor-arg name="algorithm" value="HmacSHA256" /> -->
+	<!-- <constructor-arg name="expirationTime" value="5000" /> -->
+	<!-- </bean> -->
+	<!-- <bean id="restAuthenticationFilter" -->
+	<!-- class="pl.styall.authentication.rest.RestAuthenticationFilter"> -->
+	<!-- <constructor-arg name="authenticationManager" ref="authenticationManager" 
+		/> -->
+	<!-- <constructor-arg name="authenticationEntryPoint" ref="restAuthenticationEntryPoint" 
+		/> -->
+	<!-- </bean> -->
+
+	<!-- <security:authentication-manager alias="authenticationManager"> -->
+	<!-- <security:authentication-provider -->
+	<!-- ref="restAuthenticationProvider"> -->
+	<!-- </security:authentication-provider> -->
+	<!-- </security:authentication-manager> -->
+
+	<!-- <security:global-method-security pre-post-annotations="enabled"> -->
+
+	<!-- <security:expression-handler ref="expressionHandler" /> -->
+	<!-- </security:global-method-security> -->
+	<!-- <bean id="expressionHandler" -->
+	<!-- class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler"> -->
+	<!-- <property name="permissionEvaluator" ref="permissionEvaluator" /> -->
+	<!-- <property name="roleHierarchy" ref="roleHierarchy" /> -->
+	<!-- </bean> -->
+
+	<!-- <bean class="pl.styall.acl.authorization.permission.AclPermissionEvaluator" -->
+	<!-- id="permissionEvaluator"> -->
+	<!-- <constructor-arg ref="aclService" /> -->
+	<!-- <constructor-arg ref="classPermissionFactory"/> -->
+	<!-- </bean> -->
+
+
+
+	<!-- <bean id="aclAuthorizationStrategy" -->
+	<!-- class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl"> -->
+	<!-- <constructor-arg> -->
+	<!-- <list> -->
+	<!-- <bean -->
+	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
+	<!-- </bean> -->
+	<!-- <bean -->
+	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
+	<!-- </bean> -->
+	<!-- <bean -->
+	<!-- class="org.springframework.security.core.authority.GrantedAuthorityImpl"> -->
+	<!-- <constructor-arg value=UserRoleDef.ROLE_ADMIN /> -->
+	<!-- </bean> -->
+	<!-- </list> -->
+	<!-- </constructor-arg> -->
+	<!-- </bean> -->
+	<!-- <bean id="roleHierarchy" -->
+	<!-- class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl"> -->
+	<!-- <property name="hierarchy"> -->
+	<!-- <value> -->
+	<!-- ROLE_ADMINasdf > ROLE_USERasdf -->
+	<!-- ROLE_USERasdf > ROLE_ANONYMOUSEasdf -->
+	<!-- </value> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="grantingStrategy" -->
+	<!-- class="pl.styall.acl.authorization.DefaultPermissionGrantingStrategy"> -->
+	<!-- <constructor-arg name="auditLogger" ref="auditLogger"></constructor-arg> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="auditLogger" -->
+	<!-- class="pl.styall.acl.authorization.Log4jAuditLogger"></bean> -->
+
+	<!-- <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache"> -->
+	<!-- <constructor-arg name="cache" ref="ehcache" /> -->
+	<!-- <constructor-arg name="permissionGrantingStrategy" ref="grantingStrategy" 
+		/> -->
+	<!-- <constructor-arg name="aclAuthorizationStrategy" ref="aclAuthorizationStrategy" 
+		/> -->
+	<!-- </bean> -->
+	<!-- <bean id="aclService" -->
+	<!-- class="pl.styall.acl.authorization.model.service.HibernateAclServiceImpl"> -->
+	<!-- <constructor-arg name="aclCache" ref="aclCache" /> -->
+	<!-- <constructor-arg name="grantingStrategy" ref="grantingStrategy" /> -->
+	<!-- <constructor-arg name="aclAuthorizationStrategy" ref="aclAuthorizationStrategy" 
+		/> -->
+	<!-- <constructor-arg name="transactionManager" ref="transactionManager"/> -->
+	<!-- <constructor-arg name="objectIdentityDao" ref="aclObjectIdentityDao"/> -->
+	<!-- </bean> -->
+	<!-- <bean id="aclObjectIdentityDao" class="pl.styall.acl.authorization.model.dao.AclObjectIdentityDao"> -->
+	<!-- <constructor-arg name="sessionFactory" ref="sessionFactory"/> -->
+	<!-- </bean> -->
+	<!-- <bean id="aclSecurityAspect" class="pl.styall.acl.authorization.aspect.AclSecurityAspect"> -->
+	<!-- <constructor-arg name="aclFunctions" ref="aclFunctions"/> -->
+	<!-- </bean> -->
+	<!-- <bean id="createAclService" class="pl.styall.acl.authorization.model.service.CreateAclService"></bean> -->
+	<!-- <bean id="aclFunctions" class="pl.styall.scylla.web.acl.authorization.AclFunctionsImpl"></bean> -->
+
+	<!-- <bean id="classPermissionFactory" class="pl.styall.acl.authorization.permission.ClassPermissionFactory"> -->
+	<!-- <constructor-arg name="classPermissions"> -->
+	<!-- <list> -->
+	<!-- <ref bean="companyPermissions"/> -->
+	<!-- <ref bean="premisePermissions"/> -->
+	<!-- </list> -->
+	<!-- </constructor-arg> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="companyPermissions" class="pl.styall.acl.authorization.permission.ClassBasedPermission"> -->
+	<!-- <constructor-arg name="clazz" value="pl.styall.scylla.core.model.Company"/> -->
+	<!-- <constructor-arg name="permissionNames"> -->
+	<!-- <list> -->
+	<!-- <value>PREMISE_PERMISSION</value> -->
+	<!-- </list> -->
+	<!-- </constructor-arg> -->
+	<!-- </bean> -->
+	<!-- <bean id="premisePermissions" class="pl.styall.acl.authorization.permission.ClassBasedPermission"> -->
+	<!-- <constructor-arg name="clazz" value="pl.styall.scylla.core.model.Premise"/> -->
+	<!-- <constructor-arg name="permissionNames"> -->
+	<!-- <list> -->
+	<!-- <value>PRODUCT_PERMISSION</value> -->
+	<!-- </list> -->
+	<!-- </constructor-arg> -->
+	<!-- </bean> -->
+</beans>

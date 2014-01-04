@@ -25,7 +25,7 @@ import pl.styall.library.core.filter.CorsFilter;
 @ComponentScan(basePackages = { "pl.stalkon.ad.rest.controller",
 		"pl.stalkon.ad.core.model",
 		"pl.stalkon.video.api.service.impl", "pl.stalkon.video.api.youtube" })
-@PropertySource("classpath:pl/stalkon/ad/config/application.properties")
+@PropertySource("classpath:spring-config/application.properties")
 @EnableCaching(order = 1)
 public class MainConfig {
 
@@ -106,7 +106,7 @@ public class MainConfig {
 	public EhCacheManagerFactoryBean ehCache() {
 		EhCacheManagerFactoryBean ehCache = new EhCacheManagerFactoryBean();
 		ehCache.setConfigLocation(new ClassPathResource(
-				"pl/stalkon/ad/config/ehcache.xml"));
+				"spring-config/ehcache.xml"));
 		return ehCache;
 	}
 

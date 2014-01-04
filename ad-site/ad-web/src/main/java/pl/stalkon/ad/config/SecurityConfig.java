@@ -47,7 +47,7 @@ import pl.styall.library.core.security.rest.UpdateTokenResultHandler;
 import pl.styall.library.core.security.rest.UserLoginsService;
 
 @Configuration
-@ImportResource("classpath:pl/stalkon/ad/config/security-context.xml")
+@ImportResource("classpath:spring-config/security-context.xml")
 public class SecurityConfig {
 
 	@Autowired

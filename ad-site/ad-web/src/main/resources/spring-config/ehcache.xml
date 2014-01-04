@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	dynamicConfig="true" monitoring="autodetect" updateCheck="false"
+	xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+
+	<diskStore path="java.io.tmpdir" />
+
+	<defaultCache eternal="false" maxElementsInMemory="500"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false" />
+
+	<cache name="main" eternal="false" maxElementsInMemory="10"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false"
+		timeToLiveSeconds="3600">
+	</cache>
+	<cache name="waiting" eternal="false" maxElementsInMemory="10"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false"
+		timeToLiveSeconds="3600">
+	</cache>
+	<cache name="top" eternal="false" maxElementsInMemory="10"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false"
+		timeToLiveSeconds="3600">
+	</cache>
+	<cache name="comments" eternal="false" maxElementsInMemory="100"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false"
+		timeToLiveSeconds="30">
+	</cache>
+	<cache name="raitings" eternal="false" maxElementsInMemory="50"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false"
+		timeToLiveSeconds="60">
+	</cache>
+	<cache name="ad" eternal="false" maxElementsInMemory="50"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false"
+		timeToLiveSeconds="1800">
+	</cache>
+	<cache name="tags" eternal="false" maxElementsInMemory="50"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false"
+		timeToLiveSeconds="1800">
+	</cache>
+	<cache name="brands" eternal="false" maxElementsInMemory="50"
+		memoryStoreEvictionPolicy="LFU" overflowToDisk="false"
+		timeToLiveSeconds="1800">
+	</cache>
+
+</ehcache>
