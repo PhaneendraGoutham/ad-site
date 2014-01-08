@@ -25,7 +25,7 @@ import pl.styall.library.core.filter.CorsFilter;
 @ComponentScan(basePackages = { "pl.stalkon.ad.rest.controller",
 		"pl.stalkon.ad.core.model",
 		"pl.stalkon.video.api.service.impl", "pl.stalkon.video.api.youtube" })
-@PropertySource("classpath:spring-config/application.${AD_SITE_CONF}.properties")
+@PropertySource("classpath:spring-config/application.${PATH}.properties")
 @EnableCaching(order = 1)
 public class MainConfig {
 
