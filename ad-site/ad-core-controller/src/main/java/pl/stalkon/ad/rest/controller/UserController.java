@@ -49,6 +49,7 @@ public class UserController {
 	@ResponseBody
 	public Long processRegister(@Valid @RequestBody UserRegForm userRegForm) {
 		User user = userService.register(userRegForm);
+		mailService.sendUserVerificationEmail(user);
 		return user.getId();
 	}
 

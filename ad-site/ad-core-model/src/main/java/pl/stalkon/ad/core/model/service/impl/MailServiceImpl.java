@@ -44,7 +44,7 @@ public class MailServiceImpl implements MailService {
 			mm.setText(messageSource.getMessage("user.verification.mail.text",
 					new Object[] {
 							user.getDisplayName(),
-							appDomain + "user/activate/"
+							appDomain + "api/user/activate/"
 									+ user.getCredentials().getToken() },
 					LocaleContextHolder.getLocale()), "utf-8", "html");
 		} catch (NoSuchMessageException e) {

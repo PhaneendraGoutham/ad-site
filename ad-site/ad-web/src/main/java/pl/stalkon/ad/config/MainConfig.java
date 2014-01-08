@@ -25,7 +25,7 @@ import pl.styall.library.core.filter.CorsFilter;
 @ComponentScan(basePackages = { "pl.stalkon.ad.rest.controller",
 		"pl.stalkon.ad.core.model",
 		"pl.stalkon.video.api.service.impl", "pl.stalkon.video.api.youtube" })
-@PropertySource("classpath:spring-config/application.properties")
+@PropertySource("classpath:spring-config/application.${AD_SITE_CONF}.properties")
 @EnableCaching(order = 1)
 public class MainConfig {
 
@@ -41,11 +41,12 @@ public class MainConfig {
 //		javaMailSenderImpl.setProtocol("smtp");
 		Properties props = new Properties();
 
-		props.put ("mail.smtp.host", "in.mailjet.com");
-		props.put ("mail.smtp.socketFactory.port", "465");
-		props.put ("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props.put ("mail.smtp.host", env.getProperty("mail.host"));
+//		props.put ("mail.smtp.socketFactory.port", "465");
+//		props.put ("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		props.put ("mail.smtp.auth", "true");
-		props.put ("mail.smtp.port", "465");
+		props.put ("mail.auth", "true");
+		props.put ("mail.smtp.port", "25");
 		// props.put("mail.smtp.ssl.enable", "true");
 		// props.put("mail.transport.protocol", "smtps");
 //    	props.put("mail.transport.protocol", "smtp");
@@ -55,7 +56,7 @@ public class MainConfig {
 //		props.put("mail.smtp.starttls.required", "true");
 //
 //		props.put("mail.smtp.host", env.getProperty("mail.host"));
-		props.put("mail.debug", "true");
+		props.put("mail.debug", env.getProperty("mail.debug"));
 //		props.put("mail.smtps.host", env.getProperty("mail.host"));
 //		props.put("mail.smtps.port", new Integer(env.getProperty("mail.port")));
 //		props.put("mail.smtps.socketFactory.port", env.getProperty("mail.port"));
@@ -86,7 +87,7 @@ public class MainConfig {
 		return mailServiceImpl;
 	}
 
-	@Bean(name = "alertMailMessage")
+	@Bean
 	public SimpleMailMessage alertMailMessage() {
 		SimpleMailMessage smm = new SimpleMailMessage();
 		smm.setFrom(env.getProperty("mail.alert.from"));
