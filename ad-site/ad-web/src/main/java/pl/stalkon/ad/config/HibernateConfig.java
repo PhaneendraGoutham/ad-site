@@ -16,10 +16,13 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import pl.stalkon.ad.core.model.SocialUser;
+import pl.stalkon.ad.core.model.service.impl.UserRolePopulator;
 import pl.styall.library.core.model.UserRole;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
 import pl.styall.library.core.model.defaultimpl.Address;
 import pl.styall.library.core.model.defaultimpl.UserData;
+import pl.styall.library.spring.DatabaseInitPopulator;
+import pl.styall.library.spring.DatabasePopulator;
 
 @Configuration
 @EnableTransactionManagement(order = 2)
@@ -68,5 +71,12 @@ public class HibernateConfig {
 	@Bean
 	public HibernateTransactionManager transactionManager() {
 		return new HibernateTransactionManager(sessionFactory().getObject());
+	}
+	
+	@Bean
+	public DatabaseInitPopulator databaseInitPopulator(){
+		DatabaseInitPopulator databasePopulator = new DatabaseInitPopulator();
+		databasePopulator.adPopulator(new UserRolePopulator());
+		return databasePopulator;
 	}
 }

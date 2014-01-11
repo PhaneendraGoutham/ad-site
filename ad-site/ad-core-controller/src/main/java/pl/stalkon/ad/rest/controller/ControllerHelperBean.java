@@ -54,7 +54,7 @@ public class ControllerHelperBean {
 			SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 					.getPrincipal();
 			for (GrantedAuthority ga : socialLoggedUser.getAuthorities()) {
-				if (ga.getAuthority().equals(UserRoleDef.ROLE_AD_ADMIN))
+				if (ga.getAuthority().equals(UserRoleDef.ROLE_AD_ADMIN.value()))
 					return true;
 			}
 		}
@@ -118,14 +118,14 @@ public class ControllerHelperBean {
 
 	public void throwAccessDeniedException(String message,
 			HttpServletRequest request) throws AccessDeniedException {
-		if (!request.isUserInRole(UserRoleDef.ROLE_ADMIN)) {
+		if (!request.isUserInRole(UserRoleDef.ROLE_ADMIN.value())) {
 			throw new AccessDeniedException(message);
 		}
 	}
 
 	public void throwAccessDeniedException(HttpServletRequest request)
 			throws AccessDeniedException {
-		if (!request.isUserInRole(UserRoleDef.ROLE_ADMIN)) {
+		if (!request.isUserInRole(UserRoleDef.ROLE_ADMIN.value())) {
 			throw new AccessDeniedException(
 					messageSource.getMessage("info.access.denied", null,
 							LocaleContextHolder.getLocale()));

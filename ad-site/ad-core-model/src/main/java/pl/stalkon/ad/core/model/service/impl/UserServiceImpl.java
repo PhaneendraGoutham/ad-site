@@ -49,7 +49,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl<User> implements
 		userData.setSurname(userRegForm.getSurname());
 		userData.setImageUrl("/resources/img/no-user.gif");
 		user.setUserData(userData);
-		UserRole userRole = userDao.loadUserRoleByName(UserRoleDef.ROLE_USER);
+		UserRole userRole = userDao.loadUserRoleByName(UserRoleDef.ROLE_USER.value());
 		user.addUserRole(userRole);
 		user.setCredentials(credentials);
 		if (userRegForm.getDisplayNameType() != null)

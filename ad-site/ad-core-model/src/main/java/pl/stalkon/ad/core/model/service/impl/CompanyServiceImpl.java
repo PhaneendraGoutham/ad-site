@@ -28,7 +28,7 @@ public class CompanyServiceImpl implements CompanyService {
 		User user = userDao.get(userId);
 		if (activeOnCreate) {
 			user.addUserRole(userDao
-					.loadUserRoleByName(UserRoleDef.ROLE_COMPANY));
+					.loadUserRoleByName(UserRoleDef.ROLE_COMPANY.value()));
 		}
 		company.setApproved(activeOnCreate);
 		company.setUser(user);
@@ -81,10 +81,10 @@ public class CompanyServiceImpl implements CompanyService {
 		company.setApproved(approved);
 		if (approved) {
 			user.addUserRole(userDao
-					.loadUserRoleByName(UserRoleDef.ROLE_COMPANY));
+					.loadUserRoleByName(UserRoleDef.ROLE_COMPANY.value()));
 		} else {
 			user.getUserRoles().remove(
-					userDao.loadUserRoleByName(UserRoleDef.ROLE_COMPANY));
+					userDao.loadUserRoleByName(UserRoleDef.ROLE_COMPANY.value()));
 		}
 		user.getCredentials().getMail();
 		companyDao.update(company);

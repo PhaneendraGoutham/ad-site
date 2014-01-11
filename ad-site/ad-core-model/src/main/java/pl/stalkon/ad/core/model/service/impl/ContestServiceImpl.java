@@ -58,8 +58,8 @@ public class ContestServiceImpl implements ContestService{
 	public Contest register(Long userId, ContestPostDto contestPostDto) {
 		Contest contest = new Contest();
 		User user = userDao.get(userId);
-		if(!user.getUserRoles().contains(UserRoleDef.ROLE_CONTEST))
-			user.addUserRole(userDao.loadUserRoleByName(UserRoleDef.ROLE_CONTEST));
+		if(!user.getUserRoles().contains(UserRoleDef.ROLE_CONTEST.value()))
+			user.addUserRole(userDao.loadUserRoleByName(UserRoleDef.ROLE_CONTEST.value()));
 		contest.setUser(user);
 		Brand brand = brandDao.get(contestPostDto.getBrandId());
 		contest.setBrand(brand);
