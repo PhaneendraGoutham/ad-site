@@ -44,7 +44,8 @@ app.controller('ContestAnswerRegistrationCtrl', ['ContestService','$scope','$rou
         $scope.errorMessages = ErrorFactory.getErrorMessages({});
         $scope.submit = function() {
             ContestService.registerAnswer($routeParams.contestId, $scope.regModel, function(data) {
-                $location.path("/konkursy" + $routeParams.contestId);
+                CommonFunctions.pushAlert('success', "Twoja odpowiedź została zarejestrowana");
+                $location.path("/konkursy/" + $routeParams.contestId);
             }, function(message, statusCode) {
                 if (statusCode == 442) {
                     CommonFunctions.pushAlert('danger', "Konkurs już się zakończył");

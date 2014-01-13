@@ -384,3 +384,14 @@ app.controller('AdAdminPanelCtrl', ['$scope','AdService',function($scope, AdServ
         };
     }
 }]);
+app.controller('AdCtrl', ['$scope', 'AdService', function($scope, AdService){
+    init();
+    function init(){
+        $scope.model = {};
+        $scope.reportAbuse = function(){
+            AdService.reportAbuse($scope.ad.id, $scope.model.abuseMessage, function(){
+                
+            });
+        };
+    }
+}]);

@@ -41,7 +41,6 @@ public class CentralControllerHandler {
 	public void handleHttpException(
 			HttpException ex, HttpServletResponse res) {
 		res.setStatus(ex.STATUS_CODE);
-		System.out.println(ex.STATUS_CODE);
 	}
 	
 

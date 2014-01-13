@@ -11,7 +11,7 @@
 </article>
 
 <article class="clearfix"
-	data-ng-repeat="ad in model.ads track by $index">
+	data-ng-repeat="ad in model.ads track by $index" data-ng-controller="AdCtrl">
 	<div class=" col-sm-8">
 		<a href="#/reklamy/{{ad.id}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
 	</div>
@@ -66,11 +66,11 @@
 		<div data-ng-switch-when="inform" class=" col-md-12">
 			<div class=" col-md-12 form-group">
 
-				<textarea class="form-control"
+				<textarea class="form-control" data-ng-model="model.abuseMessage"
 					placeholder="Podaj jak najdokładniejszy powód zgłoszenia..."></textarea>
 			</div>
 			<div class=" col-md-1  form-group">
-				<button class="btn btn-default">
+				<button class="btn btn-default" data-ng-click="reportAbuse()">
 					<i class="icon-white icon-flag"></i>Zgłoś
 				</button>
 			</div>

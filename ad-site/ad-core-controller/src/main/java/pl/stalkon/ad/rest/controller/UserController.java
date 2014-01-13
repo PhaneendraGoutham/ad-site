@@ -102,10 +102,10 @@ public class UserController {
 
 	@RequestMapping(value = "/user/activate/{token}", method = RequestMethod.GET)
 	@ResponseBody
-	public boolean activate(@PathVariable("token") String token,
+	public SingleObjectResponse activate(@PathVariable("token") String token,
 			RedirectAttributes redirectAttributes) {
 		boolean activated = userService.activate(token);
-		return activated;
+		return new SingleObjectResponse(activated);
 	}
 
 //	@RequestMapping(value = "/user/{userId}/message", method = RequestMethod.GET)
@@ -124,12 +124,15 @@ public class UserController {
 //		return userAddressDto;
 //	}
 
-	@RequestMapping(value = "/user/{userId}/password/recall", method = RequestMethod.POST)
-	public void recallPassword(@PathVariable("userId") Long userId,@NotNull @RequestParam("mail") String mail) {
+	@RequestMapping(value = "/user/password/recover", method = RequestMethod.POST)
+	@ResponseBody
+	public SingleObjectResponse recallPassword(@NotNull @RequestParam("mail") String mail) {
 		String newPassword = userService.generateAndSetNewPassword(mail);
 		if (newPassword != null) {
 			mailService.sendNewPassword(mail, newPassword);
+			return new SingleObjectResponse(true);
 		}
+		return new SingleObjectResponse(false);
 	}
 
 }

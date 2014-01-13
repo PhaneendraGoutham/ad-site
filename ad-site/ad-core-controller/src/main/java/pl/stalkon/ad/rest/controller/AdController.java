@@ -23,6 +23,7 @@ import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.ad.core.model.dto.AdSearchDto;
 import pl.stalkon.ad.core.model.dto.AdsMapWrapper;
 import pl.stalkon.ad.core.model.service.AdService;
+import pl.stalkon.ad.core.model.service.MailService;
 import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.video.api.service.VideoApiException;
@@ -46,6 +47,9 @@ public class AdController {
 
 	@Autowired
 	private AdService adService;
+	
+	@Autowired
+	private MailService mailService;
 
 	@RequestMapping(value = "/ad", method = RequestMethod.POST)
 	@ResponseBody
@@ -139,6 +143,12 @@ public class AdController {
 		if (ageProtected != null) {
 			adService.changeAgeProtected(adId, ageProtected);
 		}
+	}
+	
+	@RequestMapping(value="ad/{id}/report", method=RequestMethod.POST)
+	@ResponseBody
+	public void reportAdAbuse(@PathVariable("id") Long adId, @RequestParam("message") String message){
+		mailService.sendAdAbuseMessage(adId, message);
 	}
 
 }

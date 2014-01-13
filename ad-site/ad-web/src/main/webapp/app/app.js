@@ -289,6 +289,23 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, UserService.fetchUserProfile, $rootScope.currentUser.id, 'response');
             }],
         }
+    }).when("/uzytkownik/aktywuj/:token", {
+        resolve : {
+            activate: ['$q','$http','$route','UserService','$location', 'CommonFunctions',function($q, $http, $route, UserService,$location,CommonFunctions) {
+                var deferred = $q.defer();
+               UserService.activateUser($route.current.params.token, function(data){
+                  if(data.response){ 
+                      CommonFunctions.pushAlert("success", "Użytkownik został zaaktywowany pomyślnie. Możesz się teraz zalogować"); 
+                      $location.path("/uzytkownik/zaloguj");
+                  }else{
+                      CommonFunctions.pushAlert("danger", "Ten kod aktywacyjny został użyty już wcześniej"); 
+                      $location.path("/uzytkownik/zaloguj");
+                  }
+                  deferred.resolve();
+               });
+               return deferred.promise;
+            }],
+        },
     }).when("/partnerzy/zarejestruj", {
         controller : 'CompanyRegistrationCtrl',
         templateUrl : "app/partials/company/company-registration.html",

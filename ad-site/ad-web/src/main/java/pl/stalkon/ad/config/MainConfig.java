@@ -84,6 +84,7 @@ public class MainConfig {
 		MailServiceImpl mailServiceImpl = new MailServiceImpl();
 		mailServiceImpl.setAppDomain(env.getProperty("app.domain"));
 		mailServiceImpl.setInfoSender(env.getProperty("mail.inform.from"));
+		mailServiceImpl.setAbuseReceiver(env.getProperty("mail.abuse.to"));
 		return mailServiceImpl;
 	}
 

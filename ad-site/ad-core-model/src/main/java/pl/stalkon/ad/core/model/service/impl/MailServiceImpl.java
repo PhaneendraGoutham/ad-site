@@ -27,6 +27,7 @@ public class MailServiceImpl implements MailService {
 	private MessageSource messageSource;
 
 	private String infoSender;
+	private String abuseReceiver;
 
 	private String appDomain;
 
@@ -44,7 +45,7 @@ public class MailServiceImpl implements MailService {
 			mm.setText(messageSource.getMessage("user.verification.mail.text",
 					new Object[] {
 							user.getDisplayName(),
-							appDomain + "api/user/activate/"
+							appDomain + "#/uzytkownik/aktywuj/"
 									+ user.getCredentials().getToken() },
 					LocaleContextHolder.getLocale()), "utf-8", "html");
 		} catch (NoSuchMessageException e) {
@@ -99,6 +100,32 @@ public class MailServiceImpl implements MailService {
 		}
 		mailSender.send(mm);
 	}
+	
+	
+	@Override
+	public void sendAdAbuseMessage(Long id, String message) {
+		MimeMessage mm = mailSender.createMimeMessage();
+		try {
+			mm.setSubject(messageSource.getMessage(
+					"ad.abuse.subject", null,
+					LocaleContextHolder.getLocale()));
+
+			mm.setRecipient(RecipientType.TO, new InternetAddress(abuseReceiver));
+			mm.setFrom(new InternetAddress(infoSender));
+			
+			mm.setText(
+					messageSource.getMessage("ad.abuse.text",
+							new Object[] {message, appDomain + "/#/reklamy/" + id },
+							LocaleContextHolder.getLocale()), "utf-8", "html");
+		} catch (NoSuchMessageException e) {
+			// TODO: co z tym zrobic????
+		} catch (MessagingException e) {
+
+		}
+		mailSender.send(mm);
+		
+	}
+	
 
 	public String getInfoSender() {
 		return infoSender;
@@ -115,6 +142,12 @@ public class MailServiceImpl implements MailService {
 	public void setAppDomain(String appDomain) {
 		this.appDomain = appDomain;
 	}
+
+	public void setAbuseReceiver(String abuseReceiver) {
+		this.abuseReceiver = abuseReceiver;
+	}
+
+
 
 
 }

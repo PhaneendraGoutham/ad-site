@@ -93,4 +93,7 @@ app.service("AdService", ['$http', '$route', '$location', 'CommonFunctions', fun
         $http.post('/ad/'+adId+'/state', $.param(state), CommonFunctions.getPostHeader()).success(success);
     };
 
+    this.reportAbuse = function(adId, message, success, error){
+        $http.post('/ad/' + adId + "/report", $.param({message: message}), CommonFunctions.getPostHeader()).success(success);
+    };
 }]);
