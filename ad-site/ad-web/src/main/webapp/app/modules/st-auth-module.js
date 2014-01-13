@@ -14,7 +14,7 @@
     this.setProtectedResourcesList = function(protectedResourcesList) {
         angular.forEach(protectedResourcesList, function(val) {
             val.url = val.url.replace(/\//g, "\\/").replace(/\*/g, "[^ ]*");
-            val.url = new RegExp("^"+val.url+"$", "i");
+            val.url = new RegExp("^/api"+val.url+"$", "i");
         });
         this.protectedResourcesList = protectedResourcesList;
 
