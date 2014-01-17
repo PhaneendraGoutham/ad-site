@@ -9,4 +9,6 @@ public interface MailService {
 	public void sendNewPassword(String mail, String password);
 	public void sendCompanyVerificationEmail(Company company);
 	void sendAdAbuseMessage(Long id, String message);
+	public void sendCompanyRequest(Company company);
+	void sendCompanyRegistrationConfirm(Company company);
 }

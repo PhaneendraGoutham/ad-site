@@ -1,5 +1,8 @@
 package pl.stalkon.ad.core.model.service.impl;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -11,8 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.mail.MailMessage;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import pl.stalkon.ad.core.model.Company;
 import pl.stalkon.ad.core.model.User;
 import pl.stalkon.ad.core.model.service.MailService;
@@ -26,27 +37,76 @@ public class MailServiceImpl implements MailService {
 	@Autowired
 	private MessageSource messageSource;
 
+	@Autowired
+	private Configuration freemarkerConfiguration;
+
 	private String infoSender;
 	private String abuseReceiver;
-
 	private String appDomain;
+	private String companyReqReceiver;
+
+	private void sendMail(final String subject, final String from,
+			final String to, final String templateName, final Object model) {
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+				message.setFrom(from);
+				message.setTo(to);
+				message.setSubject(subject);
+				String text = FreeMarkerTemplateUtils
+						.processTemplateIntoString(freemarkerConfiguration
+								.getTemplate(templateName), model);
+				message.setText(text, true);
+			}
+		};
+		mailSender.send(preparator);
+	}
 
 	@Override
 	public void sendUserVerificationEmail(User user) {
+		String subject = "Spotnik.pl - potwierdź założenie konta";
+		Map<String, Object> model = new HashMap<String, Object>(1);
+		model.put("token", user.getCredentials().getToken());
+		model.put("displayName", user.getDisplayName());
+		sendMail(subject, infoSender, user.getCredentials().getMail(),
+				"userVerificationEmail.ftl", model);
+	}
+
+	@Override
+	public void sendNewPassword(String mail, String password) {
+		String subject = "Spotnik.pl - nowe hasło";
+		Map<String, Object> model = new HashMap<String, Object>(1);
+		model.put("password", password);
+		sendMail(subject, infoSender, mail, "newPasswordEmail.ftl", model);
+	}
+	
+	@Override
+	public void sendCompanyRequest(Company company){
+		String subject = "Spotnik.pl - nowe hasło";
+		Map<String, Object> model = new HashMap<String, Object>(1);
+		model.put("company", company);
+		sendMail(subject, infoSender, companyReqReceiver, "companyRequestEmail.ftl", model);
+	}
+	
+	@Override
+	public void sendCompanyRegistrationConfirm(Company company) {
+		String subject = "Spotnik.pl - potwierdzenie partnerstwa";
+		sendMail(subject, infoSender, company.getUser().getCredentials().getMail(), "companyRegistrationConfirmEmail.ftl", null);
+	}
+
+	@Override
+	public void sendCompanyVerificationEmail(Company company) {
 		MimeMessage mm = mailSender.createMimeMessage();
 		try {
 			mm.setSubject(messageSource.getMessage(
-					"user.verification.mail.subject", null,
+					"company.verification.mail.subject", null,
 					LocaleContextHolder.getLocale()));
 
-			mm.setRecipient(RecipientType.TO, new InternetAddress(user
-					.getCredentials().getMail()));
+			mm.setRecipient(RecipientType.TO, new InternetAddress(company
+					.getUser().getCredentials().getMail()));
 			mm.setFrom(new InternetAddress(infoSender));
-			mm.setText(messageSource.getMessage("user.verification.mail.text",
-					new Object[] {
-							user.getDisplayName(),
-							appDomain + "#/uzytkownik/aktywuj/"
-									+ user.getCredentials().getToken() },
+			mm.setText(messageSource.getMessage(
+					"company.verification.mail.text", null,
 					LocaleContextHolder.getLocale()), "utf-8", "html");
 		} catch (NoSuchMessageException e) {
 			// TODO: co z tym zrobic????
@@ -57,75 +117,13 @@ public class MailServiceImpl implements MailService {
 	}
 
 	@Override
-	public void sendNewPassword(String mail, String password) {
-		MimeMessage mm = mailSender.createMimeMessage();
-		try {
-			mm.setSubject(messageSource.getMessage(
-					"user.password.mail.subject", null,
-					LocaleContextHolder.getLocale()));
-
-			mm.setRecipient(RecipientType.TO, new InternetAddress(mail));
-			mm.setFrom(new InternetAddress(infoSender));
-			mm.setText(
-					messageSource.getMessage("user.password.mail.text",
-							new Object[] { password },
-							LocaleContextHolder.getLocale()), "utf-8", "html");
-		} catch (NoSuchMessageException e) {
-			// TODO: co z tym zrobic????
-		} catch (MessagingException e) {
-
-		}
-		mailSender.send(mm);
-
-	}
-	
-	@Override
-	public void sendCompanyVerificationEmail(Company company) {
-		MimeMessage mm = mailSender.createMimeMessage();
-		try {
-			mm.setSubject(messageSource.getMessage(
-					"company.verification.mail.subject", null,
-					LocaleContextHolder.getLocale()));
-
-			mm.setRecipient(RecipientType.TO, new InternetAddress(company.getUser().getCredentials().getMail()));
-			mm.setFrom(new InternetAddress(infoSender));
-			mm.setText(
-					messageSource.getMessage("company.verification.mail.text",
-							null,
-							LocaleContextHolder.getLocale()), "utf-8", "html");
-		} catch (NoSuchMessageException e) {
-			// TODO: co z tym zrobic????
-		} catch (MessagingException e) {
-
-		}
-		mailSender.send(mm);
-	}
-	
-	
-	@Override
 	public void sendAdAbuseMessage(Long id, String message) {
-		MimeMessage mm = mailSender.createMimeMessage();
-		try {
-			mm.setSubject(messageSource.getMessage(
-					"ad.abuse.subject", null,
-					LocaleContextHolder.getLocale()));
-
-			mm.setRecipient(RecipientType.TO, new InternetAddress(abuseReceiver));
-			mm.setFrom(new InternetAddress(infoSender));
-			
-			mm.setText(
-					messageSource.getMessage("ad.abuse.text",
-							new Object[] {message, appDomain + "/#/reklamy/" + id },
-							LocaleContextHolder.getLocale()), "utf-8", "html");
-		} catch (NoSuchMessageException e) {
-			// TODO: co z tym zrobic????
-		} catch (MessagingException e) {
-
-		}
-		mailSender.send(mm);
-		
+		String subject = "Spotnik.pl - nadużycie reklamy";
+		Map<String, Object> model = new HashMap<String, Object>(1);
+		model.put("message", message);
+		model.put("id", id);
+		sendMail(subject, infoSender, abuseReceiver, "adAbuseEmail.ftl", model);
 	}
-	
 
 	public String getInfoSender() {
 		return infoSender;
@@ -147,7 +145,9 @@ public class MailServiceImpl implements MailService {
 		this.abuseReceiver = abuseReceiver;
 	}
 
-
+	public void setCompanyReqReceiver(String companyReqReceiver) {
+		this.companyReqReceiver = companyReqReceiver;
+	}
 
 
 }

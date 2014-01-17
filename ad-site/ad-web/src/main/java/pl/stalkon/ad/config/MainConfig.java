@@ -1,5 +1,8 @@
 package pl.stalkon.ad.config;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
+
+import freemarker.template.TemplateException;
 
 import pl.stalkon.ad.core.model.service.MailService;
 import pl.stalkon.ad.core.model.service.impl.MailServiceImpl;
@@ -74,6 +80,16 @@ public class MainConfig {
 	}
 	
 	@Bean
+	public FreeMarkerConfigurationFactoryBean freeMarkerConfiguration() throws IOException, TemplateException{
+		FreeMarkerConfigurationFactoryBean configFactory = new FreeMarkerConfigurationFactoryBean();
+		configFactory.setTemplateLoaderPath("classpath:/emails");
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put("appDomain", env.getProperty("app.domain"));
+		configFactory.setFreemarkerVariables(variables);
+		return configFactory;
+	}
+	
+	@Bean
 	public CorsFilter corsFilter(){
 		return new CorsFilter();
 	}
@@ -84,6 +100,7 @@ public class MainConfig {
 		MailServiceImpl mailServiceImpl = new MailServiceImpl();
 		mailServiceImpl.setAppDomain(env.getProperty("app.domain"));
 		mailServiceImpl.setInfoSender(env.getProperty("mail.inform.from"));
+		mailServiceImpl.setCompanyReqReceiver(env.getProperty("mail.company.req.to"));
 		mailServiceImpl.setAbuseReceiver(env.getProperty("mail.abuse.to"));
 		return mailServiceImpl;
 	}

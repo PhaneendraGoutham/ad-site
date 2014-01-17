@@ -1,6 +1,9 @@
 app.service("CompanyService", ['$http','$location','CommonFunctions',function($http, $location, CommonFunctions) {
     this.register = function(model, success, error) {
-        $http.post("/company", model), success(success);
+        $http.post("/company", model).success(success).error(error);
+    };
+    this.activateCompany = function(companyId, success, error){
+        $http.get("/company/"+companyId+"/activate").success(success);
     };
     this.fetchUserCompanies = function(userId, success, error) {
         $http.get("/user/" + userId + "/company").success(success);

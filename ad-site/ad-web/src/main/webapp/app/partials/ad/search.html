@@ -1,0 +1,192 @@
+﻿
+<article class="clearfix" data-ng-show="searchOptions.search">
+	<div class="row">
+		<div class="col-sm-12 ">
+			<ul class="nav nav-pills col-sm-12">
+				<li ng-class="{'active': filterType == 'tag'}"
+					data-ng-show="searchOptions.filters.tagList"><a
+					ng-click="filterType = 'tag'">Tagi</a></li>
+
+				<li ng-class="{'active': filterType == 'brand'}"
+					data-ng-show="searchOptions.filters.brandList"><a
+					ng-click="filterType = 'brand'">Marki</a></li>
+
+				<li ng-class="{'active': filterType == 'place'}"
+					data-ng-show="searchOptions.filters.place"><a
+					ng-click="filterType = 'place'">Miejsce</a></li>
+
+				<li ng-class="{'active': filterType == 'year'}"
+					data-ng-show="searchOptions.filters.year"><a
+					ng-click="filterType = 'year'">Rok</a></li>
+
+				<li ng-class="{'active': filterType == 'rank'}"
+					data-ng-show="searchOptions.filters.rank"><a
+					ng-click="filterType = 'rank'">Ocena</a></li>
+				<li ng-class="{'active': filterType == 'vote'}"
+					data-ng-show="searchOptions.filters.votes"><a
+					ng-click="filterType = 'vote'">Liczba głosów</a></li>
+				<li class="pull-right"
+					ng-class="{'active': filters.orderBy == 'rank'}"><a
+					ng-click="changeOrder('rank')">Ocena <i
+						data-ng-show="filters.orderBy == 'rank' && filters.order =='desc'"
+						class="icon-caret-down"></i><i
+						data-ng-show="filters.orderBy == 'rank' && filters.order =='asc'"
+						class="icon-caret-up"></i></a></li>
+				<li class="pull-right"
+					ng-class="{'active': filters.orderBy == 'creationDate'}"><a
+					ng-click="changeOrder('creationDate')">Data <i
+						data-ng-show="filters.orderBy == 'creationDate' && filters.order =='desc'"
+						class="icon-caret-down"></i><i
+						data-ng-show="filters.orderBy == 'creationDate' && filters.order =='asc'"
+						class="icon-caret-up"></i></a></li>
+			</ul>
+		</div>
+	</div>
+	<div ng-switch on="filterType" class="row margin-bottom"
+		ng-show="filterType">
+		<div ng-switch-when="year" class="col-sm-12 form-inline ">
+			<div class="form-group col-sm-3">
+				<div class="input-group input-group-sm ">
+					<span class="input-group-addon">od</span> <input
+						numbers-only="numbers-only" ng-model="$parent.filters.yearFrom"
+						class="form-control" />
+				</div>
+			</div>
+			<div class="form-group col-sm-3">
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">do</span> <input
+						numbers-only="numbers-only" ng-model="$parent.filters.yearTo"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+		<div ng-switch-when="rank" class="col-sm-12 form-inline">
+			<div class="form-group col-sm-3">
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">od</span> <select
+						ng-model="$parent.filters.rankFrom" class="form-control">
+						<option value=""></option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-3">
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">do</span> <select
+						ng-model="$parent.filters.rankTo" class="form-control">
+						<option value=""></option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div ng-switch-when="vote" class="col-sm-12 form-inline">
+			<div class="form-group col-sm-3">
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">od</span> <input
+						numbers-only="numbers-only" ng-model="$parent.filters.votesFrom"
+						class="form-control" />
+				</div>
+			</div>
+			<div class="form-group col-sm-3 ">
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">do</span> <input
+						ng-model="$parent.filters.votesTo" numbers-only="numbers-only"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+
+
+		<div ng-switch-when="place" class="col-sm-12 form-inline">
+			<div class="form-group col-sm-3">
+
+				<select data-ng-model="$parent.filters.place"
+					class="form-control input-sm"
+					data-ng-options="place.value as place.label for place in $parent.possiblePlaces">
+					<option value=""></option>
+				</select>
+
+			</div>
+		</div>
+		<div ng-switch-when="tag" class="col-sm-12">
+			<ul class="nav nav-pills nav-three-column">
+				<li ng-class="{'active': isInTagList(tag)}"
+					ng-repeat="tag in possibleTags"
+					ng-click="toogleTag(tag.id)"><a
+					class="small-padding">{{tag.name}}</a></li>
+			</ul>
+		</div>
+
+		<div ng-switch-when="brand" class="col-sm-12">
+			<ul class="nav nav-pills nav-three-column">
+				<li ng-class="{'active': isInBrandList(brand)}"
+					ng-repeat="brand in possibleBrands"
+					ng-click="toogleBrand(brand.id)"><a class="">{{brand.name}}</a></li>
+			</ul>
+		</div>
+	</div>
+
+
+</article>
+<article class="clearfix"
+	ng-show="searchOptions.search && (text.votes ||filters.order|| text.rank || text.year || text.place || helper.tagArr.length > 0 || helper.brandArr.length > 0)">
+	<table class="table no-borders table-condesend">
+		<tr ng-show="text.votes">
+			<td class="col-sm-2 text-info">Liczba głosów:</td>
+			<td class="col-sm-9"><span class="label label-primary">{{text.votes}}
+					<i ng-click="filters.votesFrom = ''; filters.votesTo = ''"
+					class="icon-remove"></i>
+			</span></td>
+		</tr>
+		<tr ng-show="text.rank">
+			<td class="col-sm-2 text-info">Ocena:</td>
+			<td class="col-sm-9"><span class="label label-primary">{{text.rank}}
+					<i ng-click="filters.rankFrom = ''; filters.rankTo = ''"
+					class="icon-remove"></i>
+			</span></td>
+		</tr>
+		<tr ng-show="text.year">
+			<td class="col-sm-2 text-info">Lata:</td>
+			<td class="col-sm-9"><span class="label label-primary">{{text.year}}
+					<i ng-click="filters.yearFrom = ''; filters.yearTo = ''"
+					class="icon-remove"></i>
+			</span></td>
+		</tr>
+
+		<tr ng-show="text.place">
+			<td class="col-sm-2 text-info">Miejsce:</td>
+			<td class="col-sm-9"><span class="label label-primary">{{text.place}}
+					<i ng-click="filters.place = ''" class="icon-remove"></i>
+			</span></td>
+		</tr>
+		<tr ng-show="helper.tagArr.length > 0">
+			<td class="col-sm-2 text-info">Tagi:</td>
+			<td class="col-sm-9"><span
+				ng-repeat="tag in possibleTags | filter:isInTagList"
+				class="block label label-primary">{{tag.name}} <i
+					ng-click="toogleTag(tag.id)" class="icon-remove"></i></span></td>
+		</tr>
+		<tr ng-show="helper.brandArr.length > 0">
+			<td class="col-sm-2 text-info">Marki:</td>
+			<td class="col-sm-9"><span
+				ng-repeat="brand in possibleBrands | filter:isInBrandList"
+				class="block label label-primary">{{brand.name}} <i
+					ng-click="toogleBrand(brand.id)" class="icon-remove"></i></span></td>
+		</tr>
+
+	</table>
+
+
+	<button class="btn btn-danger btn-block " data-ng-click="search()">Pokaż</button>
+
+</article>
+<div data-ng-include="'app/partials/ad/ad.html'"></div>

@@ -31,7 +31,7 @@ import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
-import pl.stalkon.ad.extensions.AnswerAlreadyPostedException;
+import pl.stalkon.ad.extensions.AlreadyPostedException;
 import pl.stalkon.ad.extensions.ContestFinishedException;
 import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
@@ -144,7 +144,7 @@ public class ContestController {
 	@ResponseBody
 	public SingleObjectResponse registerAnswer(@PathVariable("contestId") Long contestId,
 			@RequestParam("answer") String answer, Principal principal)
-			throws ContestFinishedException, AnswerAlreadyPostedException {
+			throws ContestFinishedException, AlreadyPostedException {
 		Contest contest = contestService.get(contestId);
 		if (contest.getState() == State.FINISHED) {
 			throw new ContestFinishedException();
@@ -153,7 +153,7 @@ public class ContestController {
 				.getPrincipal();
 		if (contestService.hasUserPostedAnswer(socialLoggedUser.getId(),
 				contestId)) {
-			throw new AnswerAlreadyPostedException();
+			throw new AlreadyPostedException();
 		}
 
 		ContestAnswer contestAnswer = contestService.registerAnswer(

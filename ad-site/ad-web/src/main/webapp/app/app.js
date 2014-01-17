@@ -72,8 +72,10 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     };
 
     $routeProvider.when("/", {
+        redirectTo : "/glowna"
+    }).when("/glowna", {
         controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/add/ad.html",
+        templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
             search : false,
@@ -81,7 +83,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : adSearchResolve,
     }).when("/reklamy/dodaj", {
         controller : 'AdRegistrationCtrl',
-        templateUrl : "app/partials/add/ad-registration.html",
+        templateUrl : "app/partials/ad/ad-registration.html",
         access : "user",
         resolve : {
             possibleBrands : ['$q','AdService',function($q, AdService) {
@@ -93,7 +95,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         },
     }).when("/reklamy/:adId", {
         controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/add/ad.html",
+        templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
             search : false,
@@ -101,7 +103,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : adSearchResolve,
     }).when("/poczekalnia", {
         controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/add/ad.html",
+        templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
             search : false,
@@ -109,13 +111,13 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : adSearchResolve,
     }).when("/przegladaj", {
         controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/add/search.html",
+        templateUrl : "app/partials/ad/search.html",
         reloadOnSearch : false,
         adSearchOptions : {},
         resolve : adSearchResolve,
-    }).when("/losuj", {
+    }).when("/losuj/", {
         controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/add/search.html",
+        templateUrl : "app/partials/ad/search.html",
         reloadOnSearch : false,
         adSearchOptions : {
             search : false,
@@ -123,12 +125,12 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : adSearchResolve,
     }).when("/uzytkownik/:userId/reklamy", {
         controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/add/search.html",
+        templateUrl : "app/partials/ad/search.html",
         reloadOnSearch : false,
         resolve : adSearchResolve,
     }).when("/konkursy/:contestId/reklamy", {
         controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/add/search.html",
+        templateUrl : "app/partials/ad/search.html",
         reloadOnSearch : false,
         adSearchOptions : {
             filters : {
@@ -147,11 +149,11 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     // access : "thisContest",
     }).when("/konkursy/:contestId/reklamy/dodaj", {
         controller : 'AdRegistrationCtrl',
-        templateUrl : "app/partials/add/ad-registration.html",
+        templateUrl : "app/partials/ad/ad-registration.html",
         resolve : {
-            possibleBrands : ['$q','AdService','$route', 'Auth', 'ContestService',function($q, AdService, $route, Auth, ContestService) {
+            possibleBrands : ['$q','AdService','$route','Auth','ContestService',function($q, AdService, $route, Auth, ContestService) {
                 var deferred = $q.defer();
-                ContestService.fetchContest($route.current.params.contestId,function(contest) {
+                ContestService.fetchContest($route.current.params.contestId, function(contest) {
                     if (Auth.hasRole('company')) {
                         AdService.fetchWistiaProjectId(contest.brand.id, function(data) {
                             ad.brand.wistiaProjectId = data.response;
@@ -162,7 +164,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                     }
                 });
                 return deferred.promise;
-//                return resolveFetcher($q, AdService.getPossibleBrands);
+                // return resolveFetcher($q, AdService.getPossibleBrands);
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
@@ -174,7 +176,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         access : userRoles.user,
     }).when("/marki/:brandId/reklamy", {
         controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/add/search.html",
+        templateUrl : "app/partials/ad/search.html",
         adSearchOptions : {
             filters : {
                 brands : false,
@@ -183,20 +185,21 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : adSearchResolve,
     }).when("/marki/:brandId/reklamy/dodaj", {
         controller : 'AdRegistrationCtrl',
-        templateUrl : "app/partials/add/ad-registration.html",
+        templateUrl : "app/partials/ad/ad-registration.html",
         access : "thisBrand",
         resolve : {
             possibleBrands : ['$q','AdService','$route',function($q, AdService, $route) {
                 var deferred = $q.defer();
                 AdService.fetchWistiaProjectId($route.current.params.brandId, function(data) {
-                
+
                     var possibleBrands = {};
                     possibleBrands.brand = {};
                     possibleBrands.brand.wistiaProjectId = data.response;
                     deferred.resolve(possibleBrands);
                 });
                 return deferred.promise;
-//                return resolveFetcher($q, AdService.fetchWistiaProjectId, $route.current.params.brandId, 'response');
+                // return resolveFetcher($q, AdService.fetchWistiaProjectId,
+                // $route.current.params.brandId, 'response');
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
@@ -204,7 +207,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         },
     }).when("/reklamy/:parentId/odpowiedz", {
         controller : 'AdRegistrationCtrl',
-        templateUrl : "app/partials/add/ad-registration.html",
+        templateUrl : "app/partials/ad/ad-registration.html",
         access : "user",
         resolve : {
             possibleBrands : ['$q','AdService','$route','Auth',function($q, AdService, $route, Auth) {
@@ -291,21 +294,25 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         }
     }).when("/uzytkownik/aktywuj/:token", {
         resolve : {
-            activate: ['$q','$http','$route','UserService','$location', 'CommonFunctions',function($q, $http, $route, UserService,$location,CommonFunctions) {
+            activate : ['$q','$http','$route','UserService','$location','CommonFunctions',function($q, $http, $route, UserService, $location, CommonFunctions) {
                 var deferred = $q.defer();
-               UserService.activateUser($route.current.params.token, function(data){
-                  if(data.response){ 
-                      CommonFunctions.pushAlert("success", "Użytkownik został zaaktywowany pomyślnie. Możesz się teraz zalogować"); 
-                      $location.path("/uzytkownik/zaloguj");
-                  }else{
-                      CommonFunctions.pushAlert("danger", "Ten kod aktywacyjny został użyty już wcześniej"); 
-                      $location.path("/uzytkownik/zaloguj");
-                  }
-                  deferred.resolve();
-               });
-               return deferred.promise;
+                UserService.activateUser($route.current.params.token, function(data) {
+                    if (data.response) {
+                        CommonFunctions.pushAlert("success", "Użytkownik został zaaktywowany pomyślnie. Możesz się teraz zalogować");
+                        $location.path("/uzytkownik/zaloguj");
+                    } else {
+                        CommonFunctions.pushAlert("danger", "Ten kod aktywacyjny został użyty już wcześniej");
+                        $location.path("/uzytkownik/zaloguj");
+                    }
+                    deferred.resolve();
+                });
+                return deferred.promise;
             }],
         },
+    }).when("/partnerzy/:companyId/aktywuj", {
+        controller : 'CompanyActivateCtrl',
+        templateUrl : 'app/partials/confirm-page.html',
+        access : userRoles.admin,
     }).when("/partnerzy/zarejestruj", {
         controller : 'CompanyRegistrationCtrl',
         templateUrl : "app/partials/company/company-registration.html",
@@ -389,6 +396,10 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         method : 'GET',
         access : 'company',
     },{
+        url : '/company/*/activate',
+        method : 'GET',
+        access : 'admin',
+    },{
         url : '/company/*/brand',
         method : 'POST',
         access : 'company',
@@ -435,7 +446,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         "losuj" : "ad/rand",
         "poczekalnia" : "ad?place=1",
         "glowna" : "ad?place=0",
-        "" : "ad?place=0",
+//        "" : "ad?place=0",
         "przegladaj" : "ad",
         "marki" : "brand",
         "odpowiedz" : "",

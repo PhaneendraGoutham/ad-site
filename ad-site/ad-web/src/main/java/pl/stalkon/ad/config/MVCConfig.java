@@ -85,7 +85,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		String uploadsFolder = env.getProperty("upload.folder");
 		boolean starts = uploadsFolder != null && uploadsFolder.startsWith("/");
 		Assert.state(starts, "Upload folder if not empty must starts with /");
-		String uploadsRootDirectory = env.getProperty("upload.root.directory");
+		String uploadsRootDirectory = env.getProperty("app.files.root.directory");
 		boolean ends = uploadsRootDirectory != null
 				&& uploadsRootDirectory.endsWith("/");
 		Assert.state(!ends, "Uploads root path can't end with /");
@@ -147,7 +147,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 				"/resources/**");
 		registry.addResourceHandler("/favicon.ico").addResourceLocations(
 				"/favicon.ico");
-		String rootPath = env.getProperty("upload.root.directory");
+		String rootPath = env.getProperty("app.files.root.directory");
 		rootPath = rootPath.startsWith("/") ? rootPath.substring(1) : rootPath;
 		registry.addResourceHandler("/uploads/**").addResourceLocations(
 				"file:/" + rootPath + env.getProperty("upload.folder") + "/**");

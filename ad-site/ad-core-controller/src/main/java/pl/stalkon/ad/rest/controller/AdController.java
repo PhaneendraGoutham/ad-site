@@ -73,7 +73,7 @@ public class AdController {
 				.getPrincipal();
 		Ad ad = videoApiService.setVideoDetails(adPostDto);
 		Ad result = adService.register(adPostDto, ad, socialLoggedUser.getId(),
-				false);
+				true);
 		videoApiService.setApiData(ad);
 		return new SingleObjectResponse(result.getId());
 	}

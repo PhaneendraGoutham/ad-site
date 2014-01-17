@@ -68,9 +68,9 @@ public class FileController {
 		if (fileService.validateFile(commonsMultipartFile)) {
 			if (!commonsMultipartFile.isEmpty()) {
 				String relativePathBig = fileService.saveImageFile(
-						commonsMultipartFile, 250, 90, Mode.FIT_TO_HEIGHT);
+						commonsMultipartFile, 250, 90, Mode.FIT_TO_WIDTH);
 				String relativePathSmall = fileService.saveImageFile(
-						commonsMultipartFile, 120, 40, Mode.FIT_TO_HEIGHT);
+						commonsMultipartFile, 120, 40, Mode.FIT_TO_WIDTH );
 				if (relativePathBig != null && relativePathSmall != null) {
 					brandService.setBrandLogo(relativePathBig,
 							relativePathSmall, brandId);

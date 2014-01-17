@@ -86,7 +86,9 @@
 		<security:intercept-url pattern="/api/company/*/stats"
 			access="hasRole('ROLE_COMPANY')" method="GET" />
 
-
+		<security:intercept-url pattern="/api/company/*/activate"
+			access="hasRole('ROLE_ADMIN')" method="GET" />
+			
 		<security:intercept-url pattern="/api/brand/*/contest"
 			access="hasRole('ROLE_COMPANY')" method="POST" />
 

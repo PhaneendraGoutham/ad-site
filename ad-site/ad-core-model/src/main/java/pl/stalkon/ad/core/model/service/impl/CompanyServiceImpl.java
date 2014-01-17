@@ -20,18 +20,22 @@ public class CompanyServiceImpl implements CompanyService {
 	@Autowired
 	private UserDao userDao;
 
-	private boolean activeOnCreate = true;
+	private boolean activeOnCreate = false;
 
 	@Override
 	@Transactional
 	public Company register(Company company, Long userId) {
 		User user = userDao.get(userId);
+		if (companyDao.getByUser(userId) != null) {
+			return null;
+		}
 		if (activeOnCreate) {
 			user.addUserRole(userDao
 					.loadUserRoleByName(UserRoleDef.ROLE_COMPANY.value()));
 		}
 		company.setApproved(activeOnCreate);
 		company.setUser(user);
+		user.getCredentials().getMail();
 		companyDao.save(company);
 		return company;
 	}
@@ -78,17 +82,21 @@ public class CompanyServiceImpl implements CompanyService {
 	public Company setApproved(Long companyId, boolean approved) {
 		Company company = companyDao.get(companyId);
 		User user = company.getUser();
-		company.setApproved(approved);
-		if (approved) {
-			user.addUserRole(userDao
-					.loadUserRoleByName(UserRoleDef.ROLE_COMPANY.value()));
-		} else {
-			user.getUserRoles().remove(
-					userDao.loadUserRoleByName(UserRoleDef.ROLE_COMPANY.value()));
+		if (company.isApproved() != approved) {
+			company.setApproved(approved);
+			if (approved) {
+				user.addUserRole(userDao
+						.loadUserRoleByName(UserRoleDef.ROLE_COMPANY.value()));
+			} else {
+				user.getUserRoles().remove(
+						userDao.loadUserRoleByName(UserRoleDef.ROLE_COMPANY
+								.value()));
+			}
+			user.getCredentials().getMail();
+			companyDao.update(company);
+			return company;
 		}
-		user.getCredentials().getMail();
-		companyDao.update(company);
-		return company;
+		return null;
 	}
-	
+
 }
