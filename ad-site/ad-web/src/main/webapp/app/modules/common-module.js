@@ -109,4 +109,21 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
         return $.extend(true, this.errorMessages, customErrorMessages);
     }
     return this;
-});
+}).directive('stTimeoutTooltip', ['$animator',"$timeout",function($animator, $timeout) {
+    return {
+        restrict : 'A',
+        link : function(scope, elem, attrs) {
+            var variableHolder = attrs.stOn.substring(0,  attrs.stOn.indexOf("."));
+            var variable = attrs.stOn.substring(attrs.stOn.indexOf(".") + 1);
+            scope.$watch(attrs.stOn, function(val) {
+                if (val) {
+                    elem.addClass("in");
+                    $timeout(function() {
+                        scope[variableHolder][variable] = false;
+                    }, attrs.timeout);
+                } else
+                    elem.removeClass("in");
+            });
+        }
+    }
+}]);

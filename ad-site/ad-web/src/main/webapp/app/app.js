@@ -10,6 +10,7 @@ app.factory("BaseUrlInterceptor", function() {
         }
     }
 }).config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider',
+           
 
 function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider, CommonFunctionsProvider) {
 

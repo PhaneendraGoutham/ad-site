@@ -3,19 +3,20 @@
 	<ul class="nav nav-pills col-sm-12">
 		<li data-ng-show="singleAd && singleAd.parentId"><a
 			href="#/reklamy/{{singleAd.parentId}}">Pokaż pierwotną reklamę</a></li>
-		<li ><a
-			href="#/przegladaj?parentId={{singleAd.id}}">Pokaż odpowiedzi</a></li>
-		<li ><a
-			href="#/reklamy/{{singleAd.id}}/odpowiedz">Dodaj odpowiedź wideo</a></li>
+		<li><a href="#/przegladaj?parentId={{singleAd.id}}">Pokaż
+				odpowiedzi</a></li>
+		<li><a href="#/reklamy/{{singleAd.id}}/odpowiedz">Dodaj
+				odpowiedź wideo</a></li>
 	</ul>
 </article>
 
 <article class="clearfix"
-	data-ng-repeat="ad in model.ads track by $index" data-ng-controller="AdCtrl">
+	data-ng-repeat="ad in model.ads track by $index"
+	data-ng-controller="AdCtrl">
 	<div class=" col-sm-8">
 		<a href="#/reklamy/{{ad.id}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
 	</div>
-	<div class=" col-sm-4 margin-top" data-ng-show="ad.official">
+	<div class=" col-sm-4 margin-top" data-ng-show="ad.official && ad.brand.smallLogoUrl">
 		<a href="#/marki/{{ad.brand.id}}" class="pull-right "><img
 			data-ng-src="{{ad.brand.smallLogoUrl}}" class="brand-ad-img"></a>
 	</div>
@@ -46,7 +47,6 @@
 			</ul>
 		</div>
 		<div class=" col-sm-3 rating" data-ng-controller="RatingCtrl">
-
 			<rating value="rate" max="max" state-on="'icon-star icon-large'"
 				state-off="'icon-star-empty icon-large'" readonly="isReadonly"
 				on-hover="hoveringOver(value)" on-leave="onLeave()"
@@ -54,7 +54,10 @@
 			<span class="label"
 				data-ng-class="{'label-default': labelValue==1, 'label-primary':  labelValue==2, 'label-success':  labelValue==3, 'label-warning': labelValue ==4, 'label-danger': labelValue == 5}"
 				data-ng-show="!isReadonly">{{overStar ||ad.rank | number:2}}</span>
-
+			<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip data-st-on="tooltip.ranked" data-timeout="5000">
+				<div class="tooltip-inner">Dzięki!</div>
+				<div class="tooltip-arrow"></div>
+			</div>
 		</div>
 	</div>
 	<div class="row margin-bottom" ng-switch on="bottomVideoPanelView">
@@ -65,14 +68,17 @@
 		</div>
 		<div data-ng-switch-when="inform" class=" col-md-12">
 			<div class=" col-md-12 form-group">
-
 				<textarea class="form-control" data-ng-model="model.abuseMessage"
 					placeholder="Podaj jak najdokładniejszy powód zgłoszenia..."></textarea>
 			</div>
-			<div class=" col-md-1  form-group">
-				<button class="btn btn-default" data-ng-click="reportAbuse()">
-					<i class="icon-white icon-flag"></i>Zgłoś
+			<div class=" col-md-12">
+				<button class="btn btn-danger btn-sm btn-block" data-ng-click="reportAbuse()">
+					Zgłoś
 				</button>
+			<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip data-st-on="tooltip.informSent" data-timeout="5000">
+				<div class="tooltip-inner">Przyjeliśmy Twoje zgłoszenie</div>
+				<div class="tooltip-arrow"></div>
+			</div>
 			</div>
 
 

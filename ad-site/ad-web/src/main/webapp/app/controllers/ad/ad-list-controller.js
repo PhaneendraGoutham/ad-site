@@ -157,12 +157,13 @@
 
 }]);
 
-app.controller('RatingCtrl', ['$scope','AdService',function($scope, AdService) {
+app.controller('RatingCtrl', ['$scope','AdService', '$timeout',function($scope, AdService, $timeout) {
     init();
 
     function init() {
         $scope.max = 5;
         $scope.isReadonly = false;
+        $scope.tooltip = {};
         $scope.rate = Math.floor($scope.ad.rank);
         $scope.labelValue = Math.floor($scope.ad.rank);
 
@@ -176,15 +177,11 @@ app.controller('RatingCtrl', ['$scope','AdService',function($scope, AdService) {
             $scope.rate = Math.floor($scope.ad.rank);
         };
 
-        $scope.onClick = function(ad, value) {
-            alert(ad.id + " " + value);
-            AdService.rate(ad.id, value, success);
-        };
         $scope.$watch('rate', function(value) {
             if ($scope.overStar) {
                 var ad = $scope.$parent.ad;
                 AdService.rate(ad.id, value, function() {
-
+                    $scope.tooltip.ranked = true;
                 });
             }
         });
@@ -388,9 +385,10 @@ app.controller('AdCtrl', ['$scope', 'AdService', function($scope, AdService){
     init();
     function init(){
         $scope.model = {};
+        $scope.tooltip = {};
         $scope.reportAbuse = function(){
             AdService.reportAbuse($scope.ad.id, $scope.model.abuseMessage, function(){
-                
+                $scope.tooltip.informSent = true;
             });
         };
     }
