@@ -1,3 +1,3 @@
 ${message}<br/>
-<br/>\
+<br/>
 ${appDomain}#/reklamy/${id}

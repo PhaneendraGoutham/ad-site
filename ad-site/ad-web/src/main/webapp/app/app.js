@@ -375,6 +375,10 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         url : '/ad/*/rate',
         method : 'POST',
         access : 'user',
+    },,{
+        url : '/ad/*/state',
+        method : 'POST',
+        access : 'admin',
     },{
         url : '/user/*/password',
         method : 'POST',

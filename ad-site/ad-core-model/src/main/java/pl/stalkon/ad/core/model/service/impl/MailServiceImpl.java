@@ -55,7 +55,7 @@ public class MailServiceImpl implements MailService {
 				message.setSubject(subject);
 				String text = FreeMarkerTemplateUtils
 						.processTemplateIntoString(freemarkerConfiguration
-								.getTemplate(templateName), model);
+								.getTemplate(templateName, "UTF-8"), model);
 				message.setText(text, true);
 			}
 		};
