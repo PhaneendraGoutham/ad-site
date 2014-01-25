@@ -382,7 +382,7 @@ app.controller('AdAdminPanelCtrl', ['$scope','AdService',function($scope, AdServ
         };
     }
 }]);
-app.controller('AdCtrl', ['$scope', 'AdService', function($scope, AdService){
+app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", function($scope, AdService,$rootScope,$route){
     init();
     function init(){
         $scope.model = {};
@@ -394,5 +394,12 @@ app.controller('AdCtrl', ['$scope', 'AdService', function($scope, AdService){
                 $scope.tooltip.informSent = true;
             });
         };
+        
+        if($route.current.$$route.writeOGMetaTags){
+            $rootScope.metatags = {};
+            $rootScope.metatags.title = $scope.ad.title;
+            $rootScope.metatags.description = $scope.ad.description;
+            $rootScope.metatags.image = $scope.ad.thumbnail;
+        }
     }
 }]);

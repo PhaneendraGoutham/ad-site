@@ -104,6 +104,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             search : false,
         },
         resolve : adSearchResolve,
+        writeOGMetaTags: true,
     }).when("/poczekalnia", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/ad.html",
