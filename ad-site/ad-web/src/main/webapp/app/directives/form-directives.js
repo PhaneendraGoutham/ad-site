@@ -169,7 +169,7 @@ app.directive('stActive', ['$location',function($location) {
                     var li = $(value);
                     var a = li.children('a');
                     if (a && $(a).attr('href')) {
-                        var href = $(a).attr('href').replace('#', '');
+                        var href = $(a).attr('href').replace('#!', '');
                         if (href === $location.path()) {
                             li.addClass('active');
                         } else {

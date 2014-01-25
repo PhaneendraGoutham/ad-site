@@ -13,7 +13,8 @@
 <title></title>
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width" />
-
+<meta name="fragment" content="!" />
+<meta property="og:title" content="Facebook Open Graph META Tags"/>
 <!-- stylesheets -->
 <link rel="stylesheet" href="resources/css/bootstrap.css" />
 <link rel="stylesheet" href="resources/css/font-awesome.css" />
@@ -35,6 +36,8 @@
 	src="resources/components/upload-widget.js"></script>
 <script type="text/javascript"
 	src="resources/components/ui-bootstrap-custom-tpls-0.6.0.min.js"></script>
+
+
 
 <!-- modules -->
 <script type="text/javascript" src="app/modules/common-module.js"></script>
@@ -70,7 +73,7 @@
 <script src="resources/components/jquery.fileupload-process.js"></script>
 <!-- <script src="resources/components/jquery.fileupload-validate.js"></script> -->
 <script src="resources/components/jquery.fileupload-angular.js"></script>
-
+<script type="text/javascript" src="resources/components/angular-seo.js"></script>
 </head>
 <body>
 	<!--[if lt IE 7]>
@@ -83,22 +86,22 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav" data-st-active="">
-					<li class="active"><a href="#/"><i class="icon-home"></i>GŁÓWNA</a>
+					<li class="active"><a href="#!/glowna"><i class="icon-home"></i>GŁÓWNA</a>
 					</li>
-					<li><a href="#/poczekalnia"><i class="icon-coffee"></i>POCZEKALNIA</a>
+					<li><a href="#!/poczekalnia"><i class="icon-coffee"></i>POCZEKALNIA</a>
 					</li>
-					<li><a href="#/przegladaj"><i class="icon-search"></i>PRZEGLĄDAJ</a>
+					<li><a href="#!/przegladaj"><i class="icon-search"></i>PRZEGLĄDAJ</a>
 					</li>
-					<li><a href="#/reklamy/dodaj"
+					<li><a href="#!/reklamy/dodaj"
 						data-st-access-show="hasRole('user') && !hasRole('company')"
 						st-register-watch="true"><i class="icon-plus-sign-alt"></i>
 							DODAJ</a></li>
-					<li ><a href="#/losuj"><i class="icon-random"></i>LOSUJ</a></li>
-					<li><a href="#/marki">MARKI</a></li>
+					<li ><a href="#!/losuj"><i class="icon-random"></i>LOSUJ</a></li>
+					<li><a href="#!/marki">MARKI</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right" data-st-active="">
 					<li data-st-access-show="hasRole('public')"
-						st-register-watch="true"><a href="#/uzytkownik/zaloguj"><i
+						st-register-watch="true"><a href="#!/uzytkownik/zaloguj"><i
 							class="icon-user"></i>ZALOGUJ</a></li>
 					<li data-st-access-show="hasRole('user')" class="dropdown"
 						st-register-watch="true"><a class="dropdown-toggle"> <img
@@ -114,13 +117,13 @@
 								</div>
 
 								<ul class="nav nav-pills ">
-									<li><a href="#/uzytkownik/haslo/zmien">Hasło</a></li>
-									<li><a href="#/uzytkownik/{{currentUser.id}}/reklamy">Reklamy</a></li>
+									<li><a href="#!/uzytkownik/haslo/zmien">Hasło</a></li>
+									<li><a href="#!/uzytkownik/{{currentUser.id}}/reklamy">Reklamy</a></li>
 
-									<li><a href="#/partnerzy/zarejestruj"
+									<li><a href="#!/partnerzy/zarejestruj"
 										data-st-access-show="!hasRole('company')"
 										st-register-watch="true">Firma</a> <a
-										href="#/partnerzy/{{currentUser.companyId}}"
+										href="#!/partnerzy/{{currentUser.companyId}}"
 										data-st-access-show="hasRole('company')"
 										st-register-watch="true">Firma</a></li>
 								</ul>
@@ -159,16 +162,16 @@
 
 					<div class="thumbnail clearfix"
 						data-ng-repeat="ad in model.topAds track by $index ">
-						<a href="#/reklamy/{{ad.id}}" class="pull-left"> <span>
+						<a href="#!/reklamy/{{ad.id}}" class="pull-left"> <span>
 								<img class="" data-ng-src="{{ad.thumbnail}}" />
 						</span>
 						</a>
 						<div class="caption">
 							<div class="wrap-text text-info">
-								<a href="#/reklamy/{{ad.id}}">{{ad.title}}</a>
+								<a href="#!/reklamy/{{ad.id}}">{{ad.title}}</a>
 							</div>
 							<!-- 							<small>użytkownik: <a -->
-							<!-- 								href="#/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a></small> -->
+							<!-- 								href="#!/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a></small> -->
 						</div>
 						<div>
 							<rating value="roundRank(ad.rank)" max="5"

@@ -891,3 +891,8 @@ p{text-align:justify}
 .brand-ad-img{max-width:120px;max-height:40px}
 .brand-img{max-width:250px;max-height:90px}
 .ranking-tooltip{position:absolute;bottom:-30px;left:20px}
+.social-bar-tooltip{position:absolute;top:0px;left:-30px}.social-bar-tooltip a{opacity:0.7}
+.social-bar-tooltip a:hover{opacity:1}
+.social-bar-tooltip .tooltip-inner{padding:3px;background-color:#151515}
+.social-bar-tooltip.left .tooltip-arrow{border-left-color:#151515}
+.pos-relative{position:relative}

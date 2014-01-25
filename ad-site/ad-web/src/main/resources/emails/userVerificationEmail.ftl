@@ -2,7 +2,7 @@ Witaj ${displayName},<br/>
 <br/>
 aby potwierdzić założenie konta kliknij w poniższy link<br/>
 <br/>
-<a href="${appDomain}#/uzytkownik/aktywuj/${token}">${appDomain}#/uzytkownik/aktywuj/${token}</a><br/>
+<a href="${appDomain}#!/uzytkownik/aktywuj/${token}">${appDomain}#/uzytkownik/aktywuj/${token}</a><br/>
 <br/>
 Pozdrawiamy<br/>
 Ekipa Spotnik.pl<br/>

@@ -2,10 +2,10 @@
 <article class="clearfix col-sm-12" data-ng-show="singleAd">
 	<ul class="nav nav-pills col-sm-12">
 		<li data-ng-show="singleAd && singleAd.parentId"><a
-			href="#/reklamy/{{singleAd.parentId}}">Pokaż pierwotną reklamę</a></li>
-		<li><a href="#/przegladaj?parentId={{singleAd.id}}">Pokaż
+			href="#!/reklamy/{{singleAd.parentId}}">Pokaż pierwotną reklamę</a></li>
+		<li><a href="#!/przegladaj?parentId={{singleAd.id}}">Pokaż
 				odpowiedzi</a></li>
-		<li><a href="#/reklamy/{{singleAd.id}}/odpowiedz">Dodaj
+		<li><a href="#!/reklamy/{{singleAd.id}}/odpowiedz">Dodaj
 				odpowiedź wideo</a></li>
 	</ul>
 </article>
@@ -13,18 +13,33 @@
 <article class="clearfix"
 	data-ng-repeat="ad in model.ads track by $index"
 	data-ng-controller="AdCtrl">
-	<div class=" col-sm-8">
-		<a href="#/reklamy/{{ad.id}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class=" col-sm-8">
+				<a href="#!/reklamy/{{ad.id}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
+			</div>
+			<div class=" col-sm-4 margin-top"
+				data-ng-show="ad.official && ad.brand.smallLogoUrl">
+				<a href="#!/marki/{{ad.brand.id}}" class="pull-right "><img
+					data-ng-src="{{ad.brand.smallLogoUrl}}" class="brand-ad-img"></a>
+			</div>
+		</div>
 	</div>
-	<div class=" col-sm-4 margin-top" data-ng-show="ad.official && ad.brand.smallLogoUrl">
-		<a href="#/marki/{{ad.brand.id}}" class="pull-right "><img
-			data-ng-src="{{ad.brand.smallLogoUrl}}" class="brand-ad-img"></a>
+	<div class="row pos-relative" data-ng-switch
+		on="currentUser.adult || !ad.ageProtected" data-ng-mouseenter="sh = true" data-ng-mouseleave="sh = false" >
+		<div class="col-sm-12" >
+			<iframe width="620" height="349" data-ng-src="{{ad.videoUrl}}"
+				frameborder="0" allowfullscreen data-ng-switch-when="true" ></iframe>
+			<img src="/resources/img/18.png" data-ng-switch-when="false" />
+		</div>
+		<div class="tooltip left social-bar-tooltip" data-ng-class="{in: sh}">
+			<div class="tooltip-inner">
+				<a data-st-new-window href="http://www.facebook.com/sharer/sharer.php?s=100&p[title]={{ad.title}}&p[url]=http://www.spotnik.pl/%23/reklamy/{{ad.id}}&p[images][0]={{model.facebookAdThumbnail}}" ><img src="/resources/img/facebook.png"/><br/></a>
+			</div>
+			<div class="tooltip-arrow"></div>
+		</div>
 	</div>
-	<div data-ng-switch on="currentUser.adult || !ad.ageProtected">
-		<iframe width="620" height="349" data-ng-src="{{ad.videoUrl}}"
-			frameborder="0" allowfullscreen data-ng-switch-when="true"></iframe>
-		<img src="/resources/img/18.png" data-ng-switch-when="false" />
-	</div>
+
 	<div class="row margin-bottom margin-top">
 		<div class=" col-sm-4">
 			<div class=" col-sm-3">
@@ -32,7 +47,7 @@
 					data-ng-src="{{ad.user.userData.imageUrl}}" />
 			</div>
 			<div class=" col-sm-9">
-				<a href="#/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a><br />
+				<a href="#!/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a><br />
 				<small>{{ ad.creationDate | date:'dd.MM.yyyy o HH:mm' }}</small>
 			</div>
 		</div>
@@ -54,7 +69,8 @@
 			<span class="label"
 				data-ng-class="{'label-default': labelValue==1, 'label-primary':  labelValue==2, 'label-success':  labelValue==3, 'label-warning': labelValue ==4, 'label-danger': labelValue == 5}"
 				data-ng-show="!isReadonly">{{overStar ||ad.rank | number:2}}</span>
-			<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip data-st-on="tooltip.ranked" data-timeout="5000">
+			<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip
+				data-st-on="tooltip.ranked" data-timeout="5000">
 				<div class="tooltip-inner">Dzięki!</div>
 				<div class="tooltip-arrow"></div>
 			</div>
@@ -72,13 +88,13 @@
 					placeholder="Podaj jak najdokładniejszy powód zgłoszenia..."></textarea>
 			</div>
 			<div class=" col-md-12">
-				<button class="btn btn-danger btn-sm btn-block" data-ng-click="reportAbuse()">
-					Zgłoś
-				</button>
-			<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip data-st-on="tooltip.informSent" data-timeout="5000">
-				<div class="tooltip-inner">Przyjeliśmy Twoje zgłoszenie</div>
-				<div class="tooltip-arrow"></div>
-			</div>
+				<button class="btn btn-danger btn-sm btn-block"
+					data-ng-click="reportAbuse()">Zgłoś</button>
+				<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip
+					data-st-on="tooltip.informSent" data-timeout="5000">
+					<div class="tooltip-inner">Przyjeliśmy Twoje zgłoszenie</div>
+					<div class="tooltip-arrow"></div>
+				</div>
 			</div>
 
 

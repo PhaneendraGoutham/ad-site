@@ -62,6 +62,7 @@
                 $scope.total = data.total;
             } else
                 $scope.model.ads = [data];
+            
         });
     }
     function init() {
@@ -385,6 +386,8 @@ app.controller('AdCtrl', ['$scope', 'AdService', function($scope, AdService){
     init();
     function init(){
         $scope.model = {};
+        $scope.model.ad = {};
+        $scope.model.facebookAdThumbnail = $scope.ad.thumbnail.substring(0,$scope.ad.thumbnail.indexOf("?"));
         $scope.tooltip = {};
         $scope.reportAbuse = function(){
             AdService.reportAbuse($scope.ad.id, $scope.model.abuseMessage, function(){

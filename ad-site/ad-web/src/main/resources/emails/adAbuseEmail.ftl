@@ -1,3 +1,3 @@
 ${message}<br/>
 <br/>
-${appDomain}#/reklamy/${id}
+${appDomain}#!/reklamy/${id}

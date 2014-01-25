@@ -1,4 +1,4 @@
-var app = angular.module('spotnikApp', ['ngResource','ui.bootstrap','st-auth-module','blueimp.fileupload','st-common-module']);
+var app = angular.module('spotnikApp', ['ngResource','ui.bootstrap','st-auth-module','blueimp.fileupload','st-common-module','seo']);
 
 app.factory("BaseUrlInterceptor", function() {
     return {
@@ -9,11 +9,13 @@ app.factory("BaseUrlInterceptor", function() {
             return config;
         }
     }
-}).config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider',
+})
+.config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider','$locationProvider',
            
 
-function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider, CommonFunctionsProvider) {
-
+function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider, CommonFunctionsProvider,$locationProvider) {
+    $locationProvider.html5Mode(false).hashPrefix('!');
+    
     function resolveFetcher($q, _function, param, returnObjectName) {
         var deferred = $q.defer();
         var success = function(data) {

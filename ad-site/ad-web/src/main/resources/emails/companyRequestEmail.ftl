@@ -7,4 +7,4 @@ Kod pocztowy:  ${company.address.zip}<br/>
 <br/>
 Email:		   ${company.user.credentials.mail}
 <br/>
-Aktywuj 	   ${appDomain}#/partnerzy/${company.id}/aktywuj
+Aktywuj 	   ${appDomain}#!/partnerzy/${company.id}/aktywuj

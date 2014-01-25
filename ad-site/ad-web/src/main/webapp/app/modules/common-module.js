@@ -126,4 +126,19 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
             });
         }
     }
-}]);
+}])
+.directive('stNewWindow', function(){
+    return {
+        restrict: 'A',
+        link: function(scope, elem, attrs) {
+            var width = attrs.width? attrs.width: 650;
+            var height = attrs.height? attrs.height: 350; 
+            elem.bind('click', function(e){
+                e.preventDefault();
+                var x = screen.width/2 - width/2;
+                var y = screen.height/2 - height/2;
+                window.open(attrs.href , 'newwindow', "width=" + width +", height="+height +", left="+x+", top="+y);
+            });
+        }
+    };
+});
