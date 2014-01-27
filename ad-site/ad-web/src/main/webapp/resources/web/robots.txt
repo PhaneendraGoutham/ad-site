@@ -1,0 +1,7 @@
+User-agent: *
+Sitemap: http://www.spotnik.pl/sitemap.xml
+
+
+Disallow /*_escaped_fragment_=/losuj
+Disallow /*_escaped_fragment_=/dodaj
+Disallow /*_escaped_fragment_=/zaloguj
