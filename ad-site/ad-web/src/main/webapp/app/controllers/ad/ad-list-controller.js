@@ -382,7 +382,7 @@ app.controller('AdAdminPanelCtrl', ['$scope','AdService',function($scope, AdServ
         };
     }
 }]);
-app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", function($scope, AdService,$rootScope,$route){
+app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$location', function($scope, AdService,$rootScope,$route,$location){
     init();
     function init(){
         $scope.model = {};
@@ -396,10 +396,10 @@ app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", function
         };
         
         if($route.current.$$route.writeOGMetaTags){
-            $rootScope.metatags = {};
             $rootScope.metatags.title = $scope.ad.title;
-            $rootScope.metatags.description = $scope.ad.description;
+            $rootScope.metatags.description = $scope.ad.description.substring(0, 160);
             $rootScope.metatags.image = $scope.ad.thumbnail;
+            $rootScope.metatags.url = "http://" + $location.host() + "/#!/reklamy/" + $scope.ad.id; 
         }
     }
 }]);

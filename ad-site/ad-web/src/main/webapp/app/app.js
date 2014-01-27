@@ -10,10 +10,10 @@ app.factory("BaseUrlInterceptor", function() {
         }
     }
 })
-.config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider','$locationProvider',
+.config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider','$locationProvider','MetatagsCreatorProvider',
            
 
-function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider, CommonFunctionsProvider,$locationProvider) {
+function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider, CommonFunctionsProvider,$locationProvider,MetatagsCreatorProvider) {
     $locationProvider.html5Mode(false).hashPrefix('!');
     
     function resolveFetcher($q, _function, param, returnObjectName) {
@@ -459,8 +459,16 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         "marki" : "brand",
         "odpowiedz" : "",
     });
+    MetatagsCreatorProvider.setDefaultMetatags({
+       url : 'http://www.spotnik.pl',
+       description: 'Spotnik.pl - reklamy nie muszą być nudne!',
+       type: 'website',
+       image: 'http://www.spotnik.pl/resources/img/logo.png',
+       site_name: 'Spotnik.pl',
+    });
 
-}]).run(['$rootScope','$location','Auth','CommonFunctions','$q',function($rootScope, $location, Auth, CommonFunctions, $q) {
+}]).run(['$rootScope','$location','Auth','CommonFunctions','$q', 'MetatagsCreator',function($rootScope, $location, Auth, CommonFunctions, $q,MetatagsCreator) {
+    
     function handleAuthorizationResponse(authorized) {
         if (!authorized) {
             if (Auth.isLoggedIn()) {

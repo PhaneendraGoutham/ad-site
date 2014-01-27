@@ -113,7 +113,7 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
     return {
         restrict : 'A',
         link : function(scope, elem, attrs) {
-            var variableHolder = attrs.stOn.substring(0,  attrs.stOn.indexOf("."));
+            var variableHolder = attrs.stOn.substring(0, attrs.stOn.indexOf("."));
             var variable = attrs.stOn.substring(attrs.stOn.indexOf(".") + 1);
             scope.$watch(attrs.stOn, function(val) {
                 if (val) {
@@ -126,19 +126,26 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
             });
         }
     }
-}])
-.directive('stNewWindow', function(){
+}]).directive('stNewWindow', function() {
     return {
-        restrict: 'A',
-        link: function(scope, elem, attrs) {
-            var width = attrs.width? attrs.width: 650;
-            var height = attrs.height? attrs.height: 350; 
-            elem.bind('click', function(e){
+        restrict : 'A',
+        link : function(scope, elem, attrs) {
+            var width = attrs.width ? attrs.width : 650;
+            var height = attrs.height ? attrs.height : 350;
+            elem.bind('click', function(e) {
                 e.preventDefault();
-                var x = screen.width/2 - width/2;
-                var y = screen.height/2 - height/2;
-                window.open(attrs.href , 'newwindow', "width=" + width +", height="+height +", left="+x+", top="+y);
+                var x = screen.width / 2 - width / 2;
+                var y = screen.height / 2 - height / 2;
+                window.open(attrs.href, 'newwindow', "width=" + width + ", height=" + height + ", left=" + x + ", top=" + y);
             });
         }
     };
+}).provider('MetatagsCreator', function() {
+    var metatags = {};
+    this.setDefaultMetatags = function(tags) {
+        metatags = tags;
+    };
+    this.$get = ['$rootScope',function($rootScope) {
+        $rootScope.metatags = metatags;
+    }];
 });
