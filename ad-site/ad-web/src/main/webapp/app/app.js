@@ -460,7 +460,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         "odpowiedz" : "",
     });
     MetatagsCreatorProvider.setDefaultMetatags({
-       url : 'http://www.spotnik.pl',
+       url : 'http://www.spotnik.pl/#!/glowna',
        description: 'Spotnik.pl - reklamy nie muszą być nudne!',
        type: 'website',
        image: 'http://www.spotnik.pl/resources/img/logo.png',

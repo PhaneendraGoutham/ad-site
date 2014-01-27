@@ -399,7 +399,7 @@ app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$locati
             $rootScope.metatags.title = $scope.ad.title;
             $rootScope.metatags.description = $scope.ad.description.substring(0, 160);
             $rootScope.metatags.image = $scope.ad.thumbnail;
-            $rootScope.metatags.url = "http://" + $location.host() + "/#!/reklamy/" + $scope.ad.id; 
+            $rootScope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id; 
         }
     }
 }]);
