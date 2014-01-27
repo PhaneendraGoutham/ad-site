@@ -21,6 +21,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.Formula;
 
+import pl.stalkon.ad.core.model.dto.VideoData;
+import pl.stalkon.ad.core.model.dto.VideoData.Provider;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
@@ -31,7 +33,7 @@ public class Ad extends CommonEntity {
 	private static final long serialVersionUID = 1335218634734582331L;
 
 	public static final List<String> JSON_SHOW = Arrays.asList("id","place","dateOnMain","creationDate","year","title","description","ageProtected","approved","user.displayName","user.id","user.userData.imageUrl",
-		"brand.name","brand.id","brand.smallLogoUrl","rank","voteCount","thumbnail","videoUrl", "contestAd.winner", "official", "parentId");
+		"brand.name","brand.id","brand.smallLogoUrl","rank","voteCount","thumbnail","videoUrl", "contestAd.winner", "official", "parentId", "videoData.provider.name", "videoData.provider.thumbnailUrl", "videoData.videoId");
 	
 	public enum Type {
 		MOVIE, PICTURE, GAME
@@ -131,6 +133,13 @@ public class Ad extends CommonEntity {
 		}
 	}
 
+	public VideoData getVideoData(){
+		if(wistiaVideoData != null){
+			return new VideoData(Provider.WISTIA, wistiaVideoData.getVideoId());
+		}else{
+			return new VideoData(Provider.YOUTUBE, youtubeVideoData.getVideoId());
+		}
+	}
 	public ContestAd getContestAd() {
 		return contestAd;
 	}

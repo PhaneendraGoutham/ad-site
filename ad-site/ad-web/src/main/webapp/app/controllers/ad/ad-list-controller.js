@@ -396,10 +396,14 @@ app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$locati
         };
         
         if($route.current.$$route.writeOGMetaTags){
-            $rootScope.metatags.title = $scope.ad.title;
-            $rootScope.metatags.description = $scope.ad.description.substring(0, 160);
-            $rootScope.metatags.image = $scope.ad.thumbnail;
-            $rootScope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id; 
+            $scope.metatags.title = $scope.ad.title;
+            $scope.metatags.description = $scope.ad.description.substring(0, 160);
+            if($scope.ad.videoData.provider.name == "youtube"){
+                $scope.metatags.image = $scope.ad.videoData.provider.thumbnailUrl + "/" + $scope.ad.videoData.videoId + "/0.jpg";
+            }else{
+                $scope.metatags.image = $scope.ad.thumbnail.replace(/image_crop_resized=.*&/, "");
+            }
+            $scope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id; 
         }
     }
 }]);
