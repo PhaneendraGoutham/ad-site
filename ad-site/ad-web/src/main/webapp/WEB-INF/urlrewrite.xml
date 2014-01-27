@@ -2,31 +2,27 @@
 <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
         "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
 
-<!--
-
-    Configuration file for UrlRewriteFilter
-    http://www.tuckey.org/urlrewrite/
-
--->
+<!-- Configuration file for UrlRewriteFilter http://www.tuckey.org/urlrewrite/ -->
 <urlrewrite use-query-string="true">
-   
-    
-    <rule >
-        <name>Robots check</name>
-        <condition name="_escaped_fragment_" type="parameter" operator="equal"></condition>
-        <from >^(.*)</from>
-        <to type="proxy">http://%{server-name}:8888$1</to>
-    </rule>
-    
-    <rule>
-    	<name>Sitemap</name>
-    	<from>^/sitemap.xml$</from>
-    	<to type="forward">/resources/web/sitemap.xml</to>
-    </rule>
 
-    <rule>
-    	<name>Robots</name>
-    	<from>^/robots.txt$</from>
-    	<to type="forward" >/resources/web/robots.txt</to>
-    </rule>
+
+	<rule>
+		<name>Robots check</name>
+		<condition name="_escaped_fragment_" type="parameter"
+			operator="equal"></condition>
+		<from>^(.*)</from>
+		<to type="proxy">http://%{server-name}:8888$1</to>
+	</rule>
+
+	<rule>
+		<name>Sitemap</name>
+		<from>^/sitemap.xml$</from>
+		<to type="forward">/resources/web/sitemap.xml</to>
+	</rule>
+
+	<rule>
+		<name>Robots</name>
+		<from>^/robots.txt$</from>
+		<to type="forward">/resources/web/robots.txt</to>
+	</rule>
 </urlrewrite>
