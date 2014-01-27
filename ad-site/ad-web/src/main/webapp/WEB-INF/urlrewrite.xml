@@ -11,7 +11,7 @@
 		<condition name="_escaped_fragment_" type="parameter"
 			operator="equal"></condition>
 		<from>^(.*)</from>
-		<to type="proxy">http://%{server-name}:8888$1</to>
+		<to type="proxy">http://localhost:8888$1</to>
 	</rule>
 
 	<rule>
