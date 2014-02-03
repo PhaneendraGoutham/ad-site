@@ -37,11 +37,23 @@ app.controller('CompanyActivateCtrl', ['$routeParams','CompanyService','$locatio
         };
     }
 }]);
-app.controller('BrandListCtrl', ['brands','$scope',function(brands, $scope) {
+app.controller("BrandListCtrl", ['brands','$scope',function(brands, $scope) {
     init();
     function init() {
         $scope.brands = brands;
 
+    }
+}]);
+app.controller("BrandStatsCtrl", ['stats', '$scope', 'CompanyService', '$routeParams', function(stats,$scope, CompanyService,$routeParams){
+    init();
+    function init(){
+        $scope.wistiaStats = stats;
+        $scope.dateModel = {};
+        $scope.getStats = function(){
+            CompanyService.getBrandStats($routeParams.brandId,$scope.dateModel, function(data){
+                $scope.wistiaStats = data;
+            });
+        };
     }
 }]);
 app.controller('BrandCtrl', ['brand','$scope',function(brand, $scope) {

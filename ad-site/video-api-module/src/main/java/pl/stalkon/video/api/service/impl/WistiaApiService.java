@@ -1,11 +1,13 @@
 package pl.stalkon.video.api.service.impl;
 
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
@@ -110,26 +112,35 @@ public class WistiaApiService implements InitializingBean {
 
 	public WistiaStats getProjectStats(String hashedId, Date startDate,
 			Date endDate) {
-		Map<String, String> vars = Collections.singletonMap("projectId",
-				hashedId);
-		Map<String, String> map = new HashMap<String, String>();
+//		Map<String, String> map = new HashMap<String, String>();
 		SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd");
-		map.put("start_date", sm.format(startDate));
-		map.put("end_date", sm.format(endDate));
-		ResponseEntity<Map> response = restTemplate.exchange(env
-				.getProperty("wistia.statsProjectJsonUrl.by.date"),
-				HttpMethod.GET, new HttpEntity<Map<String, String>>(map,
-						headers), Map.class, vars);
-		Date date = null;
-		try {
-			date = sm.parse((String) response.getBody().get("date"));
-		} catch (ParseException e) {
-			// ignore;
+		Map<String, String> vars = new HashMap<String,String>(3); 
+		vars.put("projectId",
+				hashedId);
+		vars.put("start_date",sm.format(startDate));
+		vars.put("end_date",sm.format(endDate));
+	
+	
+//		map.put("start_date", sm.format(startDate));
+//		map.put("end_date", sm.format(endDate));
+		ResponseEntity<List> response = restTemplate.exchange(env
+				.getProperty("wistia.statsProjectJsonUrl.by.date") + "?start_date={start_date}&end_date={end_date}",
+				HttpMethod.GET, new HttpEntity<Map<String, String>>(null,
+						headers), List.class, vars);
+		Long loadCount = new Long(0);
+		Long playCount = new Long(0);
+		Double hoursWatched = new Double(0);
+		for(int i =0; i < response.getBody().size(); i++){
+			Map<String, Object> stats = ((Map<String,Object>) response.getBody().get(i));
+			loadCount += new Long((Integer) stats.get("load_count"));
+			playCount += new Long((Integer) stats.get("play_count"));
+			if(stats.get("hours_watched") instanceof Integer){
+				hoursWatched += new Double((Integer) stats.get("hours_watched"));
+			}else{
+				hoursWatched += (Double) stats.get("hours_watched");
+			}
 		}
-		return new WistiaStats(date, new Long((String) response.getBody().get(
-				"load_count")), new Long((String) response.getBody().get(
-				"play_count")), new Double((String) response.getBody().get(
-				"hours_watched")));
+		return new WistiaStats(loadCount, playCount, hoursWatched);
 	}
 
 	@Override

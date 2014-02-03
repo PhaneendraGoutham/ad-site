@@ -1,0 +1,29 @@
+<article class="clearfix col-sm-12">
+	<div class="form-inline text-center margin-top margin-bottom">
+	<label class="control-label">Wybierz zakres</label>
+		<div class="form-group">
+			<input class="form-control input-sm" datepicker-popup="dd MMM yyyy"
+				show-weeks="false" data-ng-model="dateModel.startDate"
+				name="startDate" required placeholder="od"/>
+		</div>
+		<div class="form-group">
+
+			<input class="form-control input-sm" datepicker-popup="dd MMM yyyy"
+				show-weeks="false" data-ng-model="dateModel.endDate" name="endDate"
+				required placeholder="do"/>
+		</div>
+<div class="form-group">
+<button class="btn btn-success btn-sm" data-ng-click="getStats()">Pokaż</button>
+</div>
+	</div>
+	<table class="table no-borders table-condesend">
+		<tr>
+			<td class="col-sm-4  text-info">Łączny czas wyświetleń:</td>
+			<td class="col-sm-8 "><span class="label label-primary ">{{wistiaStats.hoursWatched}} h</span></td>
+		</tr>
+		<tr>
+			<td class="col-sm-4 text-info">Liczba uruchomień wideo:</td>
+			<td class="col-sm-8"><span class="label label-primary">{{wistiaStats.playCount}}</span></td>
+		</tr>
+	</table>
+</article>

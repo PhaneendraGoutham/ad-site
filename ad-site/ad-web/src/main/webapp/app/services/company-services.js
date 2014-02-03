@@ -23,4 +23,7 @@ app.service("CompanyService", ['$http','$location','CommonFunctions',function($h
     this.updateBrand = function(brandId, regModel, success, error) {
         $http.post('/brand/' + brandId, regModel).success(success);
     };
+    this.getBrandStats = function(brandId, dateModel, success, error){
+        $http.post('/brand/'+brandId+'/stats', $.param(dateModel), CommonFunctions.getPostHeader()).success(success);
+    };
 }]);

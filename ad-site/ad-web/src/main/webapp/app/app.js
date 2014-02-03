@@ -242,7 +242,23 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }],
 
         }
-    }).when("/konkursy/:contestId", {
+    }).when("/marki/:brandId/statystyki",{
+        controller: "BrandStatsCtrl",
+        templateUrl: "app/partials/company/brand-stats.html",
+        resolve: {
+            stats : ['$q','CompanyService','$route',function($q, CompanyService, $route) {
+                dateModel = {};
+                dateModel.endDate = new Date();
+                dateModel.startDate = new Date(dateModel.endDate.getFullYear(), dateModel.endDate.getMonth(), 1);
+                var deferred = $q.defer();
+                CompanyService.getBrandStats($route.current.params.brandId,dateModel, function(stats){
+                    deferred.resolve(stats);
+                });
+                return deferred.promise;
+            }],
+        }
+    })
+    .when("/konkursy/:contestId", {
         controller : 'ContestCtrl',
         templateUrl : "app/partials/contest/contest.html",
         resolve : {

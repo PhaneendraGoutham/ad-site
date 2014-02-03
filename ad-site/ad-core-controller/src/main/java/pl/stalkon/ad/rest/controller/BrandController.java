@@ -1,6 +1,7 @@
 package pl.stalkon.ad.rest.controller;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpServerErrorException;
 import pl.stalkon.ad.core.model.Brand;
@@ -127,32 +129,26 @@ public class BrandController {
 		return result;
 	}
 
-	@RequestMapping(value = "brand/{brandId}/stats", method = RequestMethod.GET)
+	@RequestMapping(value = "brand/{brandId}/stats", method = RequestMethod.POST)
 	@PreAuthorize("@controllerHelperBean.isUserBrandOwner(principal.id, #brandId)")
-	public Map<String, Object> getStatsAndCosts(
-			@PathVariable("brandId") Long brandId) throws WistiaException {
+	@ResponseBody
+	public WistiaStats getStatsAndCosts(
+			@PathVariable("brandId") Long brandId, @RequestParam("startDate") Date startDate, @RequestParam("endDate") Date endDate ) throws WistiaException {
 		Brand brand = brandService.get(brandId);
-		Double cost = brandService.getBrandCurrentCost(brandId);
-		LocalDate monthBegin = new LocalDate().withDayOfMonth(1);
-		LocalDate monthEnd = new LocalDate().plusMonths(1).withDayOfMonth(1)
-				.minusDays(1);
+//		Double cost = brandService.getBrandCurrentCost(brandId);
+//		LocalDate monthBegin = new LocalDate().withDayOfMonth(1);
+//		LocalDate monthEnd = new LocalDate().plusMonths(1).withDayOfMonth(1)
+//				.minusDays(1);
+		System.out.println(startDate);
 		WistiaStats wistiaStats = null;
 		try {
 			wistiaStats = wistiaApiService.getProjectStats(brand
-					.getWistiaProjectData().getHashedId(), monthBegin.toDate(),
-					monthEnd.toDate());
+					.getWistiaProjectData().getHashedId(), startDate,
+					endDate);
 		} catch (HttpServerErrorException e) {
 			throw new WistiaException();
 		}
-		Map<String, Object> result = new HashMap<String, Object>(6);
-		Double totalCost = wistiaStats.getHoursWatched() * 3600 / 1000 * cost;
-		result.put("totalCost", totalCost);
-		result.put("startDate", monthBegin.toDate());
-		result.put("endDate", monthEnd.toDate());
-		result.put("hoursWatched", wistiaStats.getHoursWatched());
-		result.put("loadCount", wistiaStats.getLoadCount());
-		result.put("playCount", wistiaStats.getPlayCount());
-		return result;
+		return wistiaStats;
 	}
 
 }
