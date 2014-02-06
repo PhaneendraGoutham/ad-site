@@ -86,7 +86,7 @@
 	<div class="navbar navbar-default navbar-static-top">
 		<div class="container">
 			<div class="navbar-custom-brand">
-				<img src="resources/img/logo.png" />
+				<a href="#!/glowna"><img src="resources/img/logo.png" /></a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav" data-st-active="">
@@ -109,12 +109,12 @@
 							class="icon-user"></i>ZALOGUJ</a></li>
 					<li data-st-access-show="hasRole('user')" class="dropdown"
 						st-register-watch="true"><a class="dropdown-toggle"> <img
-							src="resources/img/no-user.gif" />
+							data-ng-src="{{currentUser.imageUrl}}" />
 					</a>
 						<div class="dropdown-menu" data-ng-controller="UserDropdownCtrl">
 
 							<div class="thumbnail clearfix right-caption">
-								<img class="pull-left" src="resources/img/no-user.gif" />
+								<img class="pull-left" data-ng-src="{{currentUser.imageUrl}}" />
 								<div class="caption ">
 									<span class="heading">{{currentUser.displayName}}</span>
 

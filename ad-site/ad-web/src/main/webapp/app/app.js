@@ -10,6 +10,25 @@ app.factory("BaseUrlInterceptor", function() {
         }
     }
 })
+.factory("CursorChangeInterceptor", ["$q", function($q){
+    return{
+        request : function(config){
+            if(config.url.match("api") && !config.url.match("auth"))
+            $("body").css("cursor", "progress");
+            return config;
+        },
+        response: function(config){
+            if(config.config.url.match("api") && !config.config.url.match("auth"))
+                $("body").css("cursor", "default");
+            return config;
+        },
+        responseError: function(config){
+            if(config.config.url.match("api") && !config.config.url.match("auth"))
+                $("body").css("cursor", "default");
+            return $q.reject(config);
+        }
+    };
+}])
 .config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider','$locationProvider','MetatagsCreatorProvider',
            
 
@@ -459,6 +478,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     AuthProvider.setUserRoles(userRoles);
     stAuthInterceptorProvider.setLoginUrl("/uzytkownik/zaloguj");
     $httpProvider.interceptors.push('BaseUrlInterceptor');
+    $httpProvider.interceptors.push('CursorChangeInterceptor');
     $httpProvider.interceptors.push('stAuthInterceptor');
 
     // $httpProvider.defaults.headers.post["Content-Type"] =

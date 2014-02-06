@@ -1,27 +1,57 @@
-﻿<article class="clearfix">              
-<form class="form-horizontal col-sm-12"  name="userProfileForm" novalidate data-st-submit="update()">
-                        <div class="form-group" >
-                            <label class="col-sm-4 control-label">Nazwa użytkownika</label>
-                            <div class="col-sm-7">
-                                <p class="form-control-static">{{currentUser.displayName}}</p>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">Email</label>
-                            <div class="col-sm-7">
-                                <p class="form-control-static">{{profileModel.email}}</p>
-                            </div>
-                        </div>
-                        <div data-st-valid-form-elem data-st-label="Nazwa uzytkownika" data-st-name="name" data-st-icon="icon-user">     
-                                <input id="firstname" class="form-control " data-ng-model="profileModel.name"/>
-                        </div>
-                        <div data-st-valid-form-elem data-st-label="Nazwa uzytkownika" data-st-name="surname" data-st-icon="icon-user">  
-                                <input id="surname" class="form-control " data-ng-model="profileModel.surname"/>
-                        </div>
-     <div class="form-group">
-                <div class=" col-sm-7 col-sm-offset-4">
-                <button type="submit" class="btn btn-sm btn-success">Zaktualizuj</button>
-                        </div>
-            </div>
-                    </form>
-    </article>      
+﻿<article class="clearfix">
+
+	<form class="form-horizontal" id="fileupload"
+		data-file-upload="options">
+		<div class="form-group">
+			<label for="file" class="control-label col-sm-4">Wybierz
+				avatara</label>
+			<div class=" col-sm-7 input-group">
+				<span class="input-group-addon"><i class="icon-pencil"></i></span> <span
+					class="fileinput-button form-control"
+					ng-class="{disabled: disabled}">{{queue[0].name}}<span
+					class="placeholder" data-ng-show="queue.length == 0">Kliknij
+						aby wybrać avatara</span><input type="file" name="file"
+					ng-disabled="disabled">
+				</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="file" class="control-label col-sm-4">Avatar</label>
+			<div class="col-sm-7">
+				<img data-ng-src="{{currentUser.imageUrl }}"
+					class="avatar img-rounded" />
+			</div>
+		</div>
+	</form>
+	<form class="form-horizontal col-sm-12" name="userProfileForm"
+		novalidate data-st-submit="update()">
+
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Nazwa użytkownika</label>
+			<div class="col-sm-7">
+				<p class="form-control-static">{{currentUser.displayName}}</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Email</label>
+			<div class="col-sm-7">
+				<p class="form-control-static">{{profileModel.email}}</p>
+			</div>
+		</div>
+		<div data-st-valid-form-elem data-st-label="Imię" data-st-name="name"
+			data-st-icon="icon-user">
+			<input id="firstname" class="form-control "
+				data-ng-model="profileModel.name" placeholder="Imię" />
+		</div>
+		<div data-st-valid-form-elem data-st-label="Nazwisko"
+			data-st-name="surname" data-st-icon="icon-user">
+			<input id="surname" class="form-control "
+				data-ng-model="profileModel.surname" placeholder="Nazwisko" />
+		</div>
+		<div class="form-group">
+			<div class=" col-sm-7 col-sm-offset-4">
+				<button type="submit" class="btn btn-sm btn-success">Zaktualizuj</button>
+			</div>
+		</div>
+	</form>
+</article>

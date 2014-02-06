@@ -17,7 +17,7 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
         this.wordMappings = wordMappings;
     }
 
-    this.$get = ['$rootScope','$location',function($rootScope, $location) {
+    this.$get = ['$rootScope','$location','$timeout',function($rootScope, $location, $timeout) {
         $rootScope.alerts = [];
 
         $rootScope.closeAlert = function(index) {
@@ -26,10 +26,13 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
 
         return {
             pushAlert : function(type, message) {
-                $rootScope.alerts.push({
+               var length = $rootScope.alerts.push({
                     type : type,
                     msg : message
                 });
+                $timeout(function(){
+                   $rootScope.alerts.splice(length -1);
+                },5000);
             },
             pushAlertByType : function(type) {
                 switch (type) {

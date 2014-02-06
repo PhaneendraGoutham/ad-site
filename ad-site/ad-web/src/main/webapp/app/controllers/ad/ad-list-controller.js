@@ -382,7 +382,7 @@ app.controller('AdAdminPanelCtrl', ['$scope','AdService',function($scope, AdServ
         };
     }
 }]);
-app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$location', function($scope, AdService,$rootScope,$route,$location){
+app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$location','$timeout', function($scope, AdService,$rootScope,$route,$location,$timeout){
     init();
     function init(){
         $scope.model = {};
@@ -392,6 +392,11 @@ app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$locati
         $scope.reportAbuse = function(){
             AdService.reportAbuse($scope.ad.id, $scope.model.abuseMessage, function(){
                 $scope.tooltip.informSent = true;
+                $scope.model.abuseMessage = "";
+                $timeout(function(){
+                    $scope.bottomVideoPanelView ="";
+                }, 1000);
+                
             });
         };
         

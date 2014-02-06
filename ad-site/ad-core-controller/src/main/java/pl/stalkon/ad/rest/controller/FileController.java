@@ -20,6 +20,7 @@ import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.UserService;
 import pl.stalkon.ad.extensions.UploadingFileException;
+import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
 @Controller
 public class FileController {
@@ -42,16 +43,16 @@ public class FileController {
 	@RequestMapping(value = "user/{userId}/upload/image", method = RequestMethod.POST)
 	@PreAuthorize("principal.id.equals(#userId)")
 	@ResponseBody
-	public String uploadAvatar(@PathVariable("userId") Long userId,
+	public SingleObjectResponse uploadAvatar(@PathVariable("userId") Long userId,
 			@RequestParam("file") CommonsMultipartFile commonsMultipartFile)
 			throws UploadingFileException {
 		if (fileService.validateFile(commonsMultipartFile)) {
 			if (!commonsMultipartFile.isEmpty()) {
 				String relativePath = fileService.saveImageFile(
-						commonsMultipartFile, 43, 43, Mode.FIT_EXACT);
+						commonsMultipartFile, 96, 96, Mode.FIT_EXACT);
 				if (relativePath != null) {
 					userService.setUserThumbnail(relativePath, userId);
-					return relativePath;
+					return new SingleObjectResponse(relativePath);
 				}
 			}
 		}

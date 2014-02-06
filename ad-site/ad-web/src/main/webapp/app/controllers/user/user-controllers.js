@@ -10,7 +10,7 @@ app.controller('UserLoginCtrl', ['$scope','ErrorFactory','Auth','$location',func
     }
 
 }]);
-app.controller('UserProfileCtrl', ['$scope','$location','profileData','$http','CommonFunctions',function($scope, $location, profileData, $http, CommonFunctions) {
+app.controller('UserProfileCtrl', ['$scope','$location','profileData','$http','CommonFunctions','$routeParams','Auth',function($scope, $location, profileData, $http, CommonFunctions,$routeParams,Auth) {
     init();
     function init() {
         $scope.profileModel = profileData;
@@ -20,6 +20,17 @@ app.controller('UserProfileCtrl', ['$scope','$location','profileData','$http','C
             CommonFunctions.pushAlert('success', 'Dane użytkownika zostały zaktualizowane');
         });
     }
+    $scope.options = {
+        url : "/api/user/" + $routeParams.userId + "/upload/image",
+        type : "POST",
+        dataType : "json",
+        headers : {},
+        autoUpload : true,
+    };
+    $.extend($scope.options.headers, Auth.getAuthHeader());
+    $("#fileupload").bind('fileuploaddone', function(e, data) {
+       Auth.changeUser({imageUrl: data.result.response});
+    });
 }]);
 
 app.controller('PassRecoverCtrl', ['$scope','$location','$http','CommonFunctions','ErrorFactory','UserService',function($scope, $location, $http, CommonFunctions, ErrorFactory, UserService) {
