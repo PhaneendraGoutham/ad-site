@@ -100,79 +100,18 @@
         }(document, 'script', 'facebook-jssdk'));
     </script>
 	<div class="navbar navbar-default navbar-static-top">
-		<div class="container">
+		<div class="container col-xs-12">
 			<div class="navbar-custom-brand">
 				<a href="#!/glowna"><img src="resources/img/logo.png" /></a>
 			</div>
-			<div class="navbar-collapse collapse">
-				<ul class="nav navbar-nav" data-st-active="">
-					<li class="active"><a href="#!/glowna"><i
-							class="icon-home"></i>GŁÓWNA</a></li>
-					<li><a href="#!/poczekalnia"><i class="icon-coffee"></i>POCZEKALNIA</a>
-					</li>
-					<li><a href="#!/przegladaj"><i class="icon-search"></i>PRZEGLĄDAJ</a>
-					</li>
-					<li><a href="#!/reklamy/dodaj"
-						data-st-access-show="hasRole('user') && !hasRole('company')"
-						st-register-watch="true"><i class="icon-plus-sign-alt"></i>
-							DODAJ</a></li>
-					<li><a href="#!/losuj"><i class="icon-random"></i>LOSUJ</a></li>
-					<li><a href="#!/marki">MARKI</a></li>
-					<li><a href="#!/konkursy">KONKURSY</a></li>
-				</ul>
-
-				<ul class="nav navbar-nav navbar-right" data-st-active="">
-					<li data-st-access-show="hasRole('public')"
-						st-register-watch="true" class="last"><a href="#!/uzytkownik/zaloguj"><i
-							class="icon-user"></i>ZALOGUJ</a></li>
-					<li data-st-access-show="hasRole('user')" class="dropdown last"
-						st-register-watch="true" ><a class="dropdown-toggle"> <img
-							data-ng-src="{{currentUser.imageUrl}}" />
-					</a>
-						<div class="dropdown-menu" data-ng-controller="UserDropdownCtrl">
-
-							<div class="thumbnail clearfix right-caption">
-								<img class="pull-left" data-ng-src="{{currentUser.imageUrl}}" />
-								<div class="caption ">
-									<span class="heading">{{currentUser.displayName}}</span>
-
-								</div>
-
-								<ul class="nav nav-pills ">
-									<li><a href="#!/uzytkownik/haslo/zmien">Hasło</a></li>
-									<li><a href="#!/uzytkownik/{{currentUser.id}}/reklamy">Reklamy</a></li>
-
-									<li><a href="#!/partnerzy/zarejestruj"
-										data-st-access-show="!hasRole('company')"
-										st-register-watch="true">Firma</a> <a
-										href="#!/partnerzy/{{currentUser.companyId}}"
-										data-st-access-show="hasRole('company')"
-										st-register-watch="true">Firma</a></li>
-								</ul>
-								<button class="btn btn-sm btn-warning"
-									data-ng-click="showProfile()">Wyświetl profil</button>
-								<button class="btn btn-sm btn-warning" data-ng-click="logout()">Wyloguj</button>
-
-
-							</div>
-
-						</div></li>
-				</ul>
-				<form class="col-sm-3 navbar-search navbar-right"
-					data-ng-controller="SearchInputCtrl" data-ng-submit="search()">
-					<div class="input-group input-group-sm input">
-						<span class="input-group-addon"><i class="icon-search"></i></span>
-						<input class="form-control" placeholder="Szukaj..."
-							data-ng-model="model.search" />
-					</div>
-				</form>
-			</div>
+			<div class="navbar-collapse collapse"
+				data-ng-include="'/app/partials/main-menu.html'"></div>
 			<!--/.navbar-collapse -->
 		</div>
 	</div>
-	<div class="container">
+	<div class="container col-xs-12">
 		<div class="row">
-			<div class=" col-sm-8">
+			<div class=" col-md-8">
 				<div class="row">
 					<div class=" col-sm-12">
 						<div alert class="main-alert" data-ng-repeat="alert in alerts"
@@ -180,10 +119,10 @@
 					</div>
 				</div>
 				<div class="row">
-					<section class=" col-sm-12 center-section" ng-view></section>
+					<section class=" col-md-12 center-section" ng-view></section>
 				</div>
 			</div>
-			<aside class=" col-sm-4 aside-section">
+			<aside class=" col-md-4 aside-section hidden-sm hidden-xs">
 				<div class="panel panel-default" data-ng-controller="TopAdsCtrl">
 					<!-- Default panel contents -->
 					<div class="panel-heading text-center">Popularne</div>
@@ -203,20 +142,30 @@
 							<!-- 							<small>użytkownik: <a -->
 							<!-- 								href="#!/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a></small> -->
 						</div>
-						<div>
+						<div class="col-md-12">
 							<rating value="roundRank(ad.rank)" max="5"
 								state-on="'icon-star '" state-off="'icon-star-empty '"
 								readonly="true"></rating>
 							<span class="label"
-								data-ng-class="{'label-default': ad.rank>=1 && ad.rank<=2, 'label-primary':  ad.rank>=2 && ad.rank<=3, 'label-success':  ad.rank>=3 && ad.rank<=4, 'label-warning': ad.rank >=4 && ad.rank<=5, 'label-danger': ad.rank == 5}"
+								data-ng-class="{'label-info': labelValue<1,'label-default': ad.rank>=1 && ad.rank<=2, 'label-primary':  ad.rank>=2 && ad.rank<=3, 'label-success':  ad.rank>=3 && ad.rank<=4, 'label-warning': ad.rank >=4 && ad.rank<=5, 'label-danger': ad.rank == 5}"
 								data-ng-show="!isReadonly"><small>{{ad.rank |
 									number:2}}</small></span>
 						</div>
-
+						<div class="col-md-12">
+							<span class="text-small vote-count pull-right"
+								data-ng-show="ad.voteCount >= 100">{{ad.voteCount}}
+								głosów</span> <span
+								class="text-small vote-count vote-count-aside-panel pull-right"
+								data-ng-show="ad.voteCount < 100 ">mniej niż 100 głosów</span>
+						</div>
 					</div>
 
 
-
+					<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip
+						data-st-on="tooltip.ranked" data-timeout="5000">
+						<div class="tooltip-inner">Dzięki!</div>
+						<div class="tooltip-arrow"></div>
+					</div>
 				</div>
 			</aside>
 		</div>

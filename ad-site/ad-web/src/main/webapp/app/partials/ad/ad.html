@@ -7,7 +7,7 @@
 				odpowiedzi</a></li>
 		<li><a href="#!/reklamy/{{singleAd.id}}/odpowiedz">Dodaj
 				odpowiedź wideo</a></li>
-		<li ><a href="#!/marki/{{singleAd.brand.id}}">{{singleAd.brand.name}}</a></li>
+		<li><a href="#!/marki/{{singleAd.brand.id}}">{{singleAd.brand.name}}</a></li>
 	</ul>
 </article>
 
@@ -17,7 +17,8 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class=" col-sm-8">
-				<a href="#!/reklamy/{{ad.id}}" title="{{ad.title}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
+				<a href="#!/reklamy/{{ad.id}}" title="{{ad.title}}"><h2
+						class="text-info wrap-text">{{ad.title}}</h2></a>
 			</div>
 			<div class=" col-sm-4 margin-top"
 				data-ng-show="ad.official && ad.brand.smallLogoUrl">
@@ -27,66 +28,96 @@
 		</div>
 	</div>
 	<div class="row pos-relative" data-ng-switch
-		on="currentUser.adult || !ad.ageProtected" data-ng-mouseenter="sh = true" data-ng-mouseleave="sh = false" >
-		<div class="col-sm-12" >
+		on="currentUser.adult || !ad.ageProtected"
+		data-ng-mouseenter="sh = true" data-ng-mouseleave="sh = false">
+		<div class="col-sm-12">
 			<iframe width="620" height="349" data-ng-src="{{ad.videoUrl}}"
-				frameborder="0" allowfullscreen data-ng-switch-when="true" ></iframe>
+				frameborder="0" allowfullscreen data-ng-switch-when="true"></iframe>
 			<img src="/resources/img/18.png" data-ng-switch-when="false" />
 		</div>
 		<div class="tooltip left social-bar-tooltip" data-ng-class="{in: sh}">
 			<div class="tooltip-inner">
-				<a data-st-new-window href="http://www.facebook.com/sharer/sharer.php?u=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}" ><img src="/resources/img/facebook.png"/><br/></a>
-				<a data-st-new-window href="https://twitter.com/intent/tweet?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}" ><img src="/resources/img/twitter.png"/><br/></a>
-				<a data-st-new-window href="https://plus.google.com/share?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}" ><img src="/resources/img/google_plus.png"/><br/></a>
-				<a data-st-new-window href="http://www.wykop.pl/dodaj/link/?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}&title={{ad.title}}&desc={{ad.description}}" ><img src="/resources/img/wykop.png" style="margin-top:1px"/><br/></a>
+				<a data-st-new-window
+					href="http://www.facebook.com/sharer/sharer.php?u=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}"><img
+					src="/resources/img/facebook.png" /><br /></a> <a data-st-new-window
+					href="https://twitter.com/intent/tweet?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}"><img
+					src="/resources/img/twitter.png" /><br /></a> <a data-st-new-window
+					href="https://plus.google.com/share?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}"><img
+					src="/resources/img/google_plus.png" /><br /></a> <a
+					data-st-new-window
+					href="http://www.wykop.pl/dodaj/link/?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}&title={{ad.title}}&desc={{ad.description}}"><img
+					src="/resources/img/wykop.png" style="margin-top: 1px" /><br /></a>
 			</div>
 			<div class="tooltip-arrow"></div>
 		</div>
 	</div>
 
-	<div class="row margin-bottom margin-top">
-		<div class=" col-sm-4">
-			<div class=" col-sm-3">
+	<div class="row  margin-top">
+		<div class="col-sm-4 col-xs-6">
+			<div class="thumbnail thumbnail-avatar right-caption">
 				<img class="avatar img-rounded"
 					data-ng-src="{{ad.user.userData.imageUrl}}" />
-			</div>
-			<div class=" col-sm-9">
-				<a href="#!/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a><br />
-				<small>{{ ad.creationDate | date:'dd.MM.yyyy o HH:mm' }}</small>
+				<div class="caption">
+					<a href="#!/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a><br />
+					<small>{{ ad.creationDate | date:'dd.MM.yyyy o HH:mm' }}</small>
+				</div>
 			</div>
 		</div>
-		<div class=" col-sm-5">
-			<ul class="nav nav-justified nav-pills">
-				<li data-ng-class="{on : bottomVideoPanelView==description}"><a
-					data-ng-click="bottomVideoPanelView = 'description'">Opis</a></li>
-				<li data-ng-class="{on : bottomVideoPanelView==comments}"><a
-					data-ng-click="bottomVideoPanelView = 'comments'">Komentarze</a></li>
-				<li data-ng-class="{on : bottomVideoPanelView==inform}"><a
-					data-ng-click="bottomVideoPanelView = 'inform'">Zgłoś</a></li>
+		<div class=" col-xs-4 hidden-xs">
+			<ul class="nav nav-justified nav-pills hidden-xs">
+				<li data-ng-class="{on : model.bottomVideoPanelView==description}"><a
+					data-ng-click="model.bottomVideoPanelView = 'description'">Opis</a></li>
+				<li data-ng-class="{on : model.bottomVideoPanelView==comments}"><a
+					data-ng-click="model.bottomVideoPanelView = 'comments'">Komentarze</a></li>
+				<li data-ng-class="{on : model.bottomVideoPanelView==inform}"><a
+					data-ng-click="model.bottomVideoPanelView = 'inform'">Zgłoś</a></li>
 			</ul>
 		</div>
-		<div class=" col-sm-3 rating" data-ng-controller="RatingCtrl">
-			<rating value="rate" max="max" state-on="'icon-star icon-large'"
-				state-off="'icon-star-empty icon-large'" readonly="isReadonly"
-				on-hover="hoveringOver(value)" on-leave="onLeave()"
-				on-click="onClick(ad, value)"></rating>
-			<span class="label"
-				data-ng-class="{'label-default': labelValue==1, 'label-primary':  labelValue==2, 'label-success':  labelValue==3, 'label-warning': labelValue ==4, 'label-danger': labelValue == 5}"
-				data-ng-show="!isReadonly">{{overStar ||ad.rank | number:2}}</span>
-			<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip
-				data-st-on="tooltip.ranked" data-timeout="5000">
-				<div class="tooltip-inner">Dzięki!</div>
-				<div class="tooltip-arrow"></div>
+		<div class=" col-sm-4 col-xs-6 rating" data-ng-controller="RatingCtrl">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="col-sm-12">
+						<div class="pull-right">
+							<rating value="rate" max="max" state-on="'icon-star icon-large'"
+								state-off="'icon-star-empty icon-large'" readonly="isReadonly"
+								on-hover="hoveringOver(value)" on-leave="onLeave()"
+								on-click="onClick(ad, value)"></rating>
+							<span class="label"
+								data-ng-class="{'label-info': labelValue==0, 'label-default': labelValue==1, 'label-primary':  labelValue==2, 'label-success':  labelValue==3, 'label-warning': labelValue ==4, 'label-danger': labelValue == 5}"
+								data-ng-show="!isReadonly">{{overStar ||ad.rank |
+								number:2}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="col-sm-12">
+						<span class="text-small pull-right vote-count"
+							data-ng-show="ad.voteCount >= 100">100 głosów</span> <span
+							class="text-small pull-right vote-count"
+							data-ng-show="ad.voteCount < 100">mniej niż 100 głosów</span>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="row margin-bottom" ng-switch on="bottomVideoPanelView">
 
-		<div data-ng-switch-when="comments">
-			<div class="fb-comments" data-href="http://www.spotnik.pl/#!/reklamy/{{ad.id}}" data-width="590"
-				data-num-posts="20" data-colorscheme="dark"></div>
+		<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip
+			data-st-on="tooltip.ranked" data-timeout="5000">
+			<div class="tooltip-inner">Dzięki!</div>
+			<div class="tooltip-arrow"></div>
 		</div>
-		<div data-ng-switch-when="inform" class=" col-md-12">
+	</div>
+	<div class="row margin-bottom">
+
+		<div data-ng-show="model.bottomVideoPanelView == 'comments'"
+			class="col-sm-12">
+			<div class="fb-comments col-sm-12"
+				data-href="http://www.spotnik.pl/#!/reklamy/{{ad.id}}"
+				data-width="590" data-num-posts="20" data-colorscheme="dark"></div>
+		</div>
+		<div data-ng-show="model.bottomVideoPanelView == 'inform'"
+			class=" col-sm-12">
 			<div class=" col-md-12 form-group">
 				<textarea class="form-control" data-ng-model="model.abuseMessage"
 					placeholder="Podaj jak najdokładniejszy powód zgłoszenia..."></textarea>
@@ -103,7 +134,8 @@
 
 
 		</div>
-		<div class=" col-md-12" data-ng-switch-when="description">
+		<div class=" col-sm-12"
+			data-ng-show="model.bottomVideoPanelView == 'description'">
 			<p class="text-left  col-md-12" data-ng-bind="ad.description"></p>
 
 		</div>

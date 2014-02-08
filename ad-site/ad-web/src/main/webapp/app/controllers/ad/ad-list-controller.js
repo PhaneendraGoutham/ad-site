@@ -386,8 +386,8 @@ app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$locati
     init();
     function init(){
         $scope.model = {};
-        $scope.model.ad = {};
-        $scope.model.facebookAdThumbnail = $scope.ad.thumbnail.substring(0,$scope.ad.thumbnail.indexOf("?"));
+//        $scope.model.ad = {};
+//        $scope.model.facebookAdThumbnail = $scope.ad.thumbnail.substring(0,$scope.ad.thumbnail.indexOf("?"));
         $scope.tooltip = {};
         $scope.reportAbuse = function(){
             AdService.reportAbuse($scope.ad.id, $scope.model.abuseMessage, function(){

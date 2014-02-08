@@ -7,7 +7,7 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
     }
     $scope.$watch('filters.page', function(v) {
         $scope.currentPage = parseInt($scope.filters.page) || 1;
-        window.scrollTo(0,0);
+        window.scrollTo(0, 0);
     });
 }]).provider('CommonFunctions', function() {
     var self = this;
@@ -27,13 +27,13 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
 
         return {
             pushAlert : function(type, message) {
-               var length = $rootScope.alerts.push({
+                var length = $rootScope.alerts.push({
                     type : type,
                     msg : message
                 });
-                $timeout(function(){
-                   $rootScope.alerts.splice(length -1);
-                },5000);
+                $timeout(function() {
+                    $rootScope.alerts.splice(length - 1);
+                }, 5000);
             },
             pushAlertByType : function(type) {
                 switch (type) {
@@ -108,10 +108,10 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
         max : {
             def : 'Podana liczba musi być mniejsza od {{data-max}}'
         },
-    }
+    };
     this.getErrorMessages = function(customErrorMessages) {
         return $.extend(true, this.errorMessages, customErrorMessages);
-    }
+    };
     return this;
 }).directive('stTimeoutTooltip', ['$animator',"$timeout",function($animator, $timeout) {
     return {
@@ -153,3 +153,38 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
         $rootScope.metatags = metatags;
     }];
 });
+
+(function() {
+    var createDirective, module, pluginName, _i, _len, _ref;
+
+    module = angular.module('FacebookPluginDirectives', []);
+
+    createDirective = function(name) {
+        return module.directive(name,['$timeout', function($timeout) {
+            return {
+                restrict : 'C',
+                compile : function(scope, element, attributes) {
+                    return {
+                        post : function postLink(scope, iElement, iAttrs, controller) {
+                            scope.$watch('ad.id', function() {
+                                $timeout(function() {
+                                    return typeof FB !== "undefined" && FB !== null ? FB.XFBML.parse(iElement.parent()[0]) : void 0;
+                                }, 50, false);
+                                // return typeof FB !== "undefined" && FB !==
+                                // null ? FB.XFBML.parse(iElement.parent()[0]) :
+                                // void 0;
+                            });
+                        }
+                    };
+                }
+            };
+        }]);
+    };
+
+    _ref = ['fbActivity','fbComments','fbFacepile','fbLike','fbLikeBox','fbLiveStream','fbLoginButton','fbName','fbProfilePic','fbRecommendations'];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pluginName = _ref[_i];
+        createDirective(pluginName);
+    }
+
+}).call(this);

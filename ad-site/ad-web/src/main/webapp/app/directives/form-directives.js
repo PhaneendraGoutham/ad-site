@@ -72,7 +72,7 @@ app.directive('stError', function() {
         restrict : 'A',
         require : "^form",
         link : function(scope, htmlElem, attributes, formController) {
-            var formChild = $("input[name=" + attributes.stError + "]");
+            var formChild = $("[name=" + formController.$name + "]").find("[name=" + attributes.stError + "]");
             var errorMessagesVar = attributes.stErrorMessagesVar ? attributes.stErrorMessagesVar : "errorMessages";
 
             scope.$watchCollection(formController.$name + "." + attributes.stError + ".$error", function(errors) {

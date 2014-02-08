@@ -217,19 +217,19 @@
 
 // Small screen / tablet
 // Note: Deprecated @screen-sm and @screen-tablet as of v3.0.1
-@screen-sm:                  768px;
+@screen-sm:                  668px;
 @screen-sm-min:              @screen-sm;
 @screen-tablet:              @screen-sm-min;
 
 // Medium screen / desktop
 // Note: Deprecated @screen-md and @screen-desktop as of v3.0.1
-@screen-md:                  960px;
+@screen-md:                  992px;
 @screen-md-min:              @screen-md;
 @screen-desktop:             @screen-md-min;
 
 // Large screen / wide desktop
 // Note: Deprecated @screen-lg and @screen-lg-desktop as of v3.0.1
-@screen-lg:                  1200px;
+@screen-lg:                  1040px;
 @screen-lg-min:              @screen-lg;
 @screen-lg-desktop:          @screen-lg-min;
 
@@ -247,7 +247,7 @@
 // Padding, to be divided by two and applied to the left and right of all columns
 @grid-gutter-width:         30px;
 // Point at which the navbar stops collapsing
-@grid-float-breakpoint:     @screen-sm-min;
+@grid-float-breakpoint:     0px;
 
 
 // Navbar
@@ -626,15 +626,15 @@
 // --------------------------------------------------
 
 // Small screen / tablet
-@container-tablet:             ((720px + @grid-gutter-width));
+@container-tablet:             ((665px + @grid-gutter-width));
 @container-sm:                 @container-tablet;
 
 // Medium screen / desktop
-@container-desktop:            ((998px + @grid-gutter-width));
+@container-desktop:            ((940px + @grid-gutter-width));
 @container-md:                 @container-desktop;
 
 // Large screen / wide desktop
-@container-large-desktop:      ((998px + @grid-gutter-width));
+@container-large-desktop:      ((992px + @grid-gutter-width));
 @container-lg:                 @container-large-desktop;
 
 

@@ -1,0 +1,59 @@
+
+<ul class="nav navbar-nav" data-st-active="">
+	<li class="active"><a href="#!/glowna"><i class="icon-home"></i>GŁÓWNA</a></li>
+	<li><a href="#!/poczekalnia"><i class="icon-coffee"></i>POCZEKALNIA</a>
+	</li>
+	<li><a href="#!/przegladaj"><i class="icon-search"></i>PRZEGLĄDAJ</a>
+	</li>
+	<li><a href="#!/reklamy/dodaj"
+		data-st-access-show="hasRole('user') && !hasRole('company')"
+		st-register-watch="true"><i class="icon-plus-sign-alt"></i> DODAJ</a></li>
+	<li><a href="#!/losuj"><i class="icon-random"></i>LOSUJ</a></li>
+	<li><a href="#!/marki">MARKI</a></li>
+	<li><a href="#!/konkursy">KONKURSY</a></li>
+</ul>
+
+<ul class="  nav navbar-nav navbar-right" data-st-active="">
+	<li data-st-access-show="hasRole('public')" st-register-watch="true"
+		class="last"><a href="#!/uzytkownik/zaloguj"><i
+			class="icon-user"></i>ZALOGUJ</a></li>
+	<li data-st-access-show="hasRole('user')" class="dropdown last"
+		st-register-watch="true"><a class="dropdown-toggle"> <img
+			data-ng-src="{{currentUser.imageUrl}}" />
+	</a>
+		<div class="dropdown-menu user-dropdown-menu"
+			data-ng-controller="UserDropdownCtrl">
+
+			<div class="thumbnail clearfix right-caption">
+				<img class="pull-left" data-ng-src="{{currentUser.imageUrl}}" />
+				<div class="caption ">
+					<span class="heading">{{currentUser.displayName}}</span>
+
+				</div>
+
+				<ul class="nav nav-pills ">
+					<li><a href="#!/uzytkownik/haslo/zmien">Hasło</a></li>
+					<li><a href="#!/uzytkownik/{{currentUser.id}}/reklamy">Reklamy</a></li>
+
+					<li><a href="#!/partnerzy/zarejestruj"
+						data-st-access-show="!hasRole('company')" st-register-watch="true">Firma</a>
+						<a href="#!/partnerzy/{{currentUser.companyId}}"
+						data-st-access-show="hasRole('company')" st-register-watch="true">Firma</a></li>
+				</ul>
+				<button class="btn btn-sm btn-warning" data-ng-click="showProfile()">Wyświetl
+					profil</button>
+				<button class="btn btn-sm btn-warning" data-ng-click="logout()">Wyloguj</button>
+
+
+			</div>
+
+		</div></li>
+</ul>
+<form class="col-md-3 hidden-sm navbar-search navbar-right"
+	data-ng-controller="SearchInputCtrl" data-ng-submit="search()">
+	<div class="input-group input-group-sm input">
+		<span class="input-group-addon"><i class="icon-search"></i></span> <input
+			class="form-control" placeholder="Szukaj..."
+			data-ng-model="model.search" />
+	</div>
+</form>

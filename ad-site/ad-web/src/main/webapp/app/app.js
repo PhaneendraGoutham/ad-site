@@ -1,4 +1,4 @@
-var app = angular.module('spotnikApp', ['ngResource','ui.bootstrap','st-auth-module','blueimp.fileupload','st-common-module','seo']);
+var app = angular.module('spotnikApp', ['ngResource','ui.bootstrap','st-auth-module','blueimp.fileupload','st-common-module','seo','FacebookPluginDirectives']);
 
 app.factory("BaseUrlInterceptor", function() {
     return {
@@ -9,32 +9,29 @@ app.factory("BaseUrlInterceptor", function() {
             return config;
         }
     }
-})
-.factory("CursorChangeInterceptor", ["$q", function($q){
-    return{
-        request : function(config){
-            if(config.url.match("api") && !config.url.match("auth"))
-            $("body").css("cursor", "progress");
+}).factory("CursorChangeInterceptor", ["$q",function($q) {
+    return {
+        request : function(config) {
+            if (config.url.match("api") && !config.url.match("auth"))
+                $("body").css("cursor", "progress");
             return config;
         },
-        response: function(config){
-            if(config.config.url.match("api") && !config.config.url.match("auth"))
+        response : function(config) {
+            if (config.config.url.match("api") && !config.config.url.match("auth"))
                 $("body").css("cursor", "default");
             return config;
         },
-        responseError: function(config){
-            if(config.config.url.match("api") && !config.config.url.match("auth"))
+        responseError : function(config) {
+            if (config.config.url.match("api") && !config.config.url.match("auth"))
                 $("body").css("cursor", "default");
             return $q.reject(config);
         }
     };
-}])
-.config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider','$locationProvider','MetatagsCreatorProvider',
-           
+}]).config(['$routeProvider','$httpProvider','stAuthInterceptorProvider','AuthProvider','CommonFunctionsProvider','$locationProvider','MetatagsCreatorProvider',
 
-function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider, CommonFunctionsProvider,$locationProvider,MetatagsCreatorProvider) {
+function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider, CommonFunctionsProvider, $locationProvider, MetatagsCreatorProvider) {
     $locationProvider.html5Mode(false).hashPrefix('!');
-    
+
     function resolveFetcher($q, _function, param, returnObjectName) {
         var deferred = $q.defer();
         var success = function(data) {
@@ -123,7 +120,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             search : false,
         },
         resolve : adSearchResolve,
-        writeOGMetaTags: true,
+        writeOGMetaTags : true,
     }).when("/poczekalnia", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/ad.html",
@@ -279,23 +276,22 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }],
 
         }
-    }).when("/marki/:brandId/statystyki",{
-        controller: "BrandStatsCtrl",
-        templateUrl: "app/partials/company/brand-stats.html",
-        resolve: {
+    }).when("/marki/:brandId/statystyki", {
+        controller : "BrandStatsCtrl",
+        templateUrl : "app/partials/company/brand-stats.html",
+        resolve : {
             stats : ['$q','CompanyService','$route',function($q, CompanyService, $route) {
                 dateModel = {};
                 dateModel.endDate = new Date();
                 dateModel.startDate = new Date(dateModel.endDate.getFullYear(), dateModel.endDate.getMonth(), 1);
                 var deferred = $q.defer();
-                CompanyService.getBrandStats($route.current.params.brandId,dateModel, function(stats){
+                CompanyService.getBrandStats($route.current.params.brandId, dateModel, function(stats) {
                     deferred.resolve(stats);
                 });
                 return deferred.promise;
             }],
         }
-    })
-    .when("/konkursy/:contestId", {
+    }).when("/konkursy/:contestId", {
         controller : 'ContestCtrl',
         templateUrl : "app/partials/contest/contest.html",
         resolve : {
@@ -507,23 +503,23 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         "reklamy" : "ad",
         "losuj" : "ad/rand",
         "poczekalnia" : "ad",
-        "szukaj": "ad",
+        "szukaj" : "ad",
         "glowna" : "ad?place=0",
-//        "" : "ad?place=0",
+        // "" : "ad?place=0",
         "przegladaj" : "ad",
         "marki" : "brand",
         "odpowiedz" : "",
     });
     MetatagsCreatorProvider.setDefaultMetatags({
-       url : 'http://www.spotnik.pl/#!/glowna',
-       description: 'Spotnik.pl - reklamy nie muszą być nudne!',
-       type: 'website',
-       image: 'http://www.spotnik.pl/resources/img/logo.png',
-       site_name: 'Spotnik.pl',
+        url : 'http://www.spotnik.pl/#!/glowna',
+        description : 'Spotnik.pl - reklamy nie muszą być nudne!',
+        type : 'website',
+        image : 'http://www.spotnik.pl/resources/img/logo.png',
+        site_name : 'Spotnik.pl',
     });
 
-}]).run(['$rootScope','$location','Auth','CommonFunctions','$q', 'MetatagsCreator',function($rootScope, $location, Auth, CommonFunctions, $q,MetatagsCreator) {
-    
+}]).run(['$rootScope','$location','Auth','CommonFunctions','$q','MetatagsCreator',function($rootScope, $location, Auth, CommonFunctions, $q, MetatagsCreator) {
+
     function handleAuthorizationResponse(authorized) {
         if (!authorized) {
             if (Auth.isLoggedIn()) {
@@ -549,4 +545,5 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         }
     });
 
-}])
+}]);
+
