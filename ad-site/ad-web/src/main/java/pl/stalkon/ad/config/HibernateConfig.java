@@ -16,6 +16,7 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import pl.stalkon.ad.core.model.SocialUser;
+import pl.stalkon.ad.core.model.search.ext.IndexRebuilder;
 import pl.stalkon.ad.core.model.service.impl.UserRolePopulator;
 import pl.styall.library.core.model.UserRole;
 import pl.styall.library.core.model.dao.CriteriaConfigurer;
@@ -63,7 +64,9 @@ public class HibernateConfig {
 		prop.setProperty("hibernate.connection.useUnicode", "yes");
 		prop.setProperty("hibernate.hbm2ddl.import_files",
 				new ClassPathResource("hibernate/persistent_logins.sql")
-						.getPath());
+						.getPath());		
+		prop.setProperty("hibernate.search.default.directory_provider", "filesystem");
+		prop.setProperty("hibernate.search.default.indexBase",env.getProperty("app.files.root.directory") + env.getProperty("lucene.index.folder"));
 		sessionFactory.setHibernateProperties(prop);
 		return sessionFactory;
 	}
@@ -77,6 +80,7 @@ public class HibernateConfig {
 	public DatabaseInitPopulator databaseInitPopulator(){
 		DatabaseInitPopulator databasePopulator = new DatabaseInitPopulator();
 		databasePopulator.adPopulator(new UserRolePopulator());
+		databasePopulator.adPopulator(new IndexRebuilder(new Boolean(env.getProperty("lucene.index.rebuild")), transactionManager().getSessionFactory()));
 		return databasePopulator;
 	}
 }

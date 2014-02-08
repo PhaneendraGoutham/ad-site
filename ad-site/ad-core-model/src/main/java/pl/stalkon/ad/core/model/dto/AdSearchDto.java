@@ -24,6 +24,7 @@ public class AdSearchDto {
 	private Long userId;
 	private Integer page = 1;
 	private Long parentId;
+	private String search;
 
 	public Integer getPage() {
 		return page;
@@ -168,6 +169,14 @@ public class AdSearchDto {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getSearch() {
+		return search;
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
 	}
 
 	public Long getParentId() {

@@ -132,6 +132,14 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             search : false,
         },
         resolve : adSearchResolve,
+    }).when("/szukaj", {
+        controller : 'AdSearchCtrl',
+        templateUrl : "app/partials/ad/ad.html",
+        reloadOnSearch : false,
+        adSearchOptions : {
+            search : false,
+        },
+        resolve : adSearchResolve,
     }).when("/przegladaj", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/search.html",
@@ -151,6 +159,16 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         templateUrl : "app/partials/ad/search.html",
         reloadOnSearch : false,
         resolve : adSearchResolve,
+    }).when("/konkursy", {
+        controller : 'ContestListCtrl',
+        templateUrl : "app/partials/contest/contest-list.html",
+        reloadOnSearch : false,
+        resolve : {
+            contestsBrowserWrapper : ['$q','ContestService','$route',function($q, ContestService, $route) {
+                return resolveFetcher($q, ContestService.getContestsByUrl);
+            }],
+
+        }
     }).when("/konkursy/:contestId/reklamy", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/search.html",
@@ -488,7 +506,8 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         "konkursy" : "contest",
         "reklamy" : "ad",
         "losuj" : "ad/rand",
-        "poczekalnia" : "ad?place=1",
+        "poczekalnia" : "ad",
+        "szukaj": "ad",
         "glowna" : "ad?place=0",
 //        "" : "ad?place=0",
         "przegladaj" : "ad",

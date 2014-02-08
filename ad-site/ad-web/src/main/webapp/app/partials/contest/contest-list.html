@@ -2,16 +2,28 @@
 <article class="clearfix col-sm-12" data-ng-repeat="contest in contests">
 	<div
 		class="thumbnail clearfix right-caption col-sm-12 margin-top margin-bottom">
-		<img data-ng-src="{{contest.imageUrl}}" class="contest-image" />
-		<div class="">
-			<h3 class="wrap-text  list-group-item-heading">
-				<a href="#!/konkursy/{{contest.id}}" class="text-info">{{contest.name}}</a>
-			</h3>
-			<p class="list-group-item-text contest-description">{{contest.description}}</p>
+		<!-- 		<img data-ng-src="{{contest.imageUrl}}" class="contest-image" /> -->
+
+		<div class="row">
+			<div class="col-sm-9">
+				<h3 class="wrap-text  list-group-item-heading" >
+				<a href="
+					#!/konkursy/{{contest.id}}" class="text-info"
+					title="{{contest.name}}">
+					{{contest.name}}</a>
+				</h3>
+			</div>
+			<div class="col-sm-3 text-right">
+				<span class="label label-success" data-ng-show="contest.state == 'ON_GOING'">Trwa</span>
+				<span class="label label-danger" data-ng-show="contest.state == 'FINISHED' || contest.state == 'SCORED'">Zakończony</span>
+			</div>
 		</div>
+		<p class="list-group-item-text contest-description">{{contest.description}}</p>
 	</div>
 </article>
-<article class="clearfix text-center" data-ng-show="smallnumPages > 1 && contests.length > 0" data-ng-controller="PagingCtrl">
+<article class="clearfix text-center"
+	data-ng-show="smallnumPages > 1 && contests.length > 0"
+	data-ng-controller="PagingCtrl">
 	<pagination direction-links="false" total-items="total"
 		page="currentPage" num-pages="smallnumPages" max-size="10"
 		items-per-page="5" on-select-page="selectPage(page)"></pagination>

@@ -7,6 +7,7 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
     }
     $scope.$watch('filters.page', function(v) {
         $scope.currentPage = parseInt($scope.filters.page) || 1;
+        window.scrollTo(0,0);
     });
 }]).provider('CommonFunctions', function() {
     var self = this;

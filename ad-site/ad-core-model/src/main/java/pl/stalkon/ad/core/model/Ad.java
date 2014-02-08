@@ -19,7 +19,24 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+
+import org.apache.lucene.analysis.StopwordAnalyzerBase;
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.NGramFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.solr.analysis.StempelPolishStemFilterFactory;
+import org.apache.solr.analysis.StopFilterFactory;
 import org.hibernate.annotations.Formula;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.AnalyzerDefs;
+import org.hibernate.search.annotations.Boost;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 
 import pl.stalkon.ad.core.model.dto.VideoData;
 import pl.stalkon.ad.core.model.dto.VideoData.Provider;
@@ -27,14 +44,32 @@ import pl.styall.library.core.model.CommonEntity;
 
 @Entity
 @Table(name = "ads")
-
+@Indexed
+@AnalyzerDefs({
+		@AnalyzerDef(name = "polishAnalyzer", tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class), filters = {
+				@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+				@TokenFilterDef(factory = StempelPolishStemFilterFactory.class) }),
+		@AnalyzerDef(name = "nGramAnalyzer", tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class), filters = {
+				@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+				@TokenFilterDef(factory = StopFilterFactory.class, params = {
+						@Parameter(name = "words", value = "spring-config/stopwords.txt"),
+						@Parameter(name = "ignoreCase", value = "true") }),
+				@TokenFilterDef(factory = NGramFilterFactory.class, params = {
+						@Parameter(name = "minGramSize", value = "3"),
+						@Parameter(name = "maxGramSize", value = "10") }) }) })
 public class Ad extends CommonEntity {
 
 	private static final long serialVersionUID = 1335218634734582331L;
 
-	public static final List<String> JSON_SHOW = Arrays.asList("id","place","dateOnMain","creationDate","year","title","description","ageProtected","approved","user.displayName","user.id","user.userData.imageUrl",
-		"brand.name","brand.id","brand.smallLogoUrl","rank","voteCount","thumbnail","videoUrl", "contestAd.winner", "official", "parentId", "videoData.provider.name", "videoData.provider.thumbnailUrl", "videoData.videoId");
-	
+	public static final List<String> JSON_SHOW = Arrays.asList("id", "place",
+			"dateOnMain", "creationDate", "year", "title", "description",
+			"ageProtected", "approved", "user.displayName", "user.id",
+			"user.userData.imageUrl", "brand.name", "brand.id",
+			"brand.smallLogoUrl", "rank", "voteCount", "thumbnail", "videoUrl",
+			"contestAd.winner", "official", "parentId",
+			"videoData.provider.name", "videoData.provider.thumbnailUrl",
+			"videoData.videoId");
+
 	public enum Type {
 		MOVIE, PICTURE, GAME
 	}
@@ -58,9 +93,13 @@ public class Ad extends CommonEntity {
 	private Integer year;
 
 	@Column(nullable = false, length = 128)
+	@Field
+	@Analyzer(definition = "nGramAnalyzer")
 	private String title;
 
 	@Column(length = 512)
+	@Field
+	@Analyzer(definition = "polishAnalyzer")
 	private String description;
 
 	@Column(nullable = false, columnDefinition = "BOOL default false", name = "age_protected")
@@ -75,6 +114,7 @@ public class Ad extends CommonEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "brand_id")
+	@IndexedEmbedded
 	private Brand brand;
 
 	// @ManyToOne(fetch = FetchType.LAZY, optional = true,
@@ -116,14 +156,13 @@ public class Ad extends CommonEntity {
 
 	@Column(nullable = false, columnDefinition = "BOOL default false")
 	private Boolean official;
-	
+
 	@ManyToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id", insertable = true, updatable = false)
 	private Ad parent = null;
-	
+
 	@Column(name = "parent_id", insertable = false, updatable = false)
 	private Long parentId;
-	
 
 	public String getThumbnail() {
 		if (wistiaVideoData != null) {
@@ -133,13 +172,15 @@ public class Ad extends CommonEntity {
 		}
 	}
 
-	public VideoData getVideoData(){
-		if(wistiaVideoData != null){
+	public VideoData getVideoData() {
+		if (wistiaVideoData != null) {
 			return new VideoData(Provider.WISTIA, wistiaVideoData.getVideoId());
-		}else{
-			return new VideoData(Provider.YOUTUBE, youtubeVideoData.getVideoId());
+		} else {
+			return new VideoData(Provider.YOUTUBE,
+					youtubeVideoData.getVideoId());
 		}
 	}
+
 	public ContestAd getContestAd() {
 		return contestAd;
 	}
@@ -157,7 +198,7 @@ public class Ad extends CommonEntity {
 	}
 
 	public Double getRank() {
-		if(rank== null)
+		if (rank == null)
 			return new Double(0);
 		return rank;
 	}

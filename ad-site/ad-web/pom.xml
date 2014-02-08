@@ -35,6 +35,12 @@
     	<groupId>pl.styall.library</groupId>
     	<artifactId>social-module</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
+    	<exclusions>
+    		<exclusion>
+    			<artifactId>hibernate-entitymanager</artifactId>
+    			<groupId>org.hibernate</groupId>
+    		</exclusion>
+    	</exclusions>
     </dependency>
     <dependency>
     	<groupId>pl.stalkon</groupId>

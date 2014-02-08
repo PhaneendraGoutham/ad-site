@@ -7,6 +7,7 @@
 				odpowiedzi</a></li>
 		<li><a href="#!/reklamy/{{singleAd.id}}/odpowiedz">Dodaj
 				odpowiedź wideo</a></li>
+		<li ><a href="#!/marki/{{singleAd.brand.id}}">{{singleAd.brand.name}}</a></li>
 	</ul>
 </article>
 
@@ -16,7 +17,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class=" col-sm-8">
-				<a href="#!/reklamy/{{ad.id}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
+				<a href="#!/reklamy/{{ad.id}}" title="{{ad.title}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
 			</div>
 			<div class=" col-sm-4 margin-top"
 				data-ng-show="ad.official && ad.brand.smallLogoUrl">
@@ -82,7 +83,7 @@
 	<div class="row margin-bottom" ng-switch on="bottomVideoPanelView">
 
 		<div data-ng-switch-when="comments">
-			<div class="fb-comments" data-href="ad/{{ad.id }}" data-width="590"
+			<div class="fb-comments" data-href="http://www.spotnik.pl/#!/reklamy/{{ad.id}}" data-width="590"
 				data-num-posts="20" data-colorscheme="dark"></div>
 		</div>
 		<div data-ng-switch-when="inform" class=" col-md-12">

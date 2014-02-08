@@ -12,13 +12,16 @@
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <title></title>
-<meta name="description" content="Spotnik.pl - reklamy nie muszą być nudne!" />
+<meta name="description"
+	content="Spotnik.pl - reklamy nie muszą być nudne!" />
 <meta name="viewport" content="width=device-width" />
 <meta name="fragment" content="!" />
 
-<meta property="og:{{k}}" content="{{v}}" data-ng-repeat="(k,v) in metatags"/>
+<meta property="og:{{k}}" content="{{v}}"
+	data-ng-repeat="(k,v) in metatags" />
 
-<meta name="google-site-verification" content="kOM3EvVy70dkyvt64caBxWhYTRoCPIJt2rgQyK0XVoE" />
+<meta name="google-site-verification"
+	content="kOM3EvVy70dkyvt64caBxWhYTRoCPIJt2rgQyK0XVoE" />
 <!-- stylesheets -->
 <link rel="stylesheet" href="resources/css/bootstrap.css" />
 <link rel="stylesheet" href="resources/css/font-awesome.css" />
@@ -59,7 +62,7 @@
 	src="app/controllers/company/company-controllers.js"></script>
 <script type="text/javascript"
 	src="app/controllers/contest/contest-controller.js"></script>
-	
+
 <!-- services -->
 <script type="text/javascript" src="app/services/ad-services.js"></script>
 <script type="text/javascript" src="app/services/company-services.js"></script>
@@ -78,11 +81,24 @@
 <!-- <script src="resources/components/jquery.fileupload-validate.js"></script> -->
 <script src="resources/components/jquery.fileupload-angular.js"></script>
 <script type="text/javascript" src="resources/components/angular-seo.js"></script>
+
 </head>
 <body>
 	<!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
+	<div id="fb-root"></div>
+	<script>
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id))
+                return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/pl_PL/all.js#xfbml=1&appId=537711946262789";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
 	<div class="navbar navbar-default navbar-static-top">
 		<div class="container">
 			<div class="navbar-custom-brand">
@@ -90,8 +106,8 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav" data-st-active="">
-					<li class="active"><a href="#!/glowna"><i class="icon-home"></i>GŁÓWNA</a>
-					</li>
+					<li class="active"><a href="#!/glowna"><i
+							class="icon-home"></i>GŁÓWNA</a></li>
 					<li><a href="#!/poczekalnia"><i class="icon-coffee"></i>POCZEKALNIA</a>
 					</li>
 					<li><a href="#!/przegladaj"><i class="icon-search"></i>PRZEGLĄDAJ</a>
@@ -100,15 +116,17 @@
 						data-st-access-show="hasRole('user') && !hasRole('company')"
 						st-register-watch="true"><i class="icon-plus-sign-alt"></i>
 							DODAJ</a></li>
-					<li ><a href="#!/losuj"><i class="icon-random"></i>LOSUJ</a></li>
+					<li><a href="#!/losuj"><i class="icon-random"></i>LOSUJ</a></li>
 					<li><a href="#!/marki">MARKI</a></li>
+					<li><a href="#!/konkursy">KONKURSY</a></li>
 				</ul>
+
 				<ul class="nav navbar-nav navbar-right" data-st-active="">
 					<li data-st-access-show="hasRole('public')"
-						st-register-watch="true"><a href="#!/uzytkownik/zaloguj"><i
+						st-register-watch="true" class="last"><a href="#!/uzytkownik/zaloguj"><i
 							class="icon-user"></i>ZALOGUJ</a></li>
-					<li data-st-access-show="hasRole('user')" class="dropdown"
-						st-register-watch="true"><a class="dropdown-toggle"> <img
+					<li data-st-access-show="hasRole('user')" class="dropdown last"
+						st-register-watch="true" ><a class="dropdown-toggle"> <img
 							data-ng-src="{{currentUser.imageUrl}}" />
 					</a>
 						<div class="dropdown-menu" data-ng-controller="UserDropdownCtrl">
@@ -140,6 +158,14 @@
 
 						</div></li>
 				</ul>
+				<form class="col-sm-3 navbar-search navbar-right"
+					data-ng-controller="SearchInputCtrl" data-ng-submit="search()">
+					<div class="input-group input-group-sm input">
+						<span class="input-group-addon"><i class="icon-search"></i></span>
+						<input class="form-control" placeholder="Szukaj..."
+							data-ng-model="model.search" />
+					</div>
+				</form>
 			</div>
 			<!--/.navbar-collapse -->
 		</div>
@@ -172,7 +198,7 @@
 						</a>
 						<div class="caption">
 							<div class="wrap-text text-info">
-								<a href="#!/reklamy/{{ad.id}}">{{ad.title}}</a>
+								<a href="#!/reklamy/{{ad.id}}" title="{{ad.title}}">{{ad.title}}</a>
 							</div>
 							<!-- 							<small>użytkownik: <a -->
 							<!-- 								href="#!/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a></small> -->

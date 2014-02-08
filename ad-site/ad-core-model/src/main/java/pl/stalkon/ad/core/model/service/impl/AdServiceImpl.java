@@ -80,7 +80,7 @@ public class AdServiceImpl implements AdService {
 		Ad ad = adDao.get(id);
 		Hibernate.initialize(ad.getUser());
 		Hibernate.initialize(ad.getBrand());
-//		ad.getParent().getId();
+		// ad.getParent().getId();
 		return ad;
 	}
 
@@ -103,13 +103,13 @@ public class AdServiceImpl implements AdService {
 			contestAd.setAd(ad);
 			contestAd.setContest(contest);
 			ad.setContestAd(contestAd);
-			adPostDto.setBrandId(contest.getBrand().getId());			
+			adPostDto.setBrandId(contest.getBrand().getId());
 		}
-		if(adPostDto.getParentId() != null){
+		if (adPostDto.getParentId() != null) {
 			Ad parent = adDao.get(adPostDto.getParentId());
 			parent.setId(adPostDto.getParentId());
 			ad.setParent(parent);
-			adPostDto.setBrandId(parent.getBrand().getId());	
+			adPostDto.setBrandId(parent.getBrand().getId());
 		}
 		Brand brand = brandDao.get(adPostDto.getBrandId());
 		// brand.addAdd(ad);
@@ -317,12 +317,24 @@ public class AdServiceImpl implements AdService {
 	@Transactional
 	public AdBrowserWrapper get(AdSearchDto adSearchDto, Paging paging,
 			boolean approved) {
-		List<DaoQueryObject> queryObjectList = glueConditions(adSearchDto,
-				approved);
+		List<DaoQueryObject> queryObjectList;
 		Order order = prepareOrder(adSearchDto);
-		return adDao.get(queryObjectList, order, paging);
+		if (adSearchDto.getSearch() == null) {
+			queryObjectList = glueConditions(adSearchDto,
+					approved);
+			return adDao.get(queryObjectList, order, paging);
+		}else{
+			queryObjectList = new ArrayList<DaoQueryObject>(1);
+			queryObjectList.add(new DaoQueryObject("search", adSearchDto.getSearch()));
+			if (!approved)
+				queryObjectList.add(new DaoQueryObject("approved", true));
+			return adDao.getByLuceneSearch(queryObjectList, order, paging);
+		}
+	
+		
 	}
-
+	
+	
 	private List<DaoQueryObject> glueConditions(AdSearchDto adSearchDto,
 			boolean approved) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();

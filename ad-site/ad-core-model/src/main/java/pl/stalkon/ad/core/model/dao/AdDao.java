@@ -5,11 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.ScrollableResults;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.springframework.asm.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -50,6 +57,16 @@ public class AdDao extends AbstractDao<Ad> {
 		return new AdBrowserWrapper(ads, total);
 	}
 
+	public AdBrowserWrapper getByLuceneSearch(
+			List<DaoQueryObject> queryObjectList, Order order, Paging paging) {
+		Criteria adCriteria = prepareCriteria(queryObjectList);
+		FullTextQuery fq = prepareLuceneSearch((String) queryObjectList.get(0).value, paging);
+		Long total = new Long(fq.getResultSize());
+		fq.setCriteriaQuery(adCriteria);
+		List<Ad> ads = (List<Ad>) fq.list();
+		return new AdBrowserWrapper(ads, total);
+	}
+
 	public Long getBrandAdsCount(Long brandId) {
 		return (Long) currentSession()
 				.createQuery("select count(*) from Ad where brand = :brandId")
@@ -85,7 +102,11 @@ public class AdDao extends AbstractDao<Ad> {
 		boolean added = false;
 		for (DaoQueryObject qo : queryObjectList) {
 			boolean temp;
-			if (qo.name.equals("user")) {
+			if (qo.name.equals("search")) {
+				// addLuceneSearch(criteria, alias, (String) qo.value);
+				temp = false;
+//				return added;
+			} else if (qo.name.equals("user")) {
 				temp = userDao.addRestrictions(criteria, "user",
 						(List<DaoQueryObject>) qo.value);
 			} else if (qo.name.equals("contestAd")) {
@@ -93,7 +114,6 @@ public class AdDao extends AbstractDao<Ad> {
 				temp = contestAdDao.addRestrictions(criteria, "contestAd",
 						(List<DaoQueryObject>) qo.value);
 			} else if (qo.name.equals("brand")) {
-
 				temp = brandDao.addRestrictions(criteria, "brand",
 						(List<DaoQueryObject>) qo.value);
 			} else if (qo.name.equals("tags")) {
@@ -110,6 +130,22 @@ public class AdDao extends AbstractDao<Ad> {
 			}
 		}
 		return added;
+	}
+
+	public FullTextQuery prepareLuceneSearch(String search, Paging paging) {
+		FullTextSession fullTextSession = Search
+				.getFullTextSession(currentSession());
+		QueryBuilder qb = fullTextSession.getSearchFactory()
+				.buildQueryBuilder().forEntity(Ad.class).get();
+		org.apache.lucene.search.Query luceneQuery = qb.keyword()
+				.onFields("title", "description", "brand.name")
+				.matching(search).createQuery();
+		// wrap Lucene query in a javax.persistence.Query
+		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(
+				luceneQuery, Ad.class);
+		fullTextQuery.setFirstResult(paging.from);
+		fullTextQuery.setMaxResults(paging.perPage);
+		return fullTextQuery;
 	}
 
 	public boolean isOwner(Long adId, Long userId) {

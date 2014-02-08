@@ -412,3 +412,14 @@ app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$locati
         }
     }
 }]);
+app.controller("SearchInputCtrl", ["$scope", "$location", function($scope, $location){
+    init();
+    function init(){
+        $scope.model = {};
+        $scope.search = function(){
+            $location.path("/szukaj/");
+            $location.search({});
+            $location.search($scope.model);
+        };
+    }
+}]);

@@ -16,6 +16,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.Field;
+
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
@@ -31,6 +35,8 @@ public class Brand extends CommonEntity {
 	private List<Ad> ads;
 
 	@Column(nullable = false)
+	@Field
+	@Analyzer(definition = "nGramAnalyzer")
 	private String name;
 
 	@Column(name = "logo_url")
