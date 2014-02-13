@@ -6,14 +6,18 @@
 	<url>
 		<loc>http://www.spotnik.pl/#!/glowna</loc>
 		<changefreq>daily</changefreq>
-		
+
 	</url>
 	<url>
 		<loc>http://www.spotnik.pl/#!/poczekalnia</loc>
 		<changefreq>daily</changefreq>
 	</url>
-		<url>
+	<url>
 		<loc>http://www.spotnik.pl/#!/marki</loc>
+		<changefreq>daily</changefreq>
+	</url>
+	<url>
+		<loc>http://www.spotnik.pl/#!/konkursy</loc>
 		<changefreq>daily</changefreq>
 	</url>
 </urlset> 

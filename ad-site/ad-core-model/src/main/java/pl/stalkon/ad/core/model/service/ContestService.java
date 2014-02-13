@@ -58,5 +58,6 @@ public interface ContestService {
 	public List<User> setWinnerUserInfo(List<Ad> ads, Long contestId);
 	
 	public Long getBrandContestCount(Long brandId);
+	public void finish(Long contestId);
 	
 }

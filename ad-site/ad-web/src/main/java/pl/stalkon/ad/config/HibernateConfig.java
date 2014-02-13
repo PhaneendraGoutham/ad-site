@@ -13,6 +13,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.commonj.TimerManagerTaskScheduler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import pl.stalkon.ad.core.model.SocialUser;
@@ -83,4 +85,5 @@ public class HibernateConfig {
 		databasePopulator.adPopulator(new IndexRebuilder(new Boolean(env.getProperty("lucene.index.rebuild")), transactionManager().getSessionFactory()));
 		return databasePopulator;
 	}
+	
 }

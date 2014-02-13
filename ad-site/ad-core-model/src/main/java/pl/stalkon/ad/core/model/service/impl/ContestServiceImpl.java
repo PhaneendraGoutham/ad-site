@@ -241,6 +241,13 @@ public class ContestServiceImpl implements ContestService{
 		contest.setState(State.SCORED);
 		contestDao.update(contest);
 	}
+	@Override
+	@Transactional
+	public void finish(Long contestId) {
+		Contest contest = contestDao.get(contestId);
+		contest.setState(State.FINISHED);
+		contestDao.update(contest);
+	}
 
 	@Override
 	@Transactional
