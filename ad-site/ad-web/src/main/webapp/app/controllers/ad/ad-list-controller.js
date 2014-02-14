@@ -1,4 +1,4 @@
-﻿app.controller('AdSearchCtrl', ['AdFactory','$scope','filterFilter','$location','CommonFunctions','AdService','$http','possibleTags','possibleBrands','adBrowserWrapper',function(AdFactory, $scope, filterFilter, $location, CommonFunctions, AdService, $http, possibleTags, possibleBrands, adBrowserWrapper) {
+﻿app.controller('AdSearchCtrl', ['$scope','filterFilter','$location','CommonFunctions','AdService','$http','possibleTags','possibleBrands','adBrowserWrapper',function($scope, filterFilter, $location, CommonFunctions, AdService, $http, possibleTags, possibleBrands, adBrowserWrapper) {
     $scope.search = function() {
         var params = $scope.filters;
         $.each(params, function(key, val) {
@@ -62,7 +62,7 @@
                 $scope.total = data.total;
             } else
                 $scope.model.ads = [data];
-            
+
         });
     }
     function init() {
@@ -158,7 +158,7 @@
 
 }]);
 
-app.controller('RatingCtrl', ['$scope','AdService', '$timeout',function($scope, AdService, $timeout) {
+app.controller('RatingCtrl', ['$scope','AdService','$timeout',function($scope, AdService, $timeout) {
     init();
 
     function init() {
@@ -193,7 +193,7 @@ app.controller('RatingCtrl', ['$scope','AdService', '$timeout',function($scope, 
         $scope.ratingStates = [{
             stateOn : 'icon-star icon-large',
             stateOff : 'icon-star-empty icon-large'
-        },];
+        }];
 
     }
 }]);
@@ -216,7 +216,7 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
         $scope.errorMessages = ErrorFactory.getErrorMessages({
             pattern : {
                 url : "Tylko prawidłowe linki youtube"
-            },
+            }
         });
 
         $scope.companyUser = Auth.hasRole('company');
@@ -256,7 +256,6 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
                     $scope.regModel.thumbnail = jsonFile.thumbnail.url;
                     $scope.regModel.duration = Math.floor(jsonFile.duration);
                     $scope.$apply();
-
                 },
                 'fileQueued' : function(file) {
                     var ext = file.name.split('.').pop().toLowerCase();
@@ -270,7 +269,7 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
                         $(".upload-status").removeClass('hidden');
                         $("#upload-file-error").addClass('hidden');
                     }
-                },
+                }
             };
             var uploadWidget = new wistia.UploadWidget({
                 divId : 'wistia-upload-widget',
@@ -286,7 +285,7 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
             $scope.openBrandsModal = function() {
                 brandModal = $modal.open({
                     templateUrl : 'tagsBrandsPickerModal.html',
-                    scope : brandModalScope,
+                    scope : brandModalScope
 
                 });
 
@@ -305,7 +304,7 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
         $scope.openTagsModal = function() {
             tagModal = $modal.open({
                 templateUrl : 'tagsBrandsPickerModal.html',
-                scope : tagModalScope,
+                scope : tagModalScope
 
             });
 
@@ -346,7 +345,7 @@ app.controller('TopAdsCtrl', ['$scope','AdService',function($scope, AdService) {
         AdService.getAds({
             orderBy : "rank",
             order : "desc",
-            page : "1",
+            page : "1"
         }, function(data) {
             $scope.model.topAds = data.ads;
         });
@@ -382,41 +381,42 @@ app.controller('AdAdminPanelCtrl', ['$scope','AdService',function($scope, AdServ
         };
     }
 }]);
-app.controller('AdCtrl', ['$scope', 'AdService','$rootScope', "$route", '$location','$timeout', function($scope, AdService,$rootScope,$route,$location,$timeout){
+app.controller('AdCtrl', ['$scope','AdService','$rootScope',"$route",'$location','$timeout',function($scope, AdService, $rootScope, $route, $location, $timeout) {
     init();
-    function init(){
+    function init() {
         $scope.model = {};
-//        $scope.model.ad = {};
-//        $scope.model.facebookAdThumbnail = $scope.ad.thumbnail.substring(0,$scope.ad.thumbnail.indexOf("?"));
+        // $scope.model.ad = {};
+        // $scope.model.facebookAdThumbnail =
+        // $scope.ad.thumbnail.substring(0,$scope.ad.thumbnail.indexOf("?"));
         $scope.tooltip = {};
-        $scope.reportAbuse = function(){
-            AdService.reportAbuse($scope.ad.id, $scope.model.abuseMessage, function(){
+        $scope.reportAbuse = function() {
+            AdService.reportAbuse($scope.ad.id, $scope.model.abuseMessage, function() {
                 $scope.tooltip.informSent = true;
                 $scope.model.abuseMessage = "";
-                $timeout(function(){
-                    $scope.bottomVideoPanelView ="";
+                $timeout(function() {
+                    $scope.bottomVideoPanelView = "";
                 }, 1000);
-                
+
             });
         };
-        
-        if($route.current.$$route.writeOGMetaTags){
+
+        if ($route.current.$$route.writeOGMetaTags) {
             $scope.metatags.title = $scope.ad.title;
             $scope.metatags.description = $scope.ad.description.substring(0, 160);
-            if($scope.ad.videoData.provider.name == "youtube"){
+            if ($scope.ad.videoData.provider.name == "youtube") {
                 $scope.metatags.image = $scope.ad.videoData.provider.thumbnailUrl + "/" + $scope.ad.videoData.videoId + "/0.jpg";
-            }else{
+            } else {
                 $scope.metatags.image = $scope.ad.thumbnail.replace(/image_crop_resized=.*&/, "");
             }
-            $scope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id; 
+            $scope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id;
         }
     }
 }]);
-app.controller("SearchInputCtrl", ["$scope", "$location", function($scope, $location){
+app.controller("SearchInputCtrl", ["$scope","$location",function($scope, $location) {
     init();
-    function init(){
+    function init() {
         $scope.model = {};
-        $scope.search = function(){
+        $scope.search = function() {
             $location.path("/szukaj/");
             $location.search({});
             $location.search($scope.model);

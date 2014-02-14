@@ -79,7 +79,7 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
             },
             getTranslatedUrl : function() {
                 return this.translateUrl($location.path());
-            },
+            }
         }
     }];
 }).factory('ErrorFactory', function() {
@@ -107,7 +107,7 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
         },
         max : {
             def : 'Podana liczba musi być mniejsza od {{data-max}}'
-        },
+        }
     };
     this.getErrorMessages = function(customErrorMessages) {
         return $.extend(true, this.errorMessages, customErrorMessages);
@@ -160,7 +160,7 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
     module = angular.module('FacebookPluginDirectives', []);
 
     createDirective = function(name) {
-        return module.directive(name,['$timeout', function($timeout) {
+        return module.directive(name, ['$timeout',function($timeout) {
             return {
                 restrict : 'C',
                 compile : function(scope, element, attributes) {

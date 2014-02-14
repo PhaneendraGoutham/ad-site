@@ -8,8 +8,8 @@ app.controller('CompanyRegistrationCtrl', ['CompanyService','$location','$scope'
             CompanyService.register($scope.regModel, function(data) {
                 CommonFunctions.pushAlert('success', "Dziękujemy za chęć współpracy z nami. W ciągu 24h otrzymasz od nas email z dalszymi instrukcjami.");
                 $location.path("/");
-            }, function(message, statusCode){
-                if(statusCode == 443){
+            }, function(message, statusCode) {
+                if (statusCode == 443) {
                     CommonFunctions.pushAlert('danger', "Już wcześniej wyraziłeś/łaś chęć współpracy z nami. Jeśli nie dostałeś/łaś od nas wiadomości w ciągu 24h od rejestracji skontaktuj się z nami.");
                 }
             });
@@ -21,7 +21,7 @@ app.controller('CompanyActivateCtrl', ['$routeParams','CompanyService','$locatio
     init();
     function init() {
         $scope.message = "Czy chcesz aktywować firmę.";
-        $scope.cancel = function(){
+        $scope.cancel = function() {
             $location.path("/");
         };
         $scope.ok = function() {
@@ -44,13 +44,13 @@ app.controller("BrandListCtrl", ['brands','$scope',function(brands, $scope) {
 
     }
 }]);
-app.controller("BrandStatsCtrl", ['stats', '$scope', 'CompanyService', '$routeParams', function(stats,$scope, CompanyService,$routeParams){
+app.controller("BrandStatsCtrl", ['stats','$scope','CompanyService','$routeParams',function(stats, $scope, CompanyService, $routeParams) {
     init();
-    function init(){
+    function init() {
         $scope.wistiaStats = stats;
         $scope.dateModel = {};
-        $scope.getStats = function(){
-            CompanyService.getBrandStats($routeParams.brandId,$scope.dateModel, function(data){
+        $scope.getStats = function() {
+            CompanyService.getBrandStats($routeParams.brandId, $scope.dateModel, function(data) {
                 $scope.wistiaStats = data;
             });
         };
@@ -80,7 +80,7 @@ app.controller('BrandRegistrationCtrl', ['$scope','ErrorFactory','$location','$r
                 type : "POST",
                 dataType : "json",
                 headers : {},
-                autoUpload : true,
+                autoUpload : true
             };
             $.extend($scope.options.headers, Auth.getAuthHeader());
             $("#fileupload").bind('fileuploaddone', function(e, data) {

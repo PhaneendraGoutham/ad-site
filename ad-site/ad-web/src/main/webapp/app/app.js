@@ -1,4 +1,4 @@
-var app = angular.module('spotnikApp', ['ngResource','ui.bootstrap','st-auth-module','blueimp.fileupload','st-common-module','seo','FacebookPluginDirectives']);
+var app = angular.module('spotnikApp', ['ui.bootstrap','st-auth-module','blueimp.fileupload','st-common-module','seo','FacebookPluginDirectives']);
 
 app.factory("BaseUrlInterceptor", function() {
     return {
@@ -8,7 +8,7 @@ app.factory("BaseUrlInterceptor", function() {
             }
             return config;
         }
-    }
+    };
 }).factory("CursorChangeInterceptor", ["$q",function($q) {
     return {
         request : function(config) {
@@ -56,11 +56,11 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         contest : "contest",
         thisBrand : {
             role : "company",
-            url : "/auth/brand/:brandId",
+            url : "/auth/brand/:brandId"
         },
         thisContest : {
             role : "company",
-            url : "/auth/contest/:contestId",
+            url : "/auth/contest/:contestId"
         }
     };
 
@@ -87,7 +87,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         }],
         adBrowserWrapper : ['$q','AdService',function($q, AdService) {
             return resolveFetcher($q, AdService.getAdsByUrl);
-        }],
+        }]
     };
 
     $routeProvider.when("/", {
@@ -97,9 +97,9 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
-            search : false,
+            search : false
         },
-        resolve : adSearchResolve,
+        resolve : adSearchResolve
     }).when("/reklamy/dodaj", {
         controller : 'AdRegistrationCtrl',
         templateUrl : "app/partials/ad/ad-registration.html",
@@ -110,52 +110,52 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
-            }],
-        },
+            }]
+        }
     }).when("/reklamy/:adId", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
-            search : false,
+            search : false
         },
         resolve : adSearchResolve,
-        writeOGMetaTags : true,
+        writeOGMetaTags : true
     }).when("/poczekalnia", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
-            search : false,
+            search : false
         },
-        resolve : adSearchResolve,
+        resolve : adSearchResolve
     }).when("/szukaj", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
-            search : false,
+            search : false
         },
-        resolve : adSearchResolve,
+        resolve : adSearchResolve
     }).when("/przegladaj", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/search.html",
         reloadOnSearch : false,
         adSearchOptions : {},
-        resolve : adSearchResolve,
+        resolve : adSearchResolve
     }).when("/losuj/", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/search.html",
         reloadOnSearch : false,
         adSearchOptions : {
-            search : false,
+            search : false
         },
-        resolve : adSearchResolve,
+        resolve : adSearchResolve
     }).when("/uzytkownik/:userId/reklamy", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/search.html",
         reloadOnSearch : false,
-        resolve : adSearchResolve,
+        resolve : adSearchResolve
     }).when("/konkursy", {
         controller : 'ContestListCtrl',
         templateUrl : "app/partials/contest/contest-list.html",
@@ -163,8 +163,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             contestsBrowserWrapper : ['$q','ContestService','$route',function($q, ContestService, $route) {
                 return resolveFetcher($q, ContestService.getContestsByUrl);
-            }],
-
+            }]
         }
     }).when("/konkursy/:contestId/reklamy", {
         controller : 'AdSearchCtrl',
@@ -172,19 +171,18 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         reloadOnSearch : false,
         adSearchOptions : {
             filters : {
-                brands : false,
+                brands : false
             }
         },
-        resolve : adSearchResolve,
+        resolve : adSearchResolve
     }).when("/konkursy/:contestId/odpowiedzi", {
         controller : 'ContestAnswerListCtrl',
         templateUrl : "app/partials/contest/contest-answer.html",
         resolve : {
             answerBrowserWrapper : ['$q','ContestService','$route',function($q, ContestService, $route) {
                 return resolveFetcher($q, ContestService.getAnswers, $route.current.params.contestId);
-            }],
-        },
-    // access : "thisContest",
+            }]
+        }
     }).when("/konkursy/:contestId/reklamy/dodaj", {
         controller : 'AdRegistrationCtrl',
         templateUrl : "app/partials/ad/ad-registration.html",
@@ -206,21 +204,21 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
-            }],
-        },
+            }]
+        }
     }).when("/konkursy/:contestId/odpowiedzi/dodaj", {
         controller : 'ContestAnswerRegistrationCtrl',
         templateUrl : "app/partials/contest/contest-answer-registration.html",
-        access : userRoles.user,
+        access : userRoles.user
     }).when("/marki/:brandId/reklamy", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/search.html",
         adSearchOptions : {
             filters : {
-                brands : false,
+                brands : false
             }
         },
-        resolve : adSearchResolve,
+        resolve : adSearchResolve
     }).when("/marki/:brandId/reklamy/dodaj", {
         controller : 'AdRegistrationCtrl',
         templateUrl : "app/partials/ad/ad-registration.html",
@@ -241,8 +239,8 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
-            }],
-        },
+            }]
+        }
     }).when("/reklamy/:parentId/odpowiedz", {
         controller : 'AdRegistrationCtrl',
         templateUrl : "app/partials/ad/ad-registration.html",
@@ -264,8 +262,8 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
-            }],
-        },
+            }]
+        }
     }).when("/marki/:brandId/konkursy", {
         controller : 'ContestListCtrl',
         templateUrl : "app/partials/contest/contest-list.html",
@@ -273,8 +271,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             contestsBrowserWrapper : ['$q','ContestService','$route',function($q, ContestService, $route) {
                 return resolveFetcher($q, ContestService.getContestsByUrl);
-            }],
-
+            }]
         }
     }).when("/marki/:brandId/statystyki", {
         controller : "BrandStatsCtrl",
@@ -289,7 +286,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                     deferred.resolve(stats);
                 });
                 return deferred.promise;
-            }],
+            }]
         }
     }).when("/konkursy/:contestId", {
         controller : 'ContestCtrl',
@@ -297,7 +294,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             contest : ['$q','ContestService','$route',function($q, ContestService, $route) {
                 return resolveFetcher($q, ContestService.fetchContest, $route.current.params.contestId);
-            }],
+            }]
         }
     }).when("/konkursy/:contestId/edytuj", {
         controller : 'ContestRegistrationCtrl',
@@ -305,13 +302,12 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             contest : ['$q','ContestService','$route',function($q, ContestService, $route) {
                 return resolveFetcher($q, ContestService.fetchContest, $route.current.params.contestId);
-            }],
+            }]
         },
-        access : userRoles.thisContest,
+        access : userRoles.thisContest
     }).when("/uzytkownik/zaloguj", {
         controller : 'UserLoginCtrl',
-        templateUrl : "app/partials/user/user-login.html",
-
+        templateUrl : "app/partials/user/user-login.html"
     }).when("/marki/:brandId/konkursy/zarejestruj", {
         controller : 'ContestRegistrationCtrl',
         templateUrl : "app/partials/contest/contest-registration.html",
@@ -319,23 +315,20 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             contest : function() {
                 return null;
-            },
+            }
         }
     }).when("/uzytkownik/zaloguj", {
         controller : 'UserLoginCtrl',
-        templateUrl : "app/partials/user/user-login.html",
-
+        templateUrl : "app/partials/user/user-login.html"
     }).when("/uzytkownik/zarejestruj", {
         controller : 'UserRegistrationCtrl',
-        templateUrl : "app/partials/user/user-registration.html",
-
+        templateUrl : "app/partials/user/user-registration.html"
     }).when("/uzytkownik/haslo/przypomnij", {
         controller : 'PassRecoverCtrl',
-        templateUrl : "app/partials/user/password-recovery.html",
+        templateUrl : "app/partials/user/password-recovery.html"
     }).when("/uzytkownik/haslo/zmien", {
         controller : 'PassChangeCtrl',
-        templateUrl : "app/partials/user/user-change-password.html",
-
+        templateUrl : "app/partials/user/user-change-password.html"
     }).when("/uzytkownik/:userId/profil", {
         controller : 'UserProfileCtrl',
         templateUrl : "app/partials/user/profile.html",
@@ -343,7 +336,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             profileData : ['$q','$http','$rootScope','UserService',function($q, $http, $rootScope, UserService) {
                 return resolveFetcher($q, UserService.fetchUserProfile, $rootScope.currentUser.id, 'response');
-            }],
+            }]
         }
     }).when("/uzytkownik/aktywuj/:token", {
         resolve : {
@@ -360,16 +353,16 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                     deferred.resolve();
                 });
                 return deferred.promise;
-            }],
-        },
+            }]
+        }
     }).when("/partnerzy/:companyId/aktywuj", {
         controller : 'CompanyActivateCtrl',
         templateUrl : 'app/partials/confirm-page.html',
-        access : userRoles.admin,
+        access : userRoles.admin
     }).when("/partnerzy/zarejestruj", {
         controller : 'CompanyRegistrationCtrl',
         templateUrl : "app/partials/company/company-registration.html",
-        access : "user",
+        access : "user"
     }).when("/partnerzy/:companyId", {
         controller : 'BrandListCtrl',
         templateUrl : "app/partials/company/company.html",
@@ -396,8 +389,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             brand : function() {
                 return null;
-            },
-
+            }
         }
     }).when("/marki/:brandId", {
         controller : 'BrandCtrl',
@@ -405,7 +397,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             brand : ['$q','CompanyService','$route',function($q, companyService, $route) {
                 return resolveFetcher($q, companyService.fetchBrand, $route.current.params.brandId);
-            }],
+            }]
         }
     }).when("/marki/:brandId/edytuj", {
         controller : 'BrandRegistrationCtrl',
@@ -414,7 +406,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         resolve : {
             brand : ['$q','CompanyService','$route',function($q, companyService, $route) {
                 return resolveFetcher($q, companyService.fetchBrand, $route.current.params.brandId);
-            }],
+            }]
         }
     }).otherwise({
         redirectTo : '/'
@@ -423,71 +415,71 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     AuthProvider.setProtectedResourcesList([{
         url : '/ad',
         method : 'POST',
-        access : 'user',
+        access : 'user'
     },{
         url : '/ad/*/rate',
         method : 'POST',
-        access : 'user',
-    },,{
+        access : 'user'
+    },{
         url : '/ad/*/state',
         method : 'POST',
-        access : 'admin',
+        access : 'admin'
     },{
         url : '/user/*/password',
         method : 'POST',
-        access : 'user',
+        access : 'user'
     },{
         url : '/user/*/profile',
         method : 'GET',
-        access : 'user',
+        access : 'user'
     },{
         url : '/user/*/',
         method : 'POST',
-        access : 'user',
+        access : 'user'
     },{
         url : '/company',
         method : 'POST',
-        access : 'user',
+        access : 'user'
     },{
         url : '/company/*/brand',
         method : 'GET',
-        access : 'company',
+        access : 'company'
     },{
         url : '/company/*/activate',
         method : 'GET',
-        access : 'admin',
+        access : 'admin'
     },{
         url : '/company/*/brand',
         method : 'POST',
-        access : 'company',
+        access : 'company'
     },{
         url : '/brand/*',
         method : 'POST',
-        access : 'company',
+        access : 'company'
     },{
         url : '/brand/*/contest',
         method : 'POST',
-        access : 'company',
+        access : 'company'
     },{
         url : 'contest/*',
         method : 'POST',
-        access : 'company',
+        access : 'company'
     },{
         url : '/contest/*/answer',
         method : 'POST',
-        access : 'user',
+        access : 'user'
     },{
         url : '/contest/*/answer',
         method : 'GET',
-        access : 'contest',
+        access : 'contest'
     },{
         url : '/auth/*',
         method : 'GET',
-        access : 'user',
+        access : 'user'
     },{
         url : '/user/login/status',
         method : 'GET',
-        access : 'user',
+        access : 'user'
     }]);
     AuthProvider.setUserRoles(userRoles);
     stAuthInterceptorProvider.setLoginUrl("/uzytkownik/zaloguj");
@@ -495,8 +487,6 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     $httpProvider.interceptors.push('CursorChangeInterceptor');
     $httpProvider.interceptors.push('stAuthInterceptor');
 
-    // $httpProvider.defaults.headers.post["Content-Type"] =
-    // "application/x-www-form-urlencoded";
     CommonFunctionsProvider.setWordMappings({
         "uzytkownik" : "user",
         "konkursy" : "contest",
@@ -508,14 +498,14 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         // "" : "ad?place=0",
         "przegladaj" : "ad",
         "marki" : "brand",
-        "odpowiedz" : "",
+        "odpowiedz" : ""
     });
     MetatagsCreatorProvider.setDefaultMetatags({
         url : 'http://www.spotnik.pl/#!/glowna',
         description : 'Spotnik.pl - reklamy nie muszą być nudne!',
         type : 'website',
         image : 'http://www.spotnik.pl/resources/img/logo.png',
-        site_name : 'Spotnik.pl',
+        site_name : 'Spotnik.pl'
     });
 
 }]).run(['$rootScope','$location','Auth','CommonFunctions','$q','MetatagsCreator',function($rootScope, $location, Auth, CommonFunctions, $q, MetatagsCreator) {
@@ -546,4 +536,3 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     });
 
 }]);
-

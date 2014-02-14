@@ -10,7 +10,7 @@ app.controller('UserLoginCtrl', ['$scope','ErrorFactory','Auth','$location',func
     }
 
 }]);
-app.controller('UserProfileCtrl', ['$scope','$location','profileData','$http','CommonFunctions','$routeParams','Auth',function($scope, $location, profileData, $http, CommonFunctions,$routeParams,Auth) {
+app.controller('UserProfileCtrl', ['$scope','$location','profileData','$http','CommonFunctions','$routeParams','Auth',function($scope, $location, profileData, $http, CommonFunctions, $routeParams, Auth) {
     init();
     function init() {
         $scope.profileModel = profileData;
@@ -25,11 +25,13 @@ app.controller('UserProfileCtrl', ['$scope','$location','profileData','$http','C
         type : "POST",
         dataType : "json",
         headers : {},
-        autoUpload : true,
+        autoUpload : true
     };
     $.extend($scope.options.headers, Auth.getAuthHeader());
     $("#fileupload").bind('fileuploaddone', function(e, data) {
-       Auth.changeUser({imageUrl: data.result.response});
+        Auth.changeUser({
+            imageUrl : data.result.response
+        });
     });
 }]);
 
@@ -73,7 +75,7 @@ app.controller('UserRegistrationCtrl', ['$scope','ErrorFactory','$locale','$loca
             unique : {
                 username : "Taki użytkownik już istnieje",
                 email : "Taki adres email już istnieje"
-            },
+            }
         });
         $scope.months = $locale.DATETIME_FORMATS.MONTH;
 

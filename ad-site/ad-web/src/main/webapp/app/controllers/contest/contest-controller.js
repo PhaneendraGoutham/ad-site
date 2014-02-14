@@ -79,7 +79,7 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
         $scope.errorMessages = ErrorFactory.getErrorMessages({
             'dateValid' : {
                 scoresDate : "Data musi być poźniejsza",
-                finishDate : "Data musi być poźniejsza",
+                finishDate : "Data musi być poźniejsza"
             }
         });
         if (contest) {
@@ -110,7 +110,7 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
         $scope.minDate = new Date();
 
         $scope.$watchCollection('regModel.finishDate', function(finishDate) {
-            if (finishDate.date && finishDate.time &&  $scope.contestRegForm.finishDate) {
+            if (finishDate.date && finishDate.time && $scope.contestRegForm.finishDate) {
                 var date = new Date(finishDate.date.getFullYear(), finishDate.date.getMonth(), finishDate.date.getDate(), finishDate.time.getHours(), finishDate.time.getMinutes(), finishDate.time.getSeconds());
                 if (date <= new Date()) {
                     $scope.contestRegForm.finishDate.$setValidity("dateValid", false);
@@ -120,7 +120,7 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
             }
         });
         $scope.$watchCollection('regModel.finishDate', function(scoresDate) {
-            if (scoresDate.date && scoresDate.time &&  $scope.contestRegForm.finishDate) {
+            if (scoresDate.date && scoresDate.time && $scope.contestRegForm.finishDate) {
                 var date = new Date(scoresDate.date.getFullYear(), scoresDate.date.getMonth(), scoresDate.date.getDate(), scoresDate.time.getHours(), scoresDate.time.getMinutes(), scoresDate.time.getSeconds());
                 if (date <= new Date()) {
                     $scope.contestRegForm.scoresDate.$setValidity("dateValid", false);

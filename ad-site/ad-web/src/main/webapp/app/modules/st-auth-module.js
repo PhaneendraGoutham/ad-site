@@ -8,13 +8,13 @@
     this.userRoles = {
         public : 'public',
         user : 'user',
-        admin : 'admin',
+        admin : 'admin'
     };
     this.protectedResourcesList = [];
     this.setProtectedResourcesList = function(protectedResourcesList) {
         angular.forEach(protectedResourcesList, function(val) {
             val.url = val.url.replace(/\//g, "\\/").replace(/\*/g, "[^ ]*");
-            val.url = new RegExp("^/api"+val.url+"$", "i");
+            val.url = new RegExp("^/api" + val.url + "$", "i");
         });
         this.protectedResourcesList = protectedResourcesList;
 
@@ -92,18 +92,18 @@
             changeUser : function(user) {
                 changeUser(user);
             },
-//            updateLoggedInUser : function(success, error) {
-//                var $http = $injector.get("$http");
-//                $http({
-//                    method : "GET",
-//                    url : self.userStatusUrl
-//                }).success(function(data) {
-//                    changeUser(data);
-//                    storage.set('loggedInUser', $rootScope.currentUser);
-//                    if (success)
-//                        success(data);
-//                }).error(error);
-//            },
+            // updateLoggedInUser : function(success, error) {
+            // var $http = $injector.get("$http");
+            // $http({
+            // method : "GET",
+            // url : self.userStatusUrl
+            // }).success(function(data) {
+            // changeUser(data);
+            // storage.set('loggedInUser', $rootScope.currentUser);
+            // if (success)
+            // success(data);
+            // }).error(error);
+            // },
             updateAuthToken : function(authToken) {
                 storage.set('authToken', authToken);
             },
@@ -172,7 +172,9 @@
                     angular.forEach(urlParams, function(elem) {
                         url = url.replace(elem, params[elem.substring(1)]);
                     });
-                    $http.get(url, {cache: true}).success(function(data) {
+                    $http.get(url, {
+                        cache : true
+                    }).success(function(data) {
                         if (data.response)
                             return deferred.resolve(data.response && authorized);
                         else
@@ -187,7 +189,7 @@
                 }
                 return deferred.promise;
             },
-            protectedResourcesList : this.protectedResourcesList,
+            protectedResourcesList : this.protectedResourcesList
         }
 
     }];
@@ -298,7 +300,7 @@
             response : function(response) {
                 updateAuthToken(response.headers);
                 return response || $q.when(response);
-            },
+            }
         }
     }];
 })

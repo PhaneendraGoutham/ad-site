@@ -246,7 +246,7 @@ app.directive('stValidFormElem', function() {
                     scope.stInputGroup = scope.$eval(attrs['stInputGroup']);
                     if (scope.stInputGroup === undefined)
                         scope.stInputGroup = true;
-                },
+                }
             }
         }
     }
@@ -265,11 +265,11 @@ app.directive('ngFocus', ['$parse',function($parse) {
     }
 }]);
 
-//app.filter('matchStringFilter', function(){
-//   return function(textToMatch, text){
-//       if(testToMatch.match(text)){
-//           return true;
-//       }
-//       return false;
-//   } ;
-//});
+// app.filter('matchStringFilter', function(){
+// return function(textToMatch, text){
+// if(testToMatch.match(text)){
+// return true;
+// }
+// return false;
+// } ;
+// });
