@@ -1,8 +1,6 @@
 package pl.stalkon.video.api.service.impl;
 
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -24,9 +22,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import pl.stalkon.ad.core.model.Ad;
+import pl.stalkon.ad.core.model.VideoData;
+import pl.stalkon.ad.core.model.VideoData.Provider;
 import pl.stalkon.ad.core.model.WistiaProjectData;
-import pl.stalkon.ad.core.model.WistiaVideoData;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
+import pl.stalkon.video.api.service.WistiaFetchVideoDataScheduler;
 import pl.stalkon.video.api.wistia.WistiaStats;
 
 @Component
@@ -37,6 +37,9 @@ public class WistiaApiService implements InitializingBean {
 
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private WistiaFetchVideoDataScheduler fetchDataScheduler;
 
 	private void configureRestTemplate() {
 		restTemplate = new RestTemplate(
@@ -57,11 +60,51 @@ public class WistiaApiService implements InitializingBean {
 
 	public Ad setVideoDetails(AdPostDto adPostDto) {
 		Ad ad = new Ad();
-		WistiaVideoData wistiaVideoData = new WistiaVideoData(
-				adPostDto.getVideoId(), adPostDto.getThumbnail(),
-				adPostDto.getDuration());
-		ad.setWistiaVideoData(wistiaVideoData);
+		ad.setApproved(false);
+		VideoData wistiaVideoData = new VideoData(adPostDto.getVideoId(), Provider.WISTIA);
+		ad.setVideoData(wistiaVideoData);
+		fetchDataScheduler.scheduleWistiaFetchVideoData(adPostDto.getVideoId());
 		return ad;
+	}
+
+	public VideoData getVideoEmbeddedData(Ad ad){
+		Map<String, Object> data = getVideoAssets(ad);
+		VideoData wistiaVideoData = processVideoAssets(data,ad.getVideoData().getVideoId());
+		return wistiaVideoData;
+	}
+
+	private VideoData processVideoAssets(
+			Map<String, Object> videoAssets, String videoId) {
+		if(!videoAssets.get("status").equals("ready"))
+			return null;
+		Map<String, Object> thumbnail = (Map<String, Object>) videoAssets
+				.get("thumbnail");
+		List<Map<String, Object>> assests = (List<Map<String, Object>>) videoAssets
+				.get("assets");
+		Long maxSize = new Long(0);
+		String videoUrl = null;
+		for (Map asset : assests) {
+			if (((String)asset.get("type")).equalsIgnoreCase("OriginalFile")
+					|| ((String)asset.get("type")).equalsIgnoreCase("StillImageFile") || ((String)asset.get("type")).equalsIgnoreCase("IphoneVideoFile"))
+				continue;
+			Long temp = new Long((Integer) asset.get("fileSize"));
+			if (temp > maxSize) {
+				maxSize = temp;
+				videoUrl = (String) asset.get("url");
+				System.out.println(asset.get("type"));
+			}
+		}
+		return new VideoData(videoId, ((String) thumbnail.get("url")).replaceAll("\\?image_crop_resized=.*&?", ""),(Double)videoAssets.get("duration"),videoUrl, Provider.WISTIA);
+	}
+
+	private Map<String, Object> getVideoAssets(Ad ad) {
+		String videoId = ad.getVideoData().getVideoId();
+		Map<String, String> vars = Collections.singletonMap("videoId", videoId);
+		ResponseEntity<Map> response = restTemplate.exchange(
+				env.getProperty("wistia.mediaShowJsonUrl"), HttpMethod.GET,
+				new HttpEntity<Map<String, String>>(null, headers), Map.class,
+				vars);
+		return (Map<String, Object>) response.getBody();
 	}
 
 	public void setApiData(Ad ad) {
@@ -69,7 +112,7 @@ public class WistiaApiService implements InitializingBean {
 		map.put("name", ad.getTitle());
 		map.put("description", ad.getDescription());
 		Map<String, String> vars = Collections.singletonMap("videoId", ad
-				.getWistiaVideoData().getVideoId());
+				.getVideoData().getVideoId());
 		restTemplate.exchange(env.getProperty("wistia.mediaJsonUrl"),
 				HttpMethod.PUT, new HttpEntity<Map<String, String>>(map,
 						headers), Map.class, vars);
@@ -112,31 +155,31 @@ public class WistiaApiService implements InitializingBean {
 
 	public WistiaStats getProjectStats(String hashedId, Date startDate,
 			Date endDate) {
-//		Map<String, String> map = new HashMap<String, String>();
+		// Map<String, String> map = new HashMap<String, String>();
 		SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd");
-		Map<String, String> vars = new HashMap<String,String>(3); 
-		vars.put("projectId",
-				hashedId);
-		vars.put("start_date",sm.format(startDate));
-		vars.put("end_date",sm.format(endDate));
-	
-	
-//		map.put("start_date", sm.format(startDate));
-//		map.put("end_date", sm.format(endDate));
-		ResponseEntity<List> response = restTemplate.exchange(env
-				.getProperty("wistia.statsProjectJsonUrl.by.date") + "?start_date={start_date}&end_date={end_date}",
+		Map<String, String> vars = new HashMap<String, String>(3);
+		vars.put("projectId", hashedId);
+		vars.put("start_date", sm.format(startDate));
+		vars.put("end_date", sm.format(endDate));
+
+		// map.put("start_date", sm.format(startDate));
+		// map.put("end_date", sm.format(endDate));
+		ResponseEntity<List> response = restTemplate.exchange(
+				env.getProperty("wistia.statsProjectJsonUrl.by.date")
+						+ "?start_date={start_date}&end_date={end_date}",
 				HttpMethod.GET, new HttpEntity<Map<String, String>>(null,
 						headers), List.class, vars);
 		Long loadCount = new Long(0);
 		Long playCount = new Long(0);
 		Double hoursWatched = new Double(0);
-		for(int i =0; i < response.getBody().size(); i++){
-			Map<String, Object> stats = ((Map<String,Object>) response.getBody().get(i));
+		for (int i = 0; i < response.getBody().size(); i++) {
+			Map<String, Object> stats = ((Map<String, Object>) response
+					.getBody().get(i));
 			loadCount += new Long((Integer) stats.get("load_count"));
 			playCount += new Long((Integer) stats.get("play_count"));
-			if(stats.get("hours_watched") instanceof Integer){
+			if (stats.get("hours_watched") instanceof Integer) {
 				hoursWatched += new Double((Integer) stats.get("hours_watched"));
-			}else{
+			} else {
 				hoursWatched += (Double) stats.get("hours_watched");
 			}
 		}

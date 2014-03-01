@@ -32,6 +32,7 @@ import pl.stalkon.ad.core.model.service.FileService;
 import pl.stalkon.ad.core.model.service.impl.FileServiceImpl;
 import pl.styall.library.core.rest.ext.EntityDtmMapper;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+
 @EnableWebMvc
 @Configuration
 public class MVCConfig extends WebMvcConfigurerAdapter {
@@ -43,13 +44,12 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 	private Environment env;
 	@Autowired
 	private LocalSessionFactoryBean sessionFactory;
-	
+
 	@Override
 	public void configureDefaultServletHandling(
 			DefaultServletHandlerConfigurer configurer) {
 		configurer.enable("default");
 	}
-
 
 	@Bean
 	public ReloadableResourceBundleMessageSource messageSource() {
@@ -58,7 +58,6 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		messageSource.setDefaultEncoding("UTF-8");
 		return messageSource;
 	}
-
 
 	@Bean
 	public LocaleResolver localeResolver() {
@@ -85,7 +84,8 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		String uploadsFolder = env.getProperty("upload.folder");
 		boolean starts = uploadsFolder != null && uploadsFolder.startsWith("/");
 		Assert.state(starts, "Upload folder if not empty must starts with /");
-		String uploadsRootDirectory = env.getProperty("app.files.root.directory");
+		String uploadsRootDirectory = env
+				.getProperty("app.files.root.directory");
 		boolean ends = uploadsRootDirectory != null
 				&& uploadsRootDirectory.endsWith("/");
 		Assert.state(!ends, "Uploads root path can't end with /");
@@ -119,7 +119,8 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		webContentInterceptor.setUseExpiresHeader(true);
 		webContentInterceptor.setUseCacheControlHeader(true);
 		webContentInterceptor.setUseCacheControlNoStore(true);
-		// registry.addInterceptor(webContentInterceptor).addPathPatterns("/resources/**");
+//		registry.addInterceptor(webContentInterceptor).addPathPatterns(
+//				"/resources/**");
 		// registry.addInterceptor(miniBrowserInterceptor).addPathPatterns("/**");
 	}
 
@@ -129,7 +130,11 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 		MappingJackson2HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter();
 		ObjectMapper objectMapper = new ObjectMapper();
 		Mapping mapping = sessionFactory.getConfiguration().buildMapping();
-		objectMapper.registerModule(new Hibernate4Module(mapping).configure(com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS, true));
+		objectMapper
+				.registerModule(new Hibernate4Module(mapping)
+						.configure(
+								com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS,
+								true));
 		jacksonConverter.setObjectMapper(objectMapper);
 		converters.add(jacksonConverter);
 	}

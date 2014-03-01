@@ -45,7 +45,7 @@ app.controller('ContestAnswerRegistrationCtrl', ['ContestService','$scope','$rou
         $scope.submit = function() {
             ContestService.registerAnswer($routeParams.contestId, $scope.regModel, function(data) {
                 CommonFunctions.pushAlert('success', "Twoja odpowiedź została zarejestrowana");
-                $location.path("/konkursy/" + $routeParams.contestId);
+                $location.path("/konkursy/" + $routeParams.contestId +"/");
             }, function(message, statusCode) {
                 if (statusCode == 442) {
                     CommonFunctions.pushAlert('danger', "Konkurs już się zakończył");
@@ -92,8 +92,8 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
             $scope.regModel.type = contest.type;
             $scope.register = function() {
                 var data = prepareDateToSend();
-                ContestService.updateContest($routeParams.contestId, data, function(data) {
-                    $location.path("/konkursy/" + $routeParams.contestId);
+                ContestService.updateContest($routeParams.contestId, data, function(responseData) {
+                    $location.path("/konkursy/" + $routeParams.contestId + "/" + data.name.replace(/ /g, '-'));
                 });
             };
         } else {
@@ -101,8 +101,8 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
             $scope.regModel.scoresDate.time = new Date();
             $scope.register = function() {
                 var data = prepareDateToSend();
-                ContestService.registerContest($routeParams.brandId, data, function(data) {
-                    $location.path("/konkursy/" + data.response);
+                ContestService.registerContest($routeParams.brandId, data, function(responseData) {
+                    $location.path("/konkursy/" + responseData.response + "/" + data.name.replace(/ /g, '-'));
                 });
             };
 
@@ -112,7 +112,7 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
         $scope.$watchCollection('regModel.finishDate', function(finishDate) {
             if (finishDate.date && finishDate.time && $scope.contestRegForm.finishDate) {
                 var date = new Date(finishDate.date.getFullYear(), finishDate.date.getMonth(), finishDate.date.getDate(), finishDate.time.getHours(), finishDate.time.getMinutes(), finishDate.time.getSeconds());
-                if (date <= new Date()) {
+                if (date <= new Date(new Date() + 15*60000)) {
                     $scope.contestRegForm.finishDate.$setValidity("dateValid", false);
                 } else {
                     $scope.contestRegForm.finishDate.$setValidity("dateValid", true);
@@ -122,7 +122,7 @@ app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','
         $scope.$watchCollection('regModel.finishDate', function(scoresDate) {
             if (scoresDate.date && scoresDate.time && $scope.contestRegForm.finishDate) {
                 var date = new Date(scoresDate.date.getFullYear(), scoresDate.date.getMonth(), scoresDate.date.getDate(), scoresDate.time.getHours(), scoresDate.time.getMinutes(), scoresDate.time.getSeconds());
-                if (date <= new Date()) {
+                if (date <=new Date() + 15*60000) {
                     $scope.contestRegForm.scoresDate.$setValidity("dateValid", false);
                 } else {
                     $scope.contestRegForm.scoresDate.$setValidity("dateValid", true);

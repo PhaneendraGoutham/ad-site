@@ -26,6 +26,7 @@ import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.ContestPostDto;
 import pl.stalkon.ad.core.model.service.AdService;
 import pl.stalkon.ad.core.model.service.CompanyService;
+import pl.stalkon.ad.core.model.service.ContestFinishScheduler;
 import pl.stalkon.ad.core.model.service.ContestService;
 import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.core.model.service.UserService;
@@ -60,6 +61,8 @@ public class ContestController {
 
 	@Autowired
 	private MessageSource messageSource;
+	@Autowired
+	private ContestFinishScheduler contestFinishScheduler;
 
 	@RequestMapping(value = "/brand/{brandId}/contest", method = RequestMethod.POST)
 	@PreAuthorize("@controllerHelperBean.isUserBrandOwner(principal.id, #brandId)")
@@ -71,6 +74,7 @@ public class ContestController {
 		contestPostDto.setBrandId(brandId);
 		Contest contest = contestService.register(socialLoggedUser.getId(),
 				contestPostDto);
+		contestFinishScheduler.scheduleContestFinish(contest);
 		return new SingleObjectResponse(contest.getId());
 	}
 

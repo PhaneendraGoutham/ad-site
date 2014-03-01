@@ -1,15 +1,9 @@
 package pl.stalkon.ad.core.model.search.ext;
 
-import javax.annotation.PostConstruct;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.transaction.annotation.Transactional;
-
 import pl.styall.library.spring.DatabasePopulator;
 
 public class IndexRebuilder implements DatabasePopulator {

@@ -1,5 +1,6 @@
 package pl.stalkon.ad.rest.controller;
 
+import java.net.MalformedURLException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Tag;
 import pl.stalkon.ad.core.model.Ad.Place;
@@ -28,6 +30,7 @@ import pl.stalkon.ad.core.model.service.impl.helper.Paging;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
 import pl.stalkon.video.api.service.VideoApiException;
 import pl.stalkon.video.api.service.VideoApiService;
+import pl.stalkon.video.api.service.impl.WistiaApiService;
 import pl.styall.library.core.rest.ext.EntityDtmMapper;
 import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
@@ -50,11 +53,14 @@ public class AdController {
 	
 	@Autowired
 	private MailService mailService;
-
+	
+	@Autowired
+	private WistiaApiService wistiaApiService;
+	
 	@RequestMapping(value = "/ad", method = RequestMethod.POST)
 	@ResponseBody
 	public SingleObjectResponse add(@Valid @RequestBody AdPostDto adPostDto,
-			Principal principal) throws VideoApiException {
+			Principal principal) throws VideoApiException, MalformedURLException {
 		SocialLoggedUser socialLoggedUser = (SocialLoggedUser) ((Authentication) principal)
 				.getPrincipal();
 		Ad ad = videoApiService.setVideoDetails(adPostDto);

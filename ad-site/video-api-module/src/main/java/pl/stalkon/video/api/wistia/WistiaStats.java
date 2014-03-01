@@ -1,7 +1,5 @@
 package pl.stalkon.video.api.wistia;
 
-import java.util.Date;
-
 public class WistiaStats {
 
 	private Long loadCount;

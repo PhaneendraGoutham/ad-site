@@ -89,7 +89,7 @@ app.controller('BrandRegistrationCtrl', ['$scope','ErrorFactory','$location','$r
             });
             $scope.register = function() {
                 CompanyService.updateBrand($routeParams.brandId, $scope.regModel, function(data) {
-                    $location.path("/marki/" + $routeParams.brandId);
+                    $location.path("/marki/" + $routeParams.brandId + "/" + $scope.regModel.name.replace(/ /g, '-'));
                 });
             };
         } else {

@@ -1,8 +1,5 @@
 package pl.stalkon.ad.config;
 
-import java.awt.Color;
-
-
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
@@ -16,18 +13,18 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import com.octo.captcha.CaptchaFactory;
-import com.octo.captcha.component.image.backgroundgenerator.BackgroundGenerator;
-import com.octo.captcha.component.image.backgroundgenerator.UniColorBackgroundGenerator;
-import com.octo.captcha.component.image.fontgenerator.RandomFontGenerator;
-import com.octo.captcha.component.image.textpaster.SimpleTextPaster;
-import com.octo.captcha.component.image.wordtoimage.ComposedWordToImage;
-import com.octo.captcha.component.image.wordtoimage.WordToImage;
-import com.octo.captcha.component.word.FileDictionary;
-import com.octo.captcha.component.word.wordgenerator.DictionaryWordGenerator;
-import com.octo.captcha.engine.GenericCaptchaEngine;
-import com.octo.captcha.image.gimpy.GimpyFactory;
-import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
+//import com.octo.captcha.CaptchaFactory;
+//import com.octo.captcha.component.image.backgroundgenerator.BackgroundGenerator;
+//import com.octo.captcha.component.image.backgroundgenerator.UniColorBackgroundGenerator;
+//import com.octo.captcha.component.image.fontgenerator.RandomFontGenerator;
+//import com.octo.captcha.component.image.textpaster.SimpleTextPaster;
+//import com.octo.captcha.component.image.wordtoimage.ComposedWordToImage;
+//import com.octo.captcha.component.image.wordtoimage.WordToImage;
+//import com.octo.captcha.component.word.FileDictionary;
+//import com.octo.captcha.component.word.wordgenerator.DictionaryWordGenerator;
+//import com.octo.captcha.engine.GenericCaptchaEngine;
+//import com.octo.captcha.image.gimpy.GimpyFactory;
+//import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
 
 import pl.stalkon.ad.core.model.service.UserInfoService;
 import pl.stalkon.ad.core.security.SocialLoggedUser;
@@ -140,18 +137,18 @@ public class SecurityConfig {
 		return new SeriesTokenAuthenticationProvider(tokenService(), userDetailsService);
 	}
 
-	@Bean
-	public GenericManageableCaptchaService captchaService(){
-		
-		RandomFontGenerator randomFontGenerator = new RandomFontGenerator(20, 30);
-		BackgroundGenerator bg = new UniColorBackgroundGenerator(150, 35, new Color(181, 181, 181));
-		Color color = new Color(0,0,0);
-		SimpleTextPaster simpleTextPaster = new SimpleTextPaster(6, 10, color);
-		WordToImage w2i = new ComposedWordToImage(randomFontGenerator, bg, simpleTextPaster);
-		CaptchaFactory cf = new GimpyFactory(new DictionaryWordGenerator(new FileDictionary("toddlist")), w2i);
-		GenericCaptchaEngine engine = new GenericCaptchaEngine(new CaptchaFactory[] {cf});
-		return new GenericManageableCaptchaService(engine, 180, 180000);
-	}
+//	@Bean
+//	public GenericManageableCaptchaService captchaService(){
+//		
+//		RandomFontGenerator randomFontGenerator = new RandomFontGenerator(20, 30);
+//		BackgroundGenerator bg = new UniColorBackgroundGenerator(150, 35, new Color(181, 181, 181));
+//		Color color = new Color(0,0,0);
+//		SimpleTextPaster simpleTextPaster = new SimpleTextPaster(6, 10, color);
+//		WordToImage w2i = new ComposedWordToImage(randomFontGenerator, bg, simpleTextPaster);
+//		CaptchaFactory cf = new GimpyFactory(new DictionaryWordGenerator(new FileDictionary("toddlist")), w2i);
+//		GenericCaptchaEngine engine = new GenericCaptchaEngine(new CaptchaFactory[] {cf});
+//		return new GenericManageableCaptchaService(engine, 180, 180000);
+//	}
 	
 
 }

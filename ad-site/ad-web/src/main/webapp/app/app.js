@@ -3,7 +3,7 @@ var app = angular.module('spotnikApp', ['ui.bootstrap','st-auth-module','blueimp
 app.factory("BaseUrlInterceptor", function() {
     return {
         request : function(config) {
-            if (config.url.substring(0, 3) != "app" && config.url.substring(0, 8) != "template" && !(config.url.match(".html"))) {
+            if (config.url.substring(0, 3) != "app" && config.url.substring(0, 8) != "template" && !(config.url.match(".html"))  && !(config.url.match("http"))) {
                 config.url = "/api" + config.url;
             }
             return config;
@@ -112,17 +112,36 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, AdService.getPossibleTags);
             }]
         }
-    }).when("/reklamy/:adId", {
+    }).when("/reklamy/:adId/:adTitle", {
         controller : 'AdSearchCtrl',
         templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
             search : false
         },
-        resolve : adSearchResolve,
+        resolve : {
+            possibleTags : ['$q','AdService',function($q, AdService) {
+                var deferred = $q.defer();
+                deferred.resolve([]);
+                return deferred.promise;
+            }],
+            possibleBrands : ['$q','AdService',function($q, AdService) {
+                var deferred = $q.defer();
+                deferred.resolve([]);
+                return deferred.promise;
+            }],
+            adBrowserWrapper : ['$q','AdService','$route',function($q, AdService,$route) {
+                var deferred = $q.defer();
+                AdService.getAdById($route.current.params.adId, function(data){
+                    return deferred.resolve(data);
+                });
+                return deferred.promise;
+            }]
+        },
         writeOGMetaTags : true
     }).when("/poczekalnia", {
         controller : 'AdSearchCtrl',
+        
         templateUrl : "app/partials/ad/ad.html",
         reloadOnSearch : false,
         adSearchOptions : {
@@ -288,14 +307,6 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return deferred.promise;
             }]
         }
-    }).when("/konkursy/:contestId", {
-        controller : 'ContestCtrl',
-        templateUrl : "app/partials/contest/contest.html",
-        resolve : {
-            contest : ['$q','ContestService','$route',function($q, ContestService, $route) {
-                return resolveFetcher($q, ContestService.fetchContest, $route.current.params.contestId);
-            }]
-        }
     }).when("/konkursy/:contestId/edytuj", {
         controller : 'ContestRegistrationCtrl',
         templateUrl : "app/partials/contest/contest-registration.html",
@@ -391,18 +402,26 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return null;
             }
         }
-    }).when("/marki/:brandId", {
-        controller : 'BrandCtrl',
-        templateUrl : "app/partials/company/brand.html",
+    }).when("/marki/:brandId/edytuj", {
+        controller : 'BrandRegistrationCtrl',
+        templateUrl : "app/partials/company/brand-registration.html",
+        access : "thisBrand",
         resolve : {
             brand : ['$q','CompanyService','$route',function($q, companyService, $route) {
                 return resolveFetcher($q, companyService.fetchBrand, $route.current.params.brandId);
             }]
         }
-    }).when("/marki/:brandId/edytuj", {
-        controller : 'BrandRegistrationCtrl',
-        templateUrl : "app/partials/company/brand-registration.html",
-        access : "thisBrand",
+    }).when("/konkursy/:contestId/:contestName", {
+        controller : 'ContestCtrl',
+        templateUrl : "app/partials/contest/contest.html",
+        resolve : {
+            contest : ['$q','ContestService','$route',function($q, ContestService, $route) {
+                return resolveFetcher($q, ContestService.fetchContest, $route.current.params.contestId);
+            }]
+        }
+    }).when("/marki/:brandId/:brandName", {
+        controller : 'BrandCtrl',
+        templateUrl : "app/partials/company/brand.html",
         resolve : {
             brand : ['$q','CompanyService','$route',function($q, companyService, $route) {
                 return resolveFetcher($q, companyService.fetchBrand, $route.current.params.brandId);
@@ -502,7 +521,8 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
     });
     MetatagsCreatorProvider.setDefaultMetatags({
         url : 'http://www.spotnik.pl/#!/glowna',
-        description : 'Spotnik.pl - reklamy nie muszą być nudne!',
+        description : 'Spotnik.pl - reklamy, śmieszne spoty reklamowe!',
+        title : 'Spotnik.pl - reklamy nie muszą być nudne!',
         type : 'website',
         image : 'http://www.spotnik.pl/resources/img/logo.png',
         site_name : 'Spotnik.pl'

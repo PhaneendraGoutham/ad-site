@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.ScrollableResults;
 import org.hibernate.criterion.Order;
@@ -16,7 +14,6 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import org.springframework.asm.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -185,6 +182,14 @@ public class AdDao extends AbstractDao<Ad> {
 		criteria.createCriteria("brand");
 		criteria.add(Restrictions.sqlRestriction("approved=1 order by rand()"));
 		criteria.setMaxResults(1);
+		Ad ad = (Ad) criteria.uniqueResult();
+		return ad;
+	}
+	
+	public Ad getByWistiaVideoId(String wistiaVideoId){
+		Criteria criteria = currentSession().createCriteria(Ad.class);
+		criteria.createCriteria("videoData","videoData");
+		criteria.add(Restrictions.eq("videoData.videoId", wistiaVideoId));
 		Ad ad = (Ad) criteria.uniqueResult();
 		return ad;
 	}

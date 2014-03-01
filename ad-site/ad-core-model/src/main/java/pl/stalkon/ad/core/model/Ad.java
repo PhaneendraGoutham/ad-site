@@ -20,7 +20,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.lucene.analysis.StopwordAnalyzerBase;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.NGramFilterFactory;
 import org.apache.solr.analysis.StandardTokenizerFactory;
@@ -30,7 +29,6 @@ import org.hibernate.annotations.Formula;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.AnalyzerDefs;
-import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -38,8 +36,6 @@ import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 
-import pl.stalkon.ad.core.model.dto.VideoData;
-import pl.stalkon.ad.core.model.dto.VideoData.Provider;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
@@ -65,10 +61,10 @@ public class Ad extends CommonEntity {
 			"dateOnMain", "creationDate", "year", "title", "description",
 			"ageProtected", "approved", "user.displayName", "user.id",
 			"user.userData.imageUrl", "brand.name", "brand.id",
-			"brand.smallLogoUrl", "rank", "voteCount", "thumbnail", "videoUrl",
+			"brand.smallLogoUrl", "rank", "voteCount",
 			"contestAd.winner", "official", "parentId",
-			"videoData.provider.name", "videoData.provider.thumbnailUrl",
-			"videoData.videoId");
+			"videoData.provider", "videoData.bigThumbnail","videoData.smallThumbnail",
+			"videoData.videoId", "videoData.iframeVideoUrl", "videoData.duration", "videoData.videoUrl");
 
 	public enum Type {
 		MOVIE, PICTURE, GAME
@@ -141,13 +137,17 @@ public class Ad extends CommonEntity {
 	@OrderBy(value = "creation_date")
 	private List<AdComment> comments;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-	@JoinColumn(name = "wistia_video_data_id")
-	private WistiaVideoData wistiaVideoData;
+//	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+//	@JoinColumn(name = "wistia_video_data_id")
+//	private WistiaVideoData wistiaVideoData;
 
+//	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+//	@JoinColumn(name = "youtube_video_data_id")
+//	private YoutubeVideoData youtubeVideoData;
+	
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-	@JoinColumn(name = "youtube_video_data_id")
-	private YoutubeVideoData youtubeVideoData;
+	@JoinColumn(name = "video_data_id")
+	private VideoData videoData;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "ad_tag_maps", joinColumns = { @JoinColumn(name = "ad_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }, uniqueConstraints = { @UniqueConstraint(name = "ad_tag_uq", columnNames = {
@@ -164,22 +164,21 @@ public class Ad extends CommonEntity {
 	@Column(name = "parent_id", insertable = false, updatable = false)
 	private Long parentId;
 
-	public String getThumbnail() {
-		if (wistiaVideoData != null) {
-			return wistiaVideoData.getThumbnail();
-		} else {
-			return youtubeVideoData.getVideoThumnail();
-		}
-	}
+	// public String getThumbnail() {
+	// if (wistiaVideoData != null) {
+	// return wistiaVideoData.getThumbnail();
+	// } else {
+	// return youtubeVideoData.getVideoThumnail();
+	// }
+	// }
 
-	public VideoData getVideoData() {
-		if (wistiaVideoData != null) {
-			return new VideoData(Provider.WISTIA, wistiaVideoData.getVideoId());
-		} else {
-			return new VideoData(Provider.YOUTUBE,
-					youtubeVideoData.getVideoId());
-		}
-	}
+//	public VideoData getVideoData() {
+//		if (wistiaVideoData != null) {
+//			return wistiaVideoData;
+//		} else {
+//			return youtubeVideoData;
+//		}
+//	}
 
 	public ContestAd getContestAd() {
 		return contestAd;
@@ -189,13 +188,13 @@ public class Ad extends CommonEntity {
 		this.contestAd = contestAd;
 	}
 
-	public String getVideoUrl() {
-		if (wistiaVideoData != null) {
-			return wistiaVideoData.getVideoUrl();
-		} else {
-			return youtubeVideoData.getVideoUrl();
-		}
-	}
+	// public String getIframeVideoUrl() {
+	// if (wistiaVideoData != null) {
+	// return wistiaVideoData.getIframeVideoUrl();
+	// } else {
+	// return youtubeVideoData.getIframeVideoUrl();
+	// }
+	// }
 
 	public Double getRank() {
 		if (rank == null)
@@ -303,16 +302,24 @@ public class Ad extends CommonEntity {
 		this.title = title;
 	}
 
-	public YoutubeVideoData getYoutubeVideoData() {
-		return youtubeVideoData;
-	}
-
-	public void setYoutubeVideoData(YoutubeVideoData youtubeVideoData) {
-		this.youtubeVideoData = youtubeVideoData;
-	}
+//	public YoutubeVideoData getYoutubeVideoData() {
+//		return youtubeVideoData;
+//	}
+//
+//	public void setYoutubeVideoData(YoutubeVideoData youtubeVideoData) {
+//		this.youtubeVideoData = youtubeVideoData;
+//	}
 
 	public Boolean getOfficial() {
 		return official;
+	}
+
+	public VideoData getVideoData() {
+		return videoData;
+	}
+
+	public void setVideoData(VideoData videoData) {
+		this.videoData = videoData;
 	}
 
 	public Long getParentId() {
@@ -351,13 +358,13 @@ public class Ad extends CommonEntity {
 		this.place = place;
 	}
 
-	public WistiaVideoData getWistiaVideoData() {
-		return wistiaVideoData;
-	}
-
-	public void setWistiaVideoData(WistiaVideoData wistiaVideoData) {
-		this.wistiaVideoData = wistiaVideoData;
-	}
+//	public WistiaVideoData getWistiaVideoData() {
+//		return wistiaVideoData;
+//	}
+//
+//	public void setWistiaVideoData(WistiaVideoData wistiaVideoData) {
+//		this.wistiaVideoData = wistiaVideoData;
+//	}
 
 	public Date getDateOnMain() {
 		return dateOnMain;
@@ -393,6 +400,14 @@ public class Ad extends CommonEntity {
 
 	public void setVoteCount(Long voteCount) {
 		this.voteCount = voteCount;
+	}
+
+	public List<String> getTagStrings() {
+		List<String> strings = new ArrayList<String>(tags.size());
+		for (Tag tag : tags) {
+			strings.add(tag.getName());
+		}
+		return strings;
 	}
 
 }

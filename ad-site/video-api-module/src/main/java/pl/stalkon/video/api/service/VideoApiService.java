@@ -7,7 +7,7 @@ import pl.stalkon.ad.core.model.dto.AdPostDto;
 public interface VideoApiService {
 
 	public String getAuthorization();
-	public Ad setVideoDetails(AdPostDto adPostDto)  throws VideoApiException;
+	public Ad setVideoDetails(AdPostDto adPostDto);
 	public void setApiData(Ad ad);
 	
 	public boolean deleteVideo(String hashedId);

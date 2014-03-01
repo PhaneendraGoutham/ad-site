@@ -22,6 +22,7 @@ import pl.stalkon.ad.core.model.Inform;
 import pl.stalkon.ad.core.model.Rank;
 import pl.stalkon.ad.core.model.Tag;
 import pl.stalkon.ad.core.model.User;
+import pl.stalkon.ad.core.model.VideoData;
 import pl.stalkon.ad.core.model.dao.AdCommentDao;
 import pl.stalkon.ad.core.model.dao.AdDao;
 import pl.stalkon.ad.core.model.dao.BrandDao;
@@ -83,6 +84,12 @@ public class AdServiceImpl implements AdService {
 		// ad.getParent().getId();
 		return ad;
 	}
+	@Transactional
+	@Override
+	public Ad getByWistiaVideoId(String wistiaVideoId){
+		Ad ad = adDao.getByWistiaVideoId(wistiaVideoId);
+		return ad;
+	}
 
 	@Transactional
 	@Override
@@ -117,7 +124,7 @@ public class AdServiceImpl implements AdService {
 		ad.setTitle(adPostDto.getTitle());
 		ad.setDescription(adPostDto.getDescription());
 		ad.setAgeProtected(adPostDto.getAgeProtected());
-		ad.setApproved(true);
+//		ad.setApproved(true);
 		adDao.save(ad);
 		return ad;
 	}
@@ -222,6 +229,20 @@ public class AdServiceImpl implements AdService {
 
 	@Transactional
 	@Override
+	public void setVideoData(Long adId, VideoData wistiaVideoData) {
+		Ad ad = adDao.get(adId);
+		if (ad == null) {
+			return;
+		}
+		ad.getVideoData().setDuration(wistiaVideoData.getDuration());
+		ad.getVideoData().setThumbnail(wistiaVideoData.getThumbnail());
+		ad.getVideoData().setVideoUrl(wistiaVideoData.getVideoUrl());
+		ad.setApproved(true);
+		adDao.save(ad);
+	}
+
+	@Transactional
+	@Override
 	@CacheEvict(value = { "main", "waiting", "top" }, allEntries = true)
 	public void changeApproval(Long id, boolean approved) {
 		Ad ad = adDao.get(id);
@@ -320,21 +341,19 @@ public class AdServiceImpl implements AdService {
 		List<DaoQueryObject> queryObjectList;
 		Order order = prepareOrder(adSearchDto);
 		if (adSearchDto.getSearch() == null) {
-			queryObjectList = glueConditions(adSearchDto,
-					approved);
+			queryObjectList = glueConditions(adSearchDto, approved);
 			return adDao.get(queryObjectList, order, paging);
-		}else{
+		} else {
 			queryObjectList = new ArrayList<DaoQueryObject>(1);
-			queryObjectList.add(new DaoQueryObject("search", adSearchDto.getSearch()));
+			queryObjectList.add(new DaoQueryObject("search", adSearchDto
+					.getSearch()));
 			if (!approved)
 				queryObjectList.add(new DaoQueryObject("approved", true));
 			return adDao.getByLuceneSearch(queryObjectList, order, paging);
 		}
-	
-		
+
 	}
-	
-	
+
 	private List<DaoQueryObject> glueConditions(AdSearchDto adSearchDto,
 			boolean approved) {
 		List<DaoQueryObject> queryObjectList = new ArrayList<DaoQueryObject>();

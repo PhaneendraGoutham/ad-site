@@ -110,7 +110,7 @@
             $scope.total = adBrowserWrapper.total;
         } else {
             $scope.model.ads = [adBrowserWrapper];
-            $scope.singleAd = adBrowserWrapper;
+            $scope.model.singleAd = adBrowserWrapper;
         }
     }
 
@@ -164,7 +164,7 @@ app.controller('RatingCtrl', ['$scope','AdService','$timeout',function($scope, A
     function init() {
         $scope.max = 5;
         $scope.isReadonly = false;
-        $scope.tooltip = {};
+        $scope.adModel.tooltip.ranked = false;
         $scope.rate = Math.floor($scope.ad.rank);
         $scope.labelValue = Math.floor($scope.ad.rank);
 
@@ -182,7 +182,8 @@ app.controller('RatingCtrl', ['$scope','AdService','$timeout',function($scope, A
             if ($scope.overStar) {
                 var ad = $scope.$parent.ad;
                 AdService.rate(ad.id, value, function() {
-                    $scope.tooltip.ranked = true;
+                    // $scope.adModel.tooltip.ranked = true;
+                    $scope.$emit("RANKED", "ranked");
                 });
             }
         });
@@ -237,7 +238,7 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
                 $scope.$watch('regModel.videoId', function(value) {
                     if ($scope.regModel.videoId) {
                         AdService.postAd($scope.regModel, function(data) {
-                            $location.path("/reklamy/" + data.response);
+                            $location.path("/reklamy/" + data.response + "/" + $scope.regModel.title.replace(/ /g, '-'));
                         });
                     }
                 });
@@ -315,7 +316,7 @@ app.controller('AdRegistrationCtrl', ['$scope','possibleBrands','possibleTags','
 
         $scope.register = function() {
             AdService.postAd($scope.regModel, function(data) {
-                $location.path("reklamy/" + data.response);
+                $location.path("reklamy/" + data.response + "/" + $scope.regModel.title.replace(/ /g, '-'));
             });
         };
 
@@ -384,15 +385,16 @@ app.controller('AdAdminPanelCtrl', ['$scope','AdService',function($scope, AdServ
 app.controller('AdCtrl', ['$scope','AdService','$rootScope',"$route",'$location','$timeout',function($scope, AdService, $rootScope, $route, $location, $timeout) {
     init();
     function init() {
-        $scope.model = {};
+        $scope.adModel = {};
+        $scope.adModel.tooltip = {};
         // $scope.model.ad = {};
         // $scope.model.facebookAdThumbnail =
         // $scope.ad.thumbnail.substring(0,$scope.ad.thumbnail.indexOf("?"));
         $scope.tooltip = {};
         $scope.reportAbuse = function() {
-            AdService.reportAbuse($scope.ad.id, $scope.model.abuseMessage, function() {
-                $scope.tooltip.informSent = true;
-                $scope.model.abuseMessage = "";
+            AdService.reportAbuse($scope.ad.id, $scope.adModel.abuseMessage, function() {
+                $scope.$emit("REPORT_ABUSE");
+                $scope.adModel.abuseMessage = "";
                 $timeout(function() {
                     $scope.bottomVideoPanelView = "";
                 }, 1000);
@@ -401,14 +403,10 @@ app.controller('AdCtrl', ['$scope','AdService','$rootScope',"$route",'$location'
         };
 
         if ($route.current.$$route.writeOGMetaTags) {
-            $scope.metatags.title = $scope.ad.title;
+            $scope.metatags.title = "Spotnik.pl - reklamy: " + $scope.ad.title;
             $scope.metatags.description = $scope.ad.description.substring(0, 160);
-            if ($scope.ad.videoData.provider.name == "youtube") {
-                $scope.metatags.image = $scope.ad.videoData.provider.thumbnailUrl + "/" + $scope.ad.videoData.videoId + "/0.jpg";
-            } else {
-                $scope.metatags.image = $scope.ad.thumbnail.replace(/image_crop_resized=.*&/, "");
-            }
-            $scope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id;
+            $scope.metatags.image = $scope.ad.videoData.bigThumbnail;
+            $scope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id + "/" + $scope.ad.title.replace(/ /g, '-');
         }
     }
 }]);

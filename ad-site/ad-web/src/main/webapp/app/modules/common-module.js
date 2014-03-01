@@ -66,9 +66,9 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
                 var translateUrlObject = this;
                 angular.forEach(parts, function(value) {
                     var word = translateUrlObject.translateWord(value);
-                    if (word == "")
+                    if (word == "") {
                         translated += word;
-                    else {
+                    } else {
                         translated += word || value;
                         translated += "/";
                     }
@@ -117,20 +117,42 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
     return {
         restrict : 'A',
         link : function(scope, elem, attrs) {
-            var variableHolder = attrs.stOn.substring(0, attrs.stOn.indexOf("."));
-            var variable = attrs.stOn.substring(attrs.stOn.indexOf(".") + 1);
-            scope.$watch(attrs.stOn, function(val) {
-                if (val) {
-                    elem.addClass("in");
-                    $timeout(function() {
-                        scope[variableHolder][variable] = false;
-                    }, attrs.timeout);
-                } else
+            // var split = attrs.stOn.split('.');
+            // var newTarget = scope;
+            // for (var i = 0; i < split.length; i++) {
+            // newTarget = newTarget[split[i]];
+            // }
+            // // var variableHolder = attrs.stOn.substring(0,
+            // attrs.stOn.indexOf("."));
+            // // var variable = attrs.stOn.substring(attrs.stOn.indexOf(".") +
+            // 1);
+            // scope.$watch(attrs.stOn, function(val) {
+            // if (val) {
+            // elem.addClass("in");
+            // $timeout(function() {
+            // newTarget = false;
+            // }, attrs.timeout);
+            // } else
+            // elem.removeClass("in");
+            // });
+            scope.$on(attrs.stOn, function() {
+                elem.addClass("in");
+                $timeout(function() {
                     elem.removeClass("in");
+                }, attrs.timeout);
             });
         }
-    }
-}]).directive('stNewWindow', function() {
+    };
+}]).directive('stHref', function() {
+    return {
+        restrict : 'A',
+        link : function(scope, element, attrs) {
+            attrs.$observe('stHref', function(value) {
+                element.attr('href', value.replace(/ /g, '-'));
+            });
+        }
+    };
+}).directive('stNewWindow', function() {
     return {
         restrict : 'A',
         link : function(scope, elem, attrs) {
@@ -140,7 +162,7 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
                 e.preventDefault();
                 var x = screen.width / 2 - width / 2;
                 var y = screen.height / 2 - height / 2;
-                window.open(attrs.href, 'newwindow', "width=" + width + ", height=" + height + ", left=" + x + ", top=" + y);
+                window.open(attrs.href || attrs.stHref, 'newwindow', "width=" + width + ", height=" + height + ", left=" + x + ", top=" + y);
             });
         }
     };

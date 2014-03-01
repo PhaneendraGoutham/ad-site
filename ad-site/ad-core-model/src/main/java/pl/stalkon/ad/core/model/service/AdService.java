@@ -8,6 +8,7 @@ import pl.stalkon.ad.core.model.Ad;
 import pl.stalkon.ad.core.model.Ad.Place;
 import pl.stalkon.ad.core.model.AdComment;
 import pl.stalkon.ad.core.model.Tag;
+import pl.stalkon.ad.core.model.VideoData;
 import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
 import pl.stalkon.ad.core.model.dto.AdPostDto;
 import pl.stalkon.ad.core.model.dto.AdSearchDto;
@@ -55,6 +56,7 @@ public interface AdService {
 	public boolean isOwner(Long adId, Long userId);
 
 	public Ad update(AdPostDto adPostDto, Long adId, Long userId);
+	void setVideoData(Long adId, VideoData videoData);
 
 	public void changeApproval(Long id, boolean approved);
 
@@ -75,5 +77,5 @@ public interface AdService {
 	public List<Map<String, Object>> getRatings(List<Long> ids);
 	
 	public Long getBrandAdsCount(Long brandId);
-	
+	public Ad getByWistiaVideoId(String wistiaVideoId);
 }

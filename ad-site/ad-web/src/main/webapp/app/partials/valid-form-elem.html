@@ -1,9 +1,12 @@
-<div class="form-group" data-ng-class="{'has-error': st[stFormName].needsAttention(stForm[stName])}">
-            <label for="{{stName}}" class="control-label col-sm-4">{{stLabel}}</label>
-            <div class="input-group col-sm-7" data-ng-show="stInputGroup" ng-transclude>
-                <span class="input-group-addon"><i class="{{stIcon}}"></i></span>
-            </div>
-            <div data-ng-show="!stInputGroup" ng-transclude ></div>
-            <span class="help-block col-sm-7 col-sm-offset-4 hidden" data-st-error="{{stName}}" data-ng-show="st[stFormName].needsAttention(stForm[stName])">
-            </span>
+<div class="form-group"
+	data-ng-class="{'has-error': st[stFormName].needsAttention(stForm[stName])}">
+	<label for="{{stName}}" class="control-label col-sm-4">{{stLabel}}</label>
+	<div class="input-group col-sm-7" data-ng-show="stInputGroup"
+		ng-transclude>
+		<span class="input-group-addon"><i class="{{stIcon}}"></i></span>
+	</div>
+	<div data-ng-show="!stInputGroup" ng-transclude></div>
+	<span class="help-block col-sm-7 col-sm-offset-4 hidden"
+		data-st-error="{{stName}}"
+		data-ng-show="st[stFormName].needsAttention(stForm[stName])"> </span>
 </div>

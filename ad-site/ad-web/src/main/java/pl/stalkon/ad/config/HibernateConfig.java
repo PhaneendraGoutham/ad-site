@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.commonj.TimerManagerTaskScheduler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import pl.stalkon.ad.core.model.SocialUser;
@@ -25,7 +23,6 @@ import pl.styall.library.core.model.dao.CriteriaConfigurer;
 import pl.styall.library.core.model.defaultimpl.Address;
 import pl.styall.library.core.model.defaultimpl.UserData;
 import pl.styall.library.spring.DatabaseInitPopulator;
-import pl.styall.library.spring.DatabasePopulator;
 
 @Configuration
 @EnableTransactionManagement(order = 2)

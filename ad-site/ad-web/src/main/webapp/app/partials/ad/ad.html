@@ -1,13 +1,15 @@
 
-<article class="clearfix col-sm-12" data-ng-show="singleAd">
+<article class="clearfix col-sm-12" data-ng-show="model.singleAd">
 	<ul class="nav nav-pills col-sm-12">
-		<li data-ng-show="singleAd && singleAd.parentId"><a
-			href="#!/reklamy/{{singleAd.parentId}}">Pokaż pierwotną reklamę</a></li>
-		<li><a href="#!/przegladaj?parentId={{singleAd.id}}">Pokaż
+		<li data-ng-show="model.singleAd && model.singleAd.parentId"><a
+			data-st-href="#!/reklamy/{{model.singleAd.parentId}}/">Pokaż
+				pierwotną reklamę</a></li>
+		<li><a href="#!/przegladaj?parentId={{model.singleAd.id}}">Pokaż
 				odpowiedzi</a></li>
-		<li><a href="#!/reklamy/{{singleAd.id}}/odpowiedz">Dodaj
+		<li><a href="#!/reklamy/{{model.singleAd.id}}/odpowiedz">Dodaj
 				odpowiedź wideo</a></li>
-		<li><a href="#!/marki/{{singleAd.brand.id}}">{{singleAd.brand.name}}</a></li>
+		<li><a
+			data-st-href="#!/marki/{{model.singleAd.brand.id}}/{{model.singleAd.brand.name}}">{{model.singleAd.brand.name}}</a></li>
 	</ul>
 </article>
 
@@ -17,35 +19,69 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class=" col-sm-8">
-				<a href="#!/reklamy/{{ad.id}}" title="{{ad.title}}"><h2
-						class="text-info wrap-text">{{ad.title}}</h2></a>
+				<a data-st-href="#!/reklamy/{{ad.id}}/{{ad.title}}"
+					title="{{ad.title}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
 			</div>
 			<div class=" col-sm-4 margin-top"
 				data-ng-show="ad.official && ad.brand.smallLogoUrl">
-				<a href="#!/marki/{{ad.brand.id}}" class="pull-right "><img
+				<a data-st-href="#!/marki/{{ad.brand.id}}/{{ad.brand.name}}"
+					class="pull-right "><img
 					data-ng-src="{{ad.brand.smallLogoUrl}}" class="brand-ad-img"></a>
 			</div>
 		</div>
 	</div>
-	<div class="row pos-relative" data-ng-switch
-		on="currentUser.adult || !ad.ageProtected"
-		data-ng-mouseenter="sh = true" data-ng-mouseleave="sh = false">
-		<div class="col-sm-12">
-			<iframe width="620" height="349" data-ng-src="{{ad.videoUrl}}"
-				frameborder="0" allowfullscreen data-ng-switch-when="true"></iframe>
-			<img src="/resources/img/18.png" data-ng-switch-when="false" />
+	<div class="row pos-relative" data-ng-mouseenter="sh = true"
+		data-ng-mouseleave="sh = false">
+		<div class="col-sm-12 ">
+			<div class="flex-video widescreen">
+
+				<div data-ng-if="currentUser.adult || !ad.ageProtected">
+					<div data-ng-if="!(model.singleAd)">
+						<iframe width="620" height="349"
+							data-ng-src="{{ad.videoData.iframeVideoUrl}}" frameborder="0"
+							allowfullscreen></iframe>
+					</div>
+					<div
+						data-ng-if="model.singleAd && ad.videoData.provider == 'WISTIA'"
+						data-wistia-embedded></div>
+					<div
+						data-ng-if="model.singleAd && ad.videoData.provider == 'YOUTUBE'">
+						<div itemprop="video" itemscope
+							itemtype="http://schema.org/VideoObject">
+							<meta itemprop="name" content="{{ad.title}}" />
+							<meta itemprop="thumbnailUrl"
+								content="{{ad.videoData.bigThumbnail}}" />
+							<meta itemprop="contentURL" content="{{ad.videoData.videoUrl}}" />
+							<object width="620" height="349">
+								<param name="movie"
+									value="{{ad.videoData.videoUrl}}"></param>
+								<param name="allowFullScreen" value="true"></param>
+								<param name="allowscriptaccess" value="always"></param>
+								<embed embed-src="{{ad.videoData.videoUrl}}"
+									type="application/x-shockwave-flash" width="620" height="349"
+									allowscriptaccess="always" allowfullscreen="true"></embed>
+							</object>
+							<noscript itemprop="description">{{ad.description}}</noscript>
+						</div>
+					</div>
+				</div>
+				<div data-ng-if="!(currentUser.adult || !ad.ageProtected)">
+					<img src="/resources/img/18.png" />
+				</div>
+
+			</div>
 		</div>
 		<div class="tooltip left social-bar-tooltip" data-ng-class="{in: sh}">
 			<div class="tooltip-inner">
 				<a data-st-new-window
-					href="http://www.facebook.com/sharer/sharer.php?u=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}"><img
+					data-st-href="http://www.facebook.com/sharer/sharer.php?u=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.title}}"><img
 					src="/resources/img/facebook.png" /><br /></a> <a data-st-new-window
-					href="https://twitter.com/intent/tweet?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}"><img
+					data-st-href="https://twitter.com/intent/tweet?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.title}}"><img
 					src="/resources/img/twitter.png" /><br /></a> <a data-st-new-window
-					href="https://plus.google.com/share?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}"><img
+					data-st-href="https://plus.google.com/share?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.title}}"><img
 					src="/resources/img/google_plus.png" /><br /></a> <a
 					data-st-new-window
-					href="http://www.wykop.pl/dodaj/link/?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}&title={{ad.title}}&desc={{ad.description}}"><img
+					data-st-href="http://www.wykop.pl/dodaj/link/?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}{{ad.title}}&title={{ad.title}}&desc={{ad.description}}"><img
 					src="/resources/img/wykop.png" style="margin-top: 1px" /><br /></a>
 			</div>
 			<div class="tooltip-arrow"></div>
@@ -53,9 +89,9 @@
 	</div>
 
 	<div class="row  margin-top">
-		<div class="col-sm-4 col-xs-6">
+		<div class="col-sm-4 col-xs-5">
 			<div class="thumbnail thumbnail-avatar right-caption">
-				<img class="avatar img-rounded"
+				<img class="avatar img-rounded hidden-xs"
 					data-ng-src="{{ad.user.userData.imageUrl}}" />
 				<div class="caption">
 					<a href="#!/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a><br />
@@ -65,15 +101,16 @@
 		</div>
 		<div class=" col-xs-4 hidden-xs">
 			<ul class="nav nav-justified nav-pills hidden-xs">
-				<li data-ng-class="{on : model.bottomVideoPanelView==description}"><a
-					data-ng-click="model.bottomVideoPanelView = 'description'">Opis</a></li>
-				<li data-ng-class="{on : model.bottomVideoPanelView==comments}"><a
-					data-ng-click="model.bottomVideoPanelView = 'comments'">Komentarze</a></li>
-				<li data-ng-class="{on : model.bottomVideoPanelView==inform}"><a
-					data-ng-click="model.bottomVideoPanelView = 'inform'">Zgłoś</a></li>
+				<li data-ng-class="{on : bottomVideoPanelView==description}"><a
+					data-ng-click="bottomVideoPanelView = 'description'">Opis</a></li>
+				<li data-ng-class="{on : bottomVideoPanelView==comments}"><a
+					data-ng-click="bottomVideoPanelView = 'comments'">Komentarze</a></li>
+				<li data-ng-class="{on : bottomVideoPanelView==inform}"><a
+					data-ng-click="bottomVideoPanelView = 'inform'">Zgłoś</a></li>
 			</ul>
 		</div>
-		<div class=" col-sm-4 col-xs-6 rating" data-ng-controller="RatingCtrl">
+		<div class=" col-sm-4 col-xs-7 rating pos-relative"
+			data-ng-controller="RatingCtrl">
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="col-sm-12">
@@ -100,33 +137,33 @@
 					</div>
 				</div>
 			</div>
+			<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip
+				data-st-on="RANKED" data-timeout="5000">
+				<div class="tooltip-inner">Dzięki!</div>
+				<div class="tooltip-arrow"></div>
+			</div>
 		</div>
 
-		<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip
-			data-st-on="tooltip.ranked" data-timeout="5000">
-			<div class="tooltip-inner">Dzięki!</div>
-			<div class="tooltip-arrow"></div>
-		</div>
 	</div>
 	<div class="row margin-bottom">
 
-		<div data-ng-show="model.bottomVideoPanelView == 'comments'"
+		<div data-ng-show="bottomVideoPanelView == 'comments'"
 			class="col-sm-12">
 			<div class="fb-comments col-sm-12"
-				data-href="http://www.spotnik.pl/#!/reklamy/{{ad.id}}"
+				data-st-href="http://www.spotnik.pl/#!/reklamy/{{ad.id}}/{{ad.title}}"
 				data-width="590" data-num-posts="20" data-colorscheme="dark"></div>
 		</div>
-		<div data-ng-show="model.bottomVideoPanelView == 'inform'"
+		<div data-ng-show="bottomVideoPanelView == 'inform'"
 			class=" col-sm-12">
 			<div class=" col-md-12 form-group">
-				<textarea class="form-control" data-ng-model="model.abuseMessage"
+				<textarea class="form-control" data-ng-model="adModel.abuseMessage"
 					placeholder="Podaj jak najdokładniejszy powód zgłoszenia..."></textarea>
 			</div>
 			<div class=" col-md-12">
 				<button class="btn btn-danger btn-sm btn-block"
 					data-ng-click="reportAbuse()">Zgłoś</button>
-				<div class="tooltip bottom ranking-tooltip" data-st-timeout-tooltip
-					data-st-on="tooltip.informSent" data-timeout="5000">
+				<div class="tooltip bottom abuse-tooltip" data-st-timeout-tooltip
+					data-st-on="REPORT_ABUSE" data-timeout="5000">
 					<div class="tooltip-inner">Przyjeliśmy Twoje zgłoszenie</div>
 					<div class="tooltip-arrow"></div>
 				</div>
@@ -135,7 +172,7 @@
 
 		</div>
 		<div class=" col-sm-12"
-			data-ng-show="model.bottomVideoPanelView == 'description'">
+			data-ng-show="bottomVideoPanelView == 'description'">
 			<p class="text-left  col-md-12" data-ng-bind="ad.description"></p>
 
 		</div>
@@ -169,3 +206,4 @@
 		data-ng-click="currentPage = currentPage + 1; selectPage(currentPage)"
 		data-ng-show="currentPage < smallnumPages">Dalej</button>
 </article>
+

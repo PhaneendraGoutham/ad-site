@@ -31,6 +31,9 @@
     this.postAd = function(data, success, error) {
         $http.post("/ad", data).success(success);
     };
+    this.getAdById = function(adId, success, error){
+        $http.get("/ad/" + adId).success(success);
+    }
 
     this.getAds = function(params, success, error) {
         $http.get("/ad", {
