@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
 
 import pl.stalkon.ad.core.model.Ad.Type;
+import pl.styall.library.core.ext.validation.YoutubeValidData;
 
 public class AdPostDto {
 	
@@ -20,6 +21,7 @@ public class AdPostDto {
 	private String description;
 	
 	@URL
+	@YoutubeValidData
 	private String url;
 	private Type type;
 	
