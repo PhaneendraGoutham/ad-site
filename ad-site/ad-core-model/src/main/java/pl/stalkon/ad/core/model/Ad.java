@@ -145,7 +145,7 @@ public class Ad extends CommonEntity {
 //	@JoinColumn(name = "youtube_video_data_id")
 //	private YoutubeVideoData youtubeVideoData;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "video_data_id")
 	private VideoData videoData;
 
