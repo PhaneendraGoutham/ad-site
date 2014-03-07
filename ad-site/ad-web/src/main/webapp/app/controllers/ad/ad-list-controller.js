@@ -346,7 +346,8 @@ app.controller('TopAdsCtrl', ['$scope','AdService',function($scope, AdService) {
         AdService.getAds({
             orderBy : "rank",
             order : "desc",
-            page : "1"
+            page : "1",
+            perPage: "5"
         }, function(data) {
             $scope.model.topAds = data.ads;
         });

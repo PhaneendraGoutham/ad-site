@@ -85,7 +85,6 @@
 <%
 	}
 %>
-
 <script src="resources/components-min/jquery.ui.widget.min.js"></script>
 <script src="resources/components-min/jquery.iframe-transport.min.js"></script>
 
@@ -179,4 +178,5 @@
 		</div>
 	</div>
 </body>
+
 </html>

@@ -128,7 +128,7 @@ public class AdController {
 
 	private AdBrowserWrapper getAds(AdSearchDto adSearchDto, Principal principal) {
 		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto,
-				new Paging(adSearchDto.getPage(), AD_PER_PAGE),
+				new Paging(adSearchDto.getPage(), adSearchDto.getPerPage()),
 				controllerHelperBean.getActive(principal));
 		return adBrowserWrapper;
 	}

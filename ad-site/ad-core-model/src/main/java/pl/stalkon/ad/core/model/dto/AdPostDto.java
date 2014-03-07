@@ -47,8 +47,6 @@ public class AdPostDto {
 	private List<Long> tags;
 	
 	
-	
-	
 	public Boolean getAgeProtected() {
 		return ageProtected;
 	}

@@ -14,14 +14,15 @@ public class VideoData extends CommonEntity {
 	private static final long serialVersionUID = -2421274195822600142L;
 
 	private static final String WISTIA_VIDEO_URL_PREFIX = "http://fast.wistia.net/embed/iframe/";
-	private static final String WISTIA_VIDEO_URL_OPTIONS = "?controlsVisibleOnLoad=true&version=v1&volumeControl=true";
+	private static final String WISTIA_VIDEO_URL_OPTIONS = "?autoPlay=true&controlsVisibleOnLoad=true&version=v1&volumeControl=true";
 	private static final String WISTIA_THUMBNAIL_SUFFIX = "?image_crop_resized=100x60";
 	private static final String YOUTUBE_THUMBNAIL_URL_PREFIX = "http://i.ytimg.com/vi/";
 	private static final String YOUTUBE_THUMBNAIL_EXTENSION = ".jpg";
 	private static final String YOUTUBE_THUMBNAIL_NUMBER = "default";
 	private static final String YOUTUBE_VIDEO_URL_PREFIX = "http://www.youtube.com/embed/";
 	private static final String YOUTUBE_EMBED_VIDEO_URL_PREFIX = "http://www.youtube.com/v/";
-	private static final String YOUTUBE_EMBED_VIDEO_URL_SUFIX = "?version=3&amp;hl=pl_PL&amp;rel=0";
+	private static final String YOUTUBE_EMBED_VIDEO_URL_SUFIX = "?version=3&amp;hl=pl_PL&amp;";
+	private static final String YOUTUBE_IFRAME_VIDEO_URL_SUFIX = "?rel=0&autoplay=1";
 
 	public enum Provider {
 		WISTIA, YOUTUBE;
@@ -90,7 +91,7 @@ public class VideoData extends CommonEntity {
 		case WISTIA:
 			return WISTIA_VIDEO_URL_PREFIX + videoId + WISTIA_VIDEO_URL_OPTIONS;
 		case YOUTUBE:
-			return YOUTUBE_VIDEO_URL_PREFIX + videoId;
+			return YOUTUBE_VIDEO_URL_PREFIX + videoId + YOUTUBE_IFRAME_VIDEO_URL_SUFIX;
 		default:
 			return "";
 		}
