@@ -18,18 +18,23 @@
 		<from>^/$</from>
 		<to type="forward" context="web">/pages/current/glowna/page_1.html</to>
 	</rule>
-
 	<rule>
 		<name>Robots check</name>
 		<from>^/\?_escaped_fragment_=(.*)\/([0-9]*)\/.*$</from>
-		<to type="forward" context="web">/web/pages/current$1/$2.html?</to>
+		<to type="forward" context="web">/pages/current$1/$2.html?</to>
 	</rule>
+
+
 		<rule>
-		<name>Robots check2</name>
+		<name>Robots check page</name>
 		<from>^/\?_escaped_fragment_=(.*)\?.*page=([0-9]+).*$</from>
 		<to type="forward" context="web">/pages/current$1/page_$2.html</to>
 	</rule>
-
+	<rule>
+		<name>Robots check single</name>
+		<from>^/\?_escaped_fragment_=(.*)$</from>
+		<to type="forward" context="web">/pages/current$1/page_1.html?</to>
+	</rule>
 	<rule>
 		<name>Robots</name>
 		<from>^/robots.txt$</from>
