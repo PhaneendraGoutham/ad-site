@@ -38,8 +38,8 @@ import pl.styall.library.core.rest.ext.SingleObjectResponse;
 
 @Controller
 public class ContestController {
-	public final int CONTESTS_PER_PAGE = 5;
-	public final int CONTESTS_ANSWERS_PER_PAGE = 10;
+	public static final int CONTESTS_PER_PAGE = 5;
+	public static final int CONTESTS_ANSWERS_PER_PAGE = 10;
 
 	@Autowired
 	private CompanyService companyService;

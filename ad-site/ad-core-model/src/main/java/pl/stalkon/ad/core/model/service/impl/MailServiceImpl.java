@@ -40,6 +40,8 @@ public class MailServiceImpl implements MailService {
 	private String abuseReceiver;
 	private String appDomain;
 	private String companyReqReceiver;
+	private String alertReceiver;
+	private String alertSender;
 
 	private void sendMail(final String subject, final String from,
 			final String to, final String templateName, final Object model) {
@@ -57,11 +59,18 @@ public class MailServiceImpl implements MailService {
 		};
 		mailSender.send(preparator);
 	}
+	
+	@Override
+	public void sendAlertToAdmin(final String subject, final String message){
+		Map<String, Object> model = new HashMap<String, Object>(1);
+		model.put("message", message);
+		sendMail(subject, alertSender, alertReceiver,"alertEmail.ftl", model );
+	}
 
 	@Override
 	public void sendUserVerificationEmail(User user) {
 		String subject = "Spotnik.pl - potwierdź założenie konta";
-		Map<String, Object> model = new HashMap<String, Object>(1);
+		Map<String, Object> model = new HashMap<String, Object>(2);
 		model.put("token", user.getCredentials().getToken());
 		model.put("displayName", user.getDisplayName());
 		sendMail(subject, infoSender, user.getCredentials().getMail(),
@@ -143,6 +152,14 @@ public class MailServiceImpl implements MailService {
 
 	public void setCompanyReqReceiver(String companyReqReceiver) {
 		this.companyReqReceiver = companyReqReceiver;
+	}
+
+	public void setAlertReceiver(String alertReceiver) {
+		this.alertReceiver = alertReceiver;
+	}
+
+	public void setAlertSender(String alertSender) {
+		this.alertSender = alertSender;
 	}
 
 

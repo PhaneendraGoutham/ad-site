@@ -77,5 +77,6 @@ public interface AdService {
 	public List<Map<String, Object>> getRatings(List<Long> ids);
 	
 	public Long getBrandAdsCount(Long brandId);
+	
 	public Ad getByWistiaVideoId(String wistiaVideoId);
 }

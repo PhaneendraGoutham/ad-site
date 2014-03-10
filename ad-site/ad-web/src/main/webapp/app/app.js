@@ -112,33 +112,6 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, AdService.getPossibleTags);
             }]
         }
-    }).when("/reklamy/:adId/:adTitle", {
-        controller : 'AdSearchCtrl',
-        templateUrl : "app/partials/ad/ad.html",
-        reloadOnSearch : false,
-        adSearchOptions : {
-            search : false
-        },
-        resolve : {
-            possibleTags : ['$q','AdService',function($q, AdService) {
-                var deferred = $q.defer();
-                deferred.resolve([]);
-                return deferred.promise;
-            }],
-            possibleBrands : ['$q','AdService',function($q, AdService) {
-                var deferred = $q.defer();
-                deferred.resolve([]);
-                return deferred.promise;
-            }],
-            adBrowserWrapper : ['$q','AdService','$route',function($q, AdService,$route) {
-                var deferred = $q.defer();
-                AdService.getAdById($route.current.params.adId, function(data){
-                    return deferred.resolve(data);
-                });
-                return deferred.promise;
-            }]
-        },
-        writeOGMetaTags : true
     }).when("/poczekalnia", {
         controller : 'AdSearchCtrl',
         
@@ -255,29 +228,6 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return deferred.promise;
                 // return resolveFetcher($q, AdService.fetchWistiaProjectId,
                 // $route.current.params.brandId, 'response');
-            }],
-            possibleTags : ['$q','AdService',function($q, AdService) {
-                return resolveFetcher($q, AdService.getPossibleTags);
-            }]
-        }
-    }).when("/reklamy/:parentId/odpowiedz", {
-        controller : 'AdRegistrationCtrl',
-        templateUrl : "app/partials/ad/ad-registration.html",
-        access : "user",
-        resolve : {
-            possibleBrands : ['$q','AdService','$route','Auth',function($q, AdService, $route, Auth) {
-                var deferred = $q.defer();
-                AdService.getAdsByUrl(function(ad) {
-                    if (Auth.hasRole('company')) {
-                        AdService.fetchWistiaProjectId(ad.brand.id, function(data) {
-                            ad.brand.wistiaProjectId = data.response;
-                            deferred.resolve(ad);
-                        });
-                    } else {
-                        deferred.resolve(ad);
-                    }
-                });
-                return deferred.promise;
             }],
             possibleTags : ['$q','AdService',function($q, AdService) {
                 return resolveFetcher($q, AdService.getPossibleTags);
@@ -427,6 +377,56 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
                 return resolveFetcher($q, companyService.fetchBrand, $route.current.params.brandId);
             }]
         }
+    }).when("/reklamy/:parentId/odpowiedz", {
+        controller : 'AdRegistrationCtrl',
+        templateUrl : "app/partials/ad/ad-registration.html",
+        access : "user",
+        resolve : {
+            possibleBrands : ['$q','AdService','$route','Auth',function($q, AdService, $route, Auth) {
+                var deferred = $q.defer();
+                AdService.getAdsByUrl(function(ad) {
+                    if (Auth.hasRole('company')) {
+                        AdService.fetchWistiaProjectId(ad.brand.id, function(data) {
+                            ad.brand.wistiaProjectId = data.response;
+                            deferred.resolve(ad);
+                        });
+                    } else {
+                        deferred.resolve(ad);
+                    }
+                });
+                return deferred.promise;
+            }],
+            possibleTags : ['$q','AdService',function($q, AdService) {
+                return resolveFetcher($q, AdService.getPossibleTags);
+            }]
+        }
+    }).when("/reklamy/:adId/:adTitle", {
+        controller : 'AdSearchCtrl',
+        templateUrl : "app/partials/ad/ad.html",
+        reloadOnSearch : false,
+        adSearchOptions : {
+            search : false
+        },
+        resolve : {
+            possibleTags : ['$q','AdService',function($q, AdService) {
+                var deferred = $q.defer();
+                deferred.resolve([]);
+                return deferred.promise;
+            }],
+            possibleBrands : ['$q','AdService',function($q, AdService) {
+                var deferred = $q.defer();
+                deferred.resolve([]);
+                return deferred.promise;
+            }],
+            adBrowserWrapper : ['$q','AdService','$route',function($q, AdService,$route) {
+                var deferred = $q.defer();
+                AdService.getAdById($route.current.params.adId, function(data){
+                    return deferred.resolve(data);
+                });
+                return deferred.promise;
+            }]
+        },
+        writeOGMetaTags : true
     }).otherwise({
         redirectTo : '/'
     });

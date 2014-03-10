@@ -2,10 +2,16 @@ package pl.stalkon.ad.rest.controller;
 
 import java.net.MalformedURLException;
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
+
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionException;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -37,7 +43,7 @@ import pl.styall.library.core.rest.ext.SingleObjectResponse;
 @Controller
 public class AdController {
 
-	public final int AD_PER_PAGE = 5;
+	public static final int AD_PER_PAGE = 10;
 
 	@Autowired
 	private ControllerHelperBean controllerHelperBean;
@@ -56,6 +62,7 @@ public class AdController {
 	
 	@Autowired
 	private WistiaApiService wistiaApiService;
+	
 	
 	@RequestMapping(value = "/ad", method = RequestMethod.POST)
 	@ResponseBody

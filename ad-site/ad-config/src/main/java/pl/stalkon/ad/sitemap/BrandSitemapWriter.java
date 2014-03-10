@@ -16,6 +16,10 @@ public class BrandSitemapWriter implements ItemWriter<Brand> {
 	@Autowired
 	private WebSitemapGeneratorWrapper generatorWrapper;
 
+	
+	@Autowired
+	private PhantomJSCaller phantomJSCaller;
+	
 	@Override
 	public void write(List<? extends Brand> brands) throws Exception {
 		String url;
@@ -25,6 +29,7 @@ public class BrandSitemapWriter implements ItemWriter<Brand> {
 			generatorWrapper.getGenerator().addUrl(
 					new WebSitemapUrl(new Options(url).changeFreq(
 							ChangeFreq.WEEKLY).lastMod(new Date())));
+			phantomJSCaller.write("marki/" + brand.getId() + "/title");
 		}
 	}
 

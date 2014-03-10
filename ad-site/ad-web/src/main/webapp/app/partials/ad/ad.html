@@ -35,12 +35,12 @@
 		<div class="col-sm-12 ">
 			<div class="flex-video widescreen">
 
-				<div data-ng-if="currentUser.adult || !ad.ageProtected">
+				<div data-ng-show="currentUser.adult || !ad.ageProtected">
 					<div data-ng-if="!(model.singleAd)">
-<!-- 						<iframe width="620" height="349" -->
-<!-- 							data-ng-src="{{ad.videoData.iframeVideoUrl}}" frameborder="0" -->
-<!-- 							allowfullscreen></iframe> -->
-<div data-click-iframe></div>
+						<!-- 						<iframe width="620" height="349" -->
+						<!-- 							data-ng-src="{{ad.videoData.iframeVideoUrl}}" frameborder="0" -->
+						<!-- 							allowfullscreen></iframe> -->
+						<div data-click-iframe></div>
 					</div>
 					<div
 						data-ng-if="model.singleAd && ad.videoData.provider == 'WISTIA'"
@@ -54,8 +54,7 @@
 								content="{{ad.videoData.bigThumbnail}}" />
 							<meta itemprop="contentURL" content="{{ad.videoData.videoUrl}}" />
 							<object width="620" height="349">
-								<param name="movie"
-									value="{{ad.videoData.videoUrl}}"></param>
+								<param name="movie" value="{{ad.videoData.videoUrl}}"></param>
 								<param name="allowFullScreen" value="true"></param>
 								<param name="allowscriptaccess" value="always"></param>
 								<embed embed-src="{{ad.videoData.videoUrl}}"
@@ -66,7 +65,7 @@
 						</div>
 					</div>
 				</div>
-				<div data-ng-if="!(currentUser.adult || !ad.ageProtected)">
+				<div data-ng-show="!(currentUser.adult || !ad.ageProtected)">
 					<img src="/resources/img/18.png" />
 				</div>
 
@@ -131,9 +130,9 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="col-sm-12">
-						<span class="text-small pull-right vote-count" 
-							data-ng-show="ad.voteCount >= 100">{{ad.voteCount}} głosów</span> <span
-							class="text-small pull-right vote-count" 
+						<span class="text-small pull-right vote-count"
+							data-ng-show="ad.voteCount >= 100">{{ad.voteCount}} głosów</span>
+						<span class="text-small pull-right vote-count"
 							data-ng-show="ad.voteCount < 100">mniej niż 100 głosów</span>
 					</div>
 				</div>
@@ -148,8 +147,7 @@
 	</div>
 	<div class="row margin-bottom">
 
-		<div data-ng-show="bottomVideoPanelView == 'comments'"
-			class="col-sm-12">
+		<div data-ng-if="bottomVideoPanelView == 'comments'" class="col-sm-12">
 			<div class="fb-comments col-sm-12"
 				data-st-href="http://www.spotnik.pl/#!/reklamy/{{ad.id}}/{{ad.title}}"
 				data-width="590" data-num-posts="20" data-colorscheme="dark"></div>

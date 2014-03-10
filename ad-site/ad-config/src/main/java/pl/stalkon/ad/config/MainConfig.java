@@ -112,6 +112,8 @@ public class MainConfig {
 		mailServiceImpl.setCompanyReqReceiver(env
 				.getProperty("mail.company.req.to"));
 		mailServiceImpl.setAbuseReceiver(env.getProperty("mail.abuse.to"));
+		mailServiceImpl.setAlertReceiver(env.getProperty("mail.alert.to"));
+		mailServiceImpl.setAlertSender(env.getProperty("mail.alert.from"));
 		return mailServiceImpl;
 	}
 
@@ -143,7 +145,7 @@ public class MainConfig {
 	@Bean
 	public WebSitemapGeneratorWrapper webSitemapGeneratorWrapper()
 			throws MalformedURLException {
-		return new WebSitemapGeneratorWrapper(env.getProperty("app.domain"), servletContext.getRealPath("/resources/web"));
+		return new WebSitemapGeneratorWrapper(env.getProperty("app.domain") +"web/", env.getProperty("sitemap.basePath"));
 	}
 	
 

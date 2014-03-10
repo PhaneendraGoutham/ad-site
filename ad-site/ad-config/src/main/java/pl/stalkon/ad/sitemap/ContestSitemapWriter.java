@@ -17,7 +17,9 @@ public class ContestSitemapWriter implements ItemWriter<Contest> {
 	@Autowired
 	private WebSitemapGeneratorWrapper generatorWrapper;
 
-
+	@Autowired
+	private PhantomJSCaller phantomJSCaller;
+	
 	@Override
 	public void write(List<? extends Contest> contests) throws Exception {
 		String url;
@@ -26,6 +28,7 @@ public class ContestSitemapWriter implements ItemWriter<Contest> {
 			generatorWrapper.getGenerator().addUrl(
 					new WebSitemapUrl(new Options(url).changeFreq(
 							ChangeFreq.DAILY).lastMod(new Date())));
+			phantomJSCaller.write("konkursy/" + contest.getId() + "/title");
 		}
 	}
 

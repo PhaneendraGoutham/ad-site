@@ -9,7 +9,7 @@ app.directive("wistiaEmbedded", ["$http",function($http) {
                 htmlElem.html("");
                 var htmlToApped = data.html.replace('<script charset="ISO-8859-1" src="\/\/fast.wistia.com\/assets\/external\/E-v1.js"><\/script>', "");
                 htmlElem.append(htmlToApped);
-
+                scope.htmlReady();
             });
         }
     };

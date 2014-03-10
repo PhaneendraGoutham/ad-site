@@ -11,4 +11,5 @@ public interface MailService {
 	void sendAdAbuseMessage(Long id, String message);
 	public void sendCompanyRequest(Company company);
 	void sendCompanyRegistrationConfirm(Company company);
+	void sendAlertToAdmin(final String subject, final String message);
 }

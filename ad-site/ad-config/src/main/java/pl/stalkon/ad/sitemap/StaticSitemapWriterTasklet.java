@@ -1,24 +1,74 @@
 package pl.stalkon.ad.sitemap;
 
+import org.apache.commons.exec.ExecuteException;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import pl.stalkon.ad.core.model.Ad.Place;
+import pl.stalkon.ad.core.model.dto.AdBrowserWrapper;
+import pl.stalkon.ad.core.model.dto.AdSearchDto;
+import pl.stalkon.ad.core.model.dto.ContestBrowserWrapper;
+import pl.stalkon.ad.core.model.service.AdService;
+import pl.stalkon.ad.core.model.service.BrandService;
+import pl.stalkon.ad.core.model.service.ContestService;
+import pl.stalkon.ad.core.model.service.impl.helper.Paging;
+import pl.stalkon.ad.rest.controller.AdController;
+import pl.stalkon.ad.rest.controller.ContestController;
+
 public class StaticSitemapWriterTasklet implements Tasklet {
 
 	@Autowired
 	private WebSitemapGeneratorWrapper sitemapGeneratorWrapper;
+	
+	
+	@Autowired
+	private AdService adService;
+	
+	@Autowired
+	private ContestService contestService;
+	
+	@Autowired
+	private BrandService brandService;
+	
+	@Autowired
+	private PhantomJSCaller phantomJSCaller;
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
-		sitemapGeneratorWrapper.getGenerator().addUrl(sitemapGeneratorWrapper.getBaseUrl() + "#!/glowna");
-		sitemapGeneratorWrapper.getGenerator().addUrl(sitemapGeneratorWrapper.getBaseUrl() + "#!/poczekalnia");
-		sitemapGeneratorWrapper.getGenerator().addUrl(sitemapGeneratorWrapper.getBaseUrl() + "#!/konkursy");
+		
+		AdSearchDto adSearchDto = new AdSearchDto();
+		adSearchDto.setPlace(Place.MAIN);
+		AdBrowserWrapper adBrowserWrapper = adService.get(adSearchDto, new Paging(1, AdController.AD_PER_PAGE), true);
+		Long adTotal = adBrowserWrapper.getTotal();
+		iterate("glowna", getPageCount( adTotal.intValue(), AdController.AD_PER_PAGE));
+		
+		adSearchDto.setPlace(Place.WAITING);
+		adBrowserWrapper = adService.get(adSearchDto, new Paging(1, AdController.AD_PER_PAGE), true);
+		adTotal = adBrowserWrapper.getTotal();
+		iterate("poczekalnia", getPageCount( adTotal.intValue(), AdController.AD_PER_PAGE));
+		
+		ContestBrowserWrapper contestBrowserWrapper = contestService.get(new Paging(1, ContestController.CONTESTS_PER_PAGE));
+		iterate("konkursy", getPageCount( contestBrowserWrapper.getTotal().intValue(), ContestController.CONTESTS_PER_PAGE));
+		
+		phantomJSCaller.write("marki");
 		sitemapGeneratorWrapper.getGenerator().addUrl(sitemapGeneratorWrapper.getBaseUrl() + "#!/marki");
 		return RepeatStatus.FINISHED;
+	}
+	
+	
+	private void iterate(String folder, int count) throws Exception{
+		for(int i = 1; i<=count; i++){
+			sitemapGeneratorWrapper.getGenerator().addUrl(sitemapGeneratorWrapper.getBaseUrl() + "#!/" + folder + "?page=" + i);
+			phantomJSCaller.write(folder + "?page=" + i);
+		}
+	}
+	
+	private int getPageCount(int itemsCount, int itemsPerPage){
+		return (int) Math.ceil(((float)itemsCount) / ((float) itemsPerPage));
 	}
 	
 }

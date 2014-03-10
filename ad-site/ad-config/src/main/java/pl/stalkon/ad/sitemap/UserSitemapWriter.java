@@ -22,7 +22,7 @@ public class UserSitemapWriter implements ItemWriter<User> {
 		String url;
 		for (User user : users) {
 			url = generatorWrapper.getBaseUrl() + "#!/uzytkownik/"
-					+ user.getId();
+					+ user.getId() + "/reklamy";
 			generatorWrapper.getGenerator().addUrl(
 					new WebSitemapUrl(new Options(url).changeFreq(
 							ChangeFreq.ALWAYS).lastMod(new Date())));

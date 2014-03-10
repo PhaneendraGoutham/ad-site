@@ -3,34 +3,31 @@
         "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
 
 <!-- Configuration file for UrlRewriteFilter http://www.tuckey.org/urlrewrite/ -->
-<urlrewrite use-query-string="true">
 
+<urlrewrite use-query-string="true">
 	<rule>
 		<name>Base googlebot</name>
 		<condition name="user-agent">googlebot</condition>
 		<from>^/$</from>
-		<to type="proxy">http://localhost:8888/?_escaped_fragment_=</to>
+		<to type="forward" context="web">/pages/current/glowna/page_1.html</to>
 	</rule>
-	
+
 	<rule>
 		<name>Facebook bot</name>
 		<condition name="user-agent">facebookExternalHit/1.1</condition>
 		<from>^/$</from>
-		<to type="proxy">http://localhost:8888/?_escaped_fragment_=</to>
-	</rule>
-	
-	<rule>
-		<name>Robots check</name>
-		<condition name="_escaped_fragment_" type="parameter"
-			operator="equal"></condition>
-		<from>^(.*)</from>
-		<to type="proxy">http://localhost:8888$1</to>
+		<to type="forward" context="web">/pages/current/glowna/page_1.html</to>
 	</rule>
 
 	<rule>
-		<name>Sitemap</name>
-		<from>^/sitemap.xml$</from>
-		<to type="forward">/resources/web/sitemap.xml</to>
+		<name>Robots check</name>
+		<from>^/\?_escaped_fragment_=(.*)\/([0-9]*)\/.*$</from>
+		<to type="forward" context="web">/web/pages/current$1/$2.html?</to>
+	</rule>
+		<rule>
+		<name>Robots check2</name>
+		<from>^/\?_escaped_fragment_=(.*)\?.*page=([0-9]+).*$</from>
+		<to type="forward" context="web">/pages/current$1/page_$2.html</to>
 	</rule>
 
 	<rule>

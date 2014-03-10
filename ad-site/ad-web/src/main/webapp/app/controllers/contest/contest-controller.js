@@ -12,11 +12,13 @@ app.controller('ContestListCtrl', ['contestsBrowserWrapper','$scope',"$location"
             $scope.filters = $location.search();
             getContests();
         });
+        $scope.htmlReady();
     }
     function getContests() {
         ContestService.getContestsByUrl(function(data) {
             $scope.total = data.total;
             $scope.contests = data.contests;
+            $scope.htmlReady();
         });
     }
 }]);
@@ -60,7 +62,7 @@ app.controller('ContestCtrl', ['contest','$scope',function(contest, $scope) {
     init();
     function init() {
         $scope.contest = contest;
-
+        $scope.htmlReady();
     }
 }]);
 app.controller('ContestRegistrationCtrl', ['$scope','ErrorFactory','$location','$routeParams','ContestService','$filter','contest',function($scope, ErrorFactory, $location, $routeParams, ContestService, $filter, contest) {

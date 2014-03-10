@@ -13,6 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.Assert;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -90,6 +91,12 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 				&& uploadsRootDirectory.endsWith("/");
 		Assert.state(!ends, "Uploads root path can't end with /");
 		return new FileServiceImpl(uploadsRootDirectory, uploadsFolder);
+	}
+	
+	
+	@Bean
+	public RestTemplate restTemplate(){
+		return new RestTemplate();
 	}
 
 	// @Bean

@@ -60,13 +60,12 @@
             if (data.ads) {
                 $scope.model.ads = data.ads;
                 $scope.total = data.total;
+                $scope.htmlReady();
             } else
                 $scope.model.ads = [data];
-
         });
     }
     function init() {
-
         $scope.filters = $location.search();
         $scope.helper = {};
         $scope.helper.brandArr = [];
@@ -108,10 +107,12 @@
         if (adBrowserWrapper.total !== undefined) {
             $scope.model.ads = adBrowserWrapper.ads;
             $scope.total = adBrowserWrapper.total;
+            $scope.htmlReady();
         } else {
             $scope.model.ads = [adBrowserWrapper];
             $scope.model.singleAd = adBrowserWrapper;
         }
+        
     }
 
     function registerFiltersWatch() {
@@ -408,6 +409,9 @@ app.controller('AdCtrl', ['$scope','AdService','$rootScope',"$route",'$location'
             $scope.metatags.description = $scope.ad.description.substring(0, 160);
             $scope.metatags.image = $scope.ad.videoData.bigThumbnail;
             $scope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id + "/" + $scope.ad.title.replace(/ /g, '-');
+        }
+        if($scope.model.singleAd && $scope.ad.videoData.provider == "YOUTUBE"){
+            $scope.htmlReady();
         }
     }
 }]);

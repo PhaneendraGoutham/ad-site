@@ -41,7 +41,7 @@ app.controller("BrandListCtrl", ['brands','$scope',function(brands, $scope) {
     init();
     function init() {
         $scope.brands = brands;
-
+        $scope.htmlReady();
     }
 }]);
 app.controller("BrandStatsCtrl", ['stats','$scope','CompanyService','$routeParams',function(stats, $scope, CompanyService, $routeParams) {
@@ -60,7 +60,7 @@ app.controller('BrandCtrl', ['brand','$scope',function(brand, $scope) {
     init();
     function init() {
         $scope.brand = brand;
-
+        $scope.htmlReady();
     }
 }]);
 app.controller('BrandRegistrationCtrl', ['$scope','ErrorFactory','$location','$routeParams','CompanyService','brand','Auth',function($scope, ErrorFactory, $location, $routeParams, CompanyService, brand, Auth) {

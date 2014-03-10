@@ -4,7 +4,7 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" data-ng-app="spotnikApp">
+<html class="no-js" data-ng-app="spotnikApp" id="spotnikApp">
 <!--<![endif]-->
 <head>
 <title>{{metatags.title}}</title>
@@ -13,8 +13,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-<meta name="description"
-	content="{{metatags.description}}" />
+<meta name="description" content="{{metatags.description}}" />
 <meta name="viewport" content="width=device-width" />
 <meta name="fragment" content="!" />
 
@@ -80,7 +79,8 @@
 
 <!-- directives -->
 <script type="text/javascript" src="app/directives/form-directives.js"></script>
-<script type="text/javascript" src="app/directives/ad-site-directives.js"></script>
+<script type="text/javascript"
+	src="app/directives/ad-site-directives.js"></script>
 
 <%
 	}
@@ -93,8 +93,7 @@
 <script src="resources/components-min/jquery.fileupload-process.min.js"></script>
 <!-- <script src="resources/components-min/jquery.fileupload-validate.min.js"></script> -->
 <script src="resources/components-min/jquery.fileupload-angular.min.js"></script>
-<script type="text/javascript"
-	src="resources/components-min/angular-seo.min.js"></script>
+<script type="text/javascript" src="resources/components/angular-seo.js"></script>
 
 </head>
 <body>
@@ -145,13 +144,15 @@
 
 					<div class="thumbnail clearfix"
 						data-ng-repeat="ad in model.topAds track by $index ">
-						<a data-st-href="#!/reklamy/{{ad.id}}/{{ad.title}}" class="pull-left"> <span>
-								<img class="" data-ng-src="{{ad.videoData.smallThumbnail}}" />
+						<a data-st-href="#!/reklamy/{{ad.id}}/{{ad.title}}"
+							class="pull-left"> <span> <img class=""
+								data-ng-src="{{ad.videoData.smallThumbnail}}" />
 						</span>
 						</a>
 						<div class="caption">
 							<div class="wrap-text text-info">
-								<a data-st-href="#!/reklamy/{{ad.id}}/{{ad.title}}" title="{{ad.title}}">{{ad.title}}</a>
+								<a data-st-href="#!/reklamy/{{ad.id}}/{{ad.title}}"
+									title="{{ad.title}}">{{ad.title}}</a>
 							</div>
 							<!-- 							<small>użytkownik: <a -->
 							<!-- 								href="#!/uzytkownik/{{ad.user.id}}/reklamy">{{ad.user.displayName}}</a></small> -->
@@ -178,5 +179,4 @@
 		</div>
 	</div>
 </body>
-
 </html>

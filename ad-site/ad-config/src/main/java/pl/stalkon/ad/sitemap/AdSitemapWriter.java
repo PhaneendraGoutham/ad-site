@@ -23,6 +23,8 @@ public class AdSitemapWriter implements ItemWriter<Ad> {
 	@Autowired
 	private WebSitemapGeneratorWrapper generatorWrapper;
 
+	@Autowired
+	private PhantomJSCaller phantomJSCaller;
 
 	@Override
 	public void write(List<? extends Ad> ads) throws Exception {
@@ -35,7 +37,7 @@ public class AdSitemapWriter implements ItemWriter<Ad> {
 							ChangeFreq.ALWAYS).lastMod(new Date())));
 			generatorWrapper.getVideoGenerator().addUrl(
 					new GoogleVideoSitemapUrl(getSitemapVideoOptions(ad, url)));
-			
+			phantomJSCaller.write("reklamy/" + ad.getId() + "/title");
 		}
 	}
 
