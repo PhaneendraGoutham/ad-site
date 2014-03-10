@@ -1,6 +1,6 @@
 User-agent: *
-Sitemap: http://www.spotnik.pl/resources/web/base_sitemap_index.xml
-Sitemap: http://www.spotnik.pl/resources/web/video_sitemap_index.xml
+Sitemap: http://www.spotnik.pl/web/base_sitemap_index.xml
+Sitemap: http://www.spotnik.pl/web/video_sitemap_index.xml
 
 Disallow: /*_escaped_fragment_=/losuj
 Disallow: /*_escaped_fragment_=/dodaj
