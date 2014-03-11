@@ -36,12 +36,12 @@ public class WebSitemapGeneratorWrapper {
 	public void build() throws MalformedURLException {
 		currentWebSitemapGenerator = WebSitemapGenerator
 				.builder(baseUrl, new File(basePath))
-				.allowMultipleSitemaps(true).maxUrls(baseMaxUrl).gzip(true)
+				.allowMultipleSitemaps(true).maxUrls(baseMaxUrl)
 				.build();
 		googleVideoSitemapGenerator = GoogleVideoSitemapGenerator
 				.builder(baseUrl, new File(basePath))
 				.fileNamePrefix("video-sitemap").allowMultipleSitemaps(true)
-				.maxUrls(videoMaxUrl).gzip(true).build();
+				.maxUrls(videoMaxUrl).build();
 	}
 
 	public WebSitemapGenerator getGenerator() {

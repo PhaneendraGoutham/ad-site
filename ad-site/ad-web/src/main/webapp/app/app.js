@@ -520,7 +520,7 @@ function($routeProvider, $httpProvider, stAuthInterceptorProvider, AuthProvider,
         "odpowiedz" : ""
     });
     MetatagsCreatorProvider.setDefaultMetatags({
-        url : 'http://www.spotnik.pl/#!/glowna',
+        url : 'http://www.spotnik.pl/',
         description : 'Spotnik.pl - reklamy, śmieszne spoty reklamowe!',
         title : 'Spotnik.pl - reklamy nie muszą być nudne!',
         type : 'website',
