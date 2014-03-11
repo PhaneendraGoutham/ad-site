@@ -36,7 +36,7 @@ public class AdSitemapWriter implements ItemWriter<Ad> {
 					new WebSitemapUrl(new Options(url).changeFreq(
 							ChangeFreq.ALWAYS).lastMod(new Date())));
 			generatorWrapper.getVideoGenerator().addUrl(
-					new GoogleVideoSitemapUrl(getSitemapVideoOptions(ad, url)));
+					new XmlSafeVideoSitemapUrl(getSitemapVideoOptions(ad, url)));
 			
 			phantomJSCaller.write("reklamy/" + ad.getId() + "/title");
 		}
