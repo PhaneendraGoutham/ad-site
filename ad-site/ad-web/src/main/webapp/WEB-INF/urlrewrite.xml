@@ -11,29 +11,33 @@
 		<from>^/$</from>
 		<to type="forward" context="web" last="true">/pages/current/glowna/page_1.html</to>
 	</rule>
-
 	<rule>
-		<name>Facebook bot</name>
+		<name>Facebook replace facebook params</name>
 		<condition name="user-agent">facebookExternalHit/1.1</condition>
-		<from>^/#!(.*)$</from>
-		<to type="forward">/\?_escaped_fragment_=</to>
+		<from>.*(_escaped_fragment_=[^;&amp;]*).*</from>
+		<to type="forward">$1</to>
+	</rule>
+	<rule>
+		<name>Facebook replace to slash</name>
+		<condition name="user-agent">facebookExternalHit/1.1</condition>
+		<from>%2F</from>
+		<to type="forward">/</to>
 	</rule>
 	<rule>
 		<name>Robots check</name>
-		<from>^/\?_escaped_fragment_=(.*)\/([0-9]*)\/.*$</from>
-		<to type="forward" context="web" last="true">/pages/current$1/$2.html?</to>
+		<from>.*_escaped_fragment_=(.*)\/([0-9]*)\/[^;&amp;]*</from>
+		<to type="forward" context="web" last="true">/pages/current$1/$2.html</to>
 	</rule>
-
 
 	<rule>
 		<name>Robots check page</name>
-		<from>^/\?_escaped_fragment_=(.*)\?.*page=([0-9]+).*$</from>
+		<from>.*_escaped_fragment_=(.*)\?.*page=([0-9]+).*</from>
 		<to type="forward" context="web" last="true">/pages/current$1/page_$2.html</to>
 	</rule>
 	<rule>
 		<name>Robots check single</name>
-		<from>^/\?_escaped_fragment_=(.*)$</from>
-		<to type="forward" context="web" last="true">/pages/current$1/page_1.html?</to>
+		<from>.*_escaped_fragment_=([^;&amp;]*)</from>
+		<to type="forward" context="web" last="true">/pages/current$1/page_1.html</to>
 	</rule>
 	<rule>
 		<name>Robots</name>
