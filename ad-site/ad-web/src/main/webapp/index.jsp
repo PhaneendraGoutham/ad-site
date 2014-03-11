@@ -144,14 +144,14 @@
 
 					<div class="thumbnail clearfix"
 						data-ng-repeat="ad in model.topAds track by $index ">
-						<a data-st-href="#!/reklamy/{{ad.id}}/{{ad.title}}"
+						<a href="#!/reklamy/{{ad.id}}/{{ad.urlSafeTitle}}"
 							class="pull-left"> <span> <img class=""
 								data-ng-src="{{ad.videoData.smallThumbnail}}" />
 						</span>
 						</a>
 						<div class="caption">
 							<div class="wrap-text text-info">
-								<a data-st-href="#!/reklamy/{{ad.id}}/{{ad.title}}"
+								<a href="#!/reklamy/{{ad.id}}/{{ad.urlSafeTitle}}"
 									title="{{ad.title}}">{{ad.title}}</a>
 							</div>
 							<!-- 							<small>użytkownik: <a -->

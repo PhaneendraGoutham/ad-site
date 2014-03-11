@@ -24,7 +24,7 @@ public class ContestSitemapWriter implements ItemWriter<Contest> {
 	public void write(List<? extends Contest> contests) throws Exception {
 		String url;
 		for (Contest contest : contests) {
-			url = generatorWrapper.getBaseUrl() + "#!/konkursy/" + contest.getId() + "/" + contest.getName().replace(" ", "-");
+			url = generatorWrapper.getBaseUrl() + "#!/konkursy/" + contest.getId() + "/" + contest.getUrlSafeName();
 			generatorWrapper.getGenerator().addUrl(
 					new WebSitemapUrl(new Options(url).changeFreq(
 							ChangeFreq.DAILY).lastMod(new Date())));

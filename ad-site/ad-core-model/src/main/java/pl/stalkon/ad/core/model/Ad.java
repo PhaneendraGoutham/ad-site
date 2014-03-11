@@ -36,6 +36,9 @@ import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 
+import com.redfin.sitemapgenerator.WebSitemapGenerator;
+
+import pl.styall.library.core.ext.UrlHelper;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
@@ -61,7 +64,7 @@ public class Ad extends CommonEntity {
 			"dateOnMain", "creationDate", "year", "title", "description",
 			"ageProtected", "approved", "user.displayName", "user.id",
 			"user.userData.imageUrl", "brand.name", "brand.id",
-			"brand.smallLogoUrl", "rank", "voteCount",
+			"brand.smallLogoUrl", "rank", "voteCount", "brand.urlSafeName", "urlSafeTitle",
 			"contestAd.winner", "official", "parentId",
 			"videoData.provider", "videoData.bigThumbnail","videoData.smallThumbnail",
 			"videoData.videoId", "videoData.iframeVideoUrl", "videoData.duration", "videoData.videoUrl");
@@ -180,6 +183,10 @@ public class Ad extends CommonEntity {
 //		}
 //	}
 
+	public String getUrlSafeTitle(){
+		return UrlHelper.getUrlSafeString(title);
+	}
+	
 	public ContestAd getContestAd() {
 		return contestAd;
 	}

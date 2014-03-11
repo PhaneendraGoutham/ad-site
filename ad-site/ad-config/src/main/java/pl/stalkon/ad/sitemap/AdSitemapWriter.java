@@ -31,12 +31,13 @@ public class AdSitemapWriter implements ItemWriter<Ad> {
 		String url;
 		for (Ad ad : ads) {
 			url = generatorWrapper.getBaseUrl() + "#!/reklamy/" + ad.getId() + "/"
-					+ ad.getTitle().replace(" ", "-");
+					+ ad.getUrlSafeTitle();
 			generatorWrapper.getGenerator().addUrl(
 					new WebSitemapUrl(new Options(url).changeFreq(
 							ChangeFreq.ALWAYS).lastMod(new Date())));
 			generatorWrapper.getVideoGenerator().addUrl(
 					new GoogleVideoSitemapUrl(getSitemapVideoOptions(ad, url)));
+			
 			phantomJSCaller.write("reklamy/" + ad.getId() + "/title");
 		}
 	}

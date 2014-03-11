@@ -20,14 +20,15 @@ import javax.persistence.TemporalType;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 
+import pl.styall.library.core.ext.UrlHelper;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
 @Table(name = "brands")
 public class Brand extends CommonEntity {
 	private static final long serialVersionUID = -3646540035738604078L;
-	public static final List<String> JSON_SHOW = Arrays.asList("id","creationDate","description","name","smallLogoUrl","logoUrl");
-	public static final List<String> JSON_SM_SHOW = Arrays.asList("id","name");
+	public static final List<String> JSON_SHOW = Arrays.asList("id","creationDate","description","name","smallLogoUrl","logoUrl", "urlSafeName");
+	public static final List<String> JSON_SM_SHOW = Arrays.asList("id","name", "urlSafeName");
 	@Column(length = 1024, nullable = false)
 	private String description;
 
@@ -140,6 +141,10 @@ public class Brand extends CommonEntity {
 
 	public void setCosts(List<Cost> costs) {
 		this.costs = costs;
+	}
+	
+	public String getUrlSafeName(){
+		return UrlHelper.getUrlSafeString(name);
 	}
 
 }

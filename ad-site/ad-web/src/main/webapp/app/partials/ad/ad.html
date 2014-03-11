@@ -2,14 +2,14 @@
 <article class="clearfix col-sm-12" data-ng-show="model.singleAd">
 	<ul class="nav nav-pills col-sm-12">
 		<li data-ng-show="model.singleAd && model.singleAd.parentId"><a
-			data-st-href="#!/reklamy/{{model.singleAd.parentId}}/">Pokaż
+			href="#!/reklamy/{{model.singleAd.parentId}}/">Pokaż
 				pierwotną reklamę</a></li>
 		<li><a href="#!/przegladaj?parentId={{model.singleAd.id}}">Pokaż
 				odpowiedzi</a></li>
 		<li><a href="#!/reklamy/{{model.singleAd.id}}/odpowiedz">Dodaj
 				odpowiedź wideo</a></li>
 		<li><a
-			data-st-href="#!/marki/{{model.singleAd.brand.id}}/{{model.singleAd.brand.name}}">{{model.singleAd.brand.name}}</a></li>
+			href="#!/marki/{{model.singleAd.brand.id}}/{{model.singleAd.brand.urlSafeName}}">{{model.singleAd.brand.name}}</a></li>
 	</ul>
 </article>
 
@@ -19,12 +19,12 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class=" col-sm-8">
-				<a data-st-href="#!/reklamy/{{ad.id}}/{{ad.title}}"
+				<a href="#!/reklamy/{{ad.id}}/{{ad.urlSafeTitle}}"
 					title="{{ad.title}}"><h2 class="text-info wrap-text">{{ad.title}}</h2></a>
 			</div>
 			<div class=" col-sm-4 margin-top"
 				data-ng-show="ad.official && ad.brand.smallLogoUrl">
-				<a data-st-href="#!/marki/{{ad.brand.id}}/{{ad.brand.name}}"
+				<a href="#!/marki/{{ad.brand.id}}/{{ad.brand.urlSafeName}}"
 					class="pull-right "><img
 					data-ng-src="{{ad.brand.smallLogoUrl}}" class="brand-ad-img"></a>
 			</div>
@@ -74,14 +74,14 @@
 		<div class="tooltip left social-bar-tooltip" data-ng-class="{in: sh}">
 			<div class="tooltip-inner">
 				<a data-st-new-window
-					data-st-href="http://www.facebook.com/sharer/sharer.php?u=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.title}}"><img
+					href="http://www.facebook.com/sharer/sharer.php?u=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.urlSafeTitle}}"><img
 					src="/resources/img/facebook.png" /><br /></a> <a data-st-new-window
-					data-st-href="https://twitter.com/intent/tweet?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.title}}"><img
+					href="https://twitter.com/intent/tweet?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.urlSafeTitle}}"><img
 					src="/resources/img/twitter.png" /><br /></a> <a data-st-new-window
-					data-st-href="https://plus.google.com/share?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.title}}"><img
+					href="https://plus.google.com/share?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}/{{ad.urlSafeTitle}}"><img
 					src="/resources/img/google_plus.png" /><br /></a> <a
 					data-st-new-window
-					data-st-href="http://www.wykop.pl/dodaj/link/?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}{{ad.title}}&title={{ad.title}}&desc={{ad.description}}"><img
+					href="http://www.wykop.pl/dodaj/link/?url=http://www.spotnik.pl/%23!/reklamy/{{ad.id}}{{ad.urlSafeTitle}}&title={{ad.title}}&desc={{ad.description}}"><img
 					src="/resources/img/wykop.png" style="margin-top: 1px" /><br /></a>
 			</div>
 			<div class="tooltip-arrow"></div>
@@ -149,7 +149,7 @@
 
 		<div data-ng-if="bottomVideoPanelView == 'comments'" class="col-sm-12">
 			<div class="fb-comments col-sm-12"
-				data-st-href="http://www.spotnik.pl/#!/reklamy/{{ad.id}}/{{ad.title}}"
+				href="http://www.spotnik.pl/#!/reklamy/{{ad.id}}/{{ad.urlSafeTitle}}"
 				data-width="590" data-num-posts="20" data-colorscheme="dark"></div>
 		</div>
 		<div data-ng-show="bottomVideoPanelView == 'inform'"

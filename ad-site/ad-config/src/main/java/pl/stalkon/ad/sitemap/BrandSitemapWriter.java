@@ -24,8 +24,9 @@ public class BrandSitemapWriter implements ItemWriter<Brand> {
 	public void write(List<? extends Brand> brands) throws Exception {
 		String url;
 		for (Brand brand : brands) {
+			System.out.println(brand.getUrlSafeName());
 			url = generatorWrapper.getBaseUrl() + "#!/marki/" + brand.getId()
-					+ "/" + brand.getName().replace(" ", "-");
+					+ "/" + brand.getUrlSafeName();
 			generatorWrapper.getGenerator().addUrl(
 					new WebSitemapUrl(new Options(url).changeFreq(
 							ChangeFreq.WEEKLY).lastMod(new Date())));

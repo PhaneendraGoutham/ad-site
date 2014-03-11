@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 
+import pl.styall.library.core.ext.UrlHelper;
 import pl.styall.library.core.model.CommonEntity;
 
 @Entity
@@ -196,5 +197,8 @@ public class Contest extends CommonEntity {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
+	
+	public String getUrlSafeName(){
+		return UrlHelper.getUrlSafeString(name);
+	}
 }

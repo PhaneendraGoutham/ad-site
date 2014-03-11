@@ -408,7 +408,7 @@ app.controller('AdCtrl', ['$scope','AdService','$rootScope',"$route",'$location'
             $scope.metatags.title = "Spotnik.pl - reklamy: " + $scope.ad.title;
             $scope.metatags.description = $scope.ad.description.substring(0, 160);
             $scope.metatags.image = $scope.ad.videoData.bigThumbnail;
-            $scope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id + "/" + $scope.ad.title.replace(/ /g, '-');
+            $scope.metatags.url = "http://www.spotnik.pl" + "/#!/reklamy/" + $scope.ad.id + "/" + $scope.ad.urlSafeTitle;
         }
         if($scope.model.singleAd && $scope.ad.videoData.provider == "YOUTUBE"){
             $scope.htmlReady();

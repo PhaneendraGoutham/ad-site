@@ -143,16 +143,18 @@ angular.module('st-common-module', ['ngCookies','angularLocalStorage'])
             });
         }
     };
-}]).directive('stHref', function() {
-    return {
-        restrict : 'A',
-        link : function(scope, element, attrs) {
-            attrs.$observe('stHref', function(value) {
-                element.attr('href', value.replace(/ /g, '-'));
-            });
-        }
-    };
-}).directive('stNewWindow', function() {
+}])
+//.directive('stHref', function() {
+//    return {
+//        restrict : 'A',
+//        link : function(scope, element, attrs) {
+//            attrs.$observe('stHref', function(value) {
+//                element.attr('href', value.replace(/ /g, '-'));
+//            });
+//        }
+//    };
+//})
+.directive('stNewWindow', function() {
     return {
         restrict : 'A',
         link : function(scope, elem, attrs) {
