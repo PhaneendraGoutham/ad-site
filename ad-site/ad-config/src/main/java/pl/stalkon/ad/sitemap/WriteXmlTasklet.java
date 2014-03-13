@@ -18,6 +18,8 @@ public class WriteXmlTasklet implements Tasklet {
 
 	@Autowired
 	private WebSitemapGeneratorWrapper sitemapGeneratorWrapper;
+	
+	private String sitemapFolder = "web/";
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution,
@@ -62,12 +64,16 @@ public class WriteXmlTasklet implements Tasklet {
 		SitemapIndexGenerator sig;
 		try {
 			sig = new SitemapIndexGenerator.Options(
-					sitemapGeneratorWrapper.getBaseUrl(), file).build();
+					sitemapGeneratorWrapper.getBaseUrl() + sitemapFolder, file).build();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("bug", e);
 		}
 		sig.addUrl(new SitemapIndexUrl(new URL(sitemapGeneratorWrapper
-				.getBaseUrl() + sitemapName)));
+				.getBaseUrl() + sitemapFolder  + sitemapName)));
 		sig.write();
+	}
+
+	public void setSitemapFolder(String sitemapFolder) {
+		this.sitemapFolder = sitemapFolder;
 	}
 }
