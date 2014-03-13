@@ -145,7 +145,7 @@ public class MainConfig {
 	@Bean
 	public WebSitemapGeneratorWrapper webSitemapGeneratorWrapper()
 			throws MalformedURLException {
-		return new WebSitemapGeneratorWrapper(env.getProperty("app.domain") +"web/", env.getProperty("sitemap.basePath"));
+		return new WebSitemapGeneratorWrapper(env.getProperty("app.domain"), env.getProperty("sitemap.basePath"));
 	}
 	
 
